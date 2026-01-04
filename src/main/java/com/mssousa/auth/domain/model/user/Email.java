@@ -1,0 +1,63 @@
+package com.mssousa.auth.domain.model.user;
+
+import com.mssousa.auth.domain.exception.DomainException;
+
+import java.util.Objects;
+import java.util.regex.Pattern;
+
+/**
+ * Value Object representando um endereço de e-mail.
+ * Garante que o e-mail seja válido e normalizado (lowercase).
+ */
+public final class Email {
+
+    private static final Pattern EMAIL_PATTERN = 
+        Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
+
+    private final String value;
+
+    public Email(String value) {
+        String normalized = normalize(value);
+        validate(normalized);
+        this.value = normalized;
+    }
+
+    private void validate(String value) {
+        if (value == null || value.isBlank()) {
+            throw new DomainException("Email não pode ser nulo ou vazio");
+        }
+
+        if (!EMAIL_PATTERN.matcher(value).matches()) {
+            throw new DomainException("Formato de email inválido");
+        }
+    }
+
+    private String normalize(String value) {
+        if (value == null) {
+            return null;
+        }
+        return value.toLowerCase().trim();
+    }
+
+    public String value() {
+        return value;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Email email = (Email) o;
+        return value.equals(email.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value);
+    }
+
+    @Override
+    public String toString() {
+        return value;
+    }
+}
