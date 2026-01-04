@@ -1,0 +1,36 @@
+cors:
+  allowed-origins: http://localhost:4200
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/app_auth_server
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: 123456
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    properties:
+      hibernate:
+        format_sql: true
+
+  # security:
+  #   oauth2:
+  #     resourceserver:
+  #       jwt:
+  #         issuer-uri: http://localhost:8080/realms/${realm}
+  #         jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
+
+  #         client:
+  #           registration:
+  #             keycloak:
+  #               client-id: ${client_id_keycloak}
+  #               authorization-grant-type: authorization_code
+  #               scope: openid
+  #           provider:
+  #             keycloak:
+  #               issuer-uri: http://keycloak:8080/realms/manager
+  #               user-name-attribute: preferred_username
