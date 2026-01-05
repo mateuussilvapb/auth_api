@@ -127,8 +127,8 @@
 
 		<dependency>
 			<groupId>io.hypersistence</groupId>
-			<artifactId>hypersistence-utils-hibernate-63</artifactId>
-			<version>3.14.1</version>
+			<artifactId>hypersistence-tsid</artifactId>
+			<version>2.1.4</version>
 		</dependency>
 
 	</dependencies>
