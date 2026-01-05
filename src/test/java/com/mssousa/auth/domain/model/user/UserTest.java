@@ -13,6 +13,7 @@ class UserTest {
     private Username username;
     private Email email;
     private Password password;
+    private String name;
 
     @BeforeEach
     void setUp() {
@@ -20,13 +21,14 @@ class UserTest {
         username = new Username("testuser");
         email = new Email("test@example.com");
         password = Password.fromPlainText("password123");
+        name = "Test User";
     }
 
     // ==================== Criação e Getters ====================
 
     @Test
     void testCreateUser() {
-        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE);
+        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE, name);
 
         assertNotNull(user);
         assertEquals(userId, user.getId());
@@ -35,38 +37,45 @@ class UserTest {
         assertEquals(password, user.getPassword());
         assertFalse(user.isMaster());
         assertEquals(UserStatus.ACTIVE, user.getStatus());
+        assertEquals(name, user.getName());
     }
 
     @Test
     void testCreateMasterUser() {
-        User user = new User(userId, username, email, password, true, UserStatus.ACTIVE);
+        User user = new User(userId, username, email, password, true, UserStatus.ACTIVE, name);
 
         assertTrue(user.isMaster());
     }
 
     @Test
     void testGetId() {
-        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE);
+        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE, name);
         assertEquals(userId, user.getId());
     }
 
     @Test
     void testGetUsername() {
-        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE);
+        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE, name);
         assertEquals(username, user.getUsername());
     }
 
     @Test
     void testGetEmail() {
-        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE);
+        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE, name);
         assertEquals(email, user.getEmail());
+    }
+
+    @Test
+    void testGetName() {
+        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE, name);
+        assertEquals(name, user.getName());
     }
 
     // ==================== Gerenciamento de Status ====================
 
     @Test
     void testActivateUser() {
-        User user = new User(userId, username, email, password, false, UserStatus.BLOCKED);
+        User user = new User(userId, username, email, password, false, UserStatus.BLOCKED, name);
         
         user.activate();
         
@@ -76,7 +85,7 @@ class UserTest {
 
     @Test
     void testActivateAlreadyActiveUser() {
-        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE);
+        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE, name);
         
         user.activate(); // Não deve lançar exceção
         
@@ -85,7 +94,7 @@ class UserTest {
 
     @Test
     void testBlockUser() {
-        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE);
+        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE, name);
         
         user.block();
         
@@ -95,7 +104,7 @@ class UserTest {
 
     @Test
     void testBlockAlreadyBlockedUser() {
-        User user = new User(userId, username, email, password, false, UserStatus.BLOCKED);
+        User user = new User(userId, username, email, password, false, UserStatus.BLOCKED, name);
         
         DomainException exception = assertThrows(DomainException.class, user::block);
         assertEquals("Usuário já está bloqueado", exception.getMessage());
@@ -103,7 +112,7 @@ class UserTest {
 
     @Test
     void testUnblockUser() {
-        User user = new User(userId, username, email, password, false, UserStatus.BLOCKED);
+        User user = new User(userId, username, email, password, false, UserStatus.BLOCKED, name);
         
         user.unblock();
         
@@ -113,7 +122,7 @@ class UserTest {
 
     @Test
     void testUnblockNotBlockedUser() {
-        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE);
+        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE, name);
         
         DomainException exception = assertThrows(DomainException.class, user::unblock);
         assertEquals("Usuário não está bloqueado", exception.getMessage());
@@ -121,7 +130,7 @@ class UserTest {
 
     @Test
     void testDisableUser() {
-        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE);
+        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE, name);
         
         user.disable();
         
@@ -131,7 +140,7 @@ class UserTest {
 
     @Test
     void testDisableAlreadyDisabledUser() {
-        User user = new User(userId, username, email, password, false, UserStatus.DISABLED);
+        User user = new User(userId, username, email, password, false, UserStatus.DISABLED, name);
         
         DomainException exception = assertThrows(DomainException.class, user::disable);
         assertEquals("Usuário já está desabilitado", exception.getMessage());
@@ -139,8 +148,8 @@ class UserTest {
 
     @Test
     void testIsActive() {
-        User activeUser = new User(userId, username, email, password, false, UserStatus.ACTIVE);
-        User blockedUser = new User(userId, username, email, password, false, UserStatus.BLOCKED);
+        User activeUser = new User(userId, username, email, password, false, UserStatus.ACTIVE, name);
+        User blockedUser = new User(userId, username, email, password, false, UserStatus.BLOCKED, name);
         
         assertTrue(activeUser.isActive());
         assertFalse(blockedUser.isActive());
@@ -148,8 +157,8 @@ class UserTest {
 
     @Test
     void testIsBlocked() {
-        User blockedUser = new User(userId, username, email, password, false, UserStatus.BLOCKED);
-        User activeUser = new User(userId, username, email, password, false, UserStatus.ACTIVE);
+        User blockedUser = new User(userId, username, email, password, false, UserStatus.BLOCKED, name);
+        User activeUser = new User(userId, username, email, password, false, UserStatus.ACTIVE, name);
         
         assertTrue(blockedUser.isBlocked());
         assertFalse(activeUser.isBlocked());
@@ -157,8 +166,8 @@ class UserTest {
 
     @Test
     void testIsDisabled() {
-        User disabledUser = new User(userId, username, email, password, false, UserStatus.DISABLED);
-        User activeUser = new User(userId, username, email, password, false, UserStatus.ACTIVE);
+        User disabledUser = new User(userId, username, email, password, false, UserStatus.DISABLED, name);
+        User activeUser = new User(userId, username, email, password, false, UserStatus.ACTIVE, name);
         
         assertTrue(disabledUser.isDisabled());
         assertFalse(activeUser.isDisabled());
@@ -166,7 +175,7 @@ class UserTest {
 
     @Test
     void testStatusTransitions() {
-        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE);
+        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE, name);
         
         // ACTIVE -> BLOCKED
         user.block();
@@ -189,7 +198,7 @@ class UserTest {
 
     @Test
     void testChangePassword() {
-        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE);
+        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE, name);
         Password newPassword = Password.fromPlainText("newPassword456");
         
         user.changePassword(newPassword);
@@ -200,7 +209,7 @@ class UserTest {
 
     @Test
     void testChangePasswordWithNull() {
-        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE);
+        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE, name);
         
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
             () -> user.changePassword(null));
@@ -209,21 +218,21 @@ class UserTest {
 
     @Test
     void testVerifyCorrectPassword() {
-        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE);
+        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE, name);
         
         assertTrue(user.verifyPassword("password123"));
     }
 
     @Test
     void testVerifyIncorrectPassword() {
-        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE);
+        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE, name);
         
         assertFalse(user.verifyPassword("wrongPassword"));
     }
 
     @Test
     void testVerifyPasswordWithNull() {
-        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE);
+        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE, name);
         
         assertFalse(user.verifyPassword(null));
     }
@@ -232,7 +241,7 @@ class UserTest {
 
     @Test
     void testPromoteToMaster() {
-        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE);
+        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE, name);
         assertFalse(user.isMaster());
         
         user.promoteToMaster();
@@ -242,7 +251,7 @@ class UserTest {
 
     @Test
     void testDemoteFromMaster() {
-        User user = new User(userId, username, email, password, true, UserStatus.ACTIVE);
+        User user = new User(userId, username, email, password, true, UserStatus.ACTIVE, name);
         assertTrue(user.isMaster());
         
         user.demoteFromMaster();
@@ -252,7 +261,7 @@ class UserTest {
 
     @Test
     void testMasterCanAccessAnything() {
-        User master = new User(userId, username, email, password, true, UserStatus.BLOCKED);
+        User master = new User(userId, username, email, password, true, UserStatus.BLOCKED, name);
         ClientSystem system = new ClientSystem();
         
         assertTrue(master.canAccess(system));
@@ -260,8 +269,8 @@ class UserTest {
 
     @Test
     void testNonMasterRequiresActiveStatus() {
-        User blockedUser = new User(userId, username, email, password, false, UserStatus.BLOCKED);
-        User activeUser = new User(userId, username, email, password, false, UserStatus.ACTIVE);
+        User blockedUser = new User(userId, username, email, password, false, UserStatus.BLOCKED, name);
+        User activeUser = new User(userId, username, email, password, false, UserStatus.ACTIVE, name);
         ClientSystem system = new ClientSystem();
         
         assertFalse(blockedUser.canAccess(system));
@@ -272,7 +281,7 @@ class UserTest {
 
     @Test
     void testCanAccessWhenActive() {
-        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE);
+        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE, name);
         ClientSystem system = new ClientSystem();
         
         assertTrue(user.canAccess(system));
@@ -280,7 +289,7 @@ class UserTest {
 
     @Test
     void testCannotAccessWhenBlocked() {
-        User user = new User(userId, username, email, password, false, UserStatus.BLOCKED);
+        User user = new User(userId, username, email, password, false, UserStatus.BLOCKED, name);
         ClientSystem system = new ClientSystem();
         
         assertFalse(user.canAccess(system));
@@ -288,7 +297,7 @@ class UserTest {
 
     @Test
     void testCannotAccessWhenDisabled() {
-        User user = new User(userId, username, email, password, false, UserStatus.DISABLED);
+        User user = new User(userId, username, email, password, false, UserStatus.DISABLED, name);
         ClientSystem system = new ClientSystem();
         
         assertFalse(user.canAccess(system));
@@ -296,9 +305,9 @@ class UserTest {
 
     @Test
     void testMasterCanAlwaysAccess() {
-        User masterBlocked = new User(userId, username, email, password, true, UserStatus.BLOCKED);
-        User masterDisabled = new User(userId, username, email, password, true, UserStatus.DISABLED);
-        User masterActive = new User(userId, username, email, password, true, UserStatus.ACTIVE);
+        User masterBlocked = new User(userId, username, email, password, true, UserStatus.BLOCKED, name);
+        User masterDisabled = new User(userId, username, email, password, true, UserStatus.DISABLED, name);
+        User masterActive = new User(userId, username, email, password, true, UserStatus.ACTIVE, name);
         ClientSystem system = new ClientSystem();
         
         assertTrue(masterBlocked.canAccess(system));
@@ -310,29 +319,29 @@ class UserTest {
 
     @Test
     void testCanLoginWhenActive() {
-        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE);
+        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE, name);
         
         assertTrue(user.canLogin());
     }
 
     @Test
     void testCannotLoginWhenBlocked() {
-        User user = new User(userId, username, email, password, false, UserStatus.BLOCKED);
+        User user = new User(userId, username, email, password, false, UserStatus.BLOCKED, name);
         
         assertFalse(user.canLogin());
     }
 
     @Test
     void testCannotLoginWhenDisabled() {
-        User user = new User(userId, username, email, password, false, UserStatus.DISABLED);
+        User user = new User(userId, username, email, password, false, UserStatus.DISABLED, name);
         
         assertFalse(user.canLogin());
     }
 
     @Test
     void testMasterCanAlwaysLogin() {
-        User masterBlocked = new User(userId, username, email, password, true, UserStatus.BLOCKED);
-        User masterDisabled = new User(userId, username, email, password, true, UserStatus.DISABLED);
+        User masterBlocked = new User(userId, username, email, password, true, UserStatus.BLOCKED, name);
+        User masterDisabled = new User(userId, username, email, password, true, UserStatus.DISABLED, name);
         
         assertTrue(masterBlocked.canLogin());
         assertTrue(masterDisabled.canLogin());
@@ -343,7 +352,7 @@ class UserTest {
     @Test
     void testCompleteUserLifecycle() {
         // Criar usuário ativo
-        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE);
+        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE, name);
         assertTrue(user.canLogin());
         
         // Bloquear por violação
@@ -368,7 +377,7 @@ class UserTest {
 
     @Test
     void testPasswordChangeFlow() {
-        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE);
+        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE, name);
         
         // Verificar senha inicial
         assertTrue(user.verifyPassword("password123"));

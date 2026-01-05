@@ -18,6 +18,7 @@ public class User {
     private Password password;
     private boolean master;
     private UserStatus status;
+    private String name;
 
     /**
      * Cria um novo usuário.
@@ -28,14 +29,16 @@ public class User {
      * @param password senha (hash BCrypt)
      * @param master indica se o usuário é master
      * @param status status do usuário
+     * @param name nome do usuário
      */
-    public User(UserId id, Username username, Email email, Password password, boolean master, UserStatus status) {
+    public User(UserId id, Username username, Email email, Password password, boolean master, UserStatus status, String name) {
         this.id = id;
         this.username = username;
         this.email = email;
         this.password = password;
         this.master = master;
         this.status = status;
+        this.name = name;
     }
 
     // ==================== Getters ====================
@@ -62,6 +65,10 @@ public class User {
 
     public UserStatus getStatus() {
         return status;
+    }
+
+    public String getName() {
+        return name;
     }
 
     // ==================== Gerenciamento de Status ====================
