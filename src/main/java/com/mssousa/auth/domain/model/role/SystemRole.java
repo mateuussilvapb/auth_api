@@ -141,4 +141,15 @@ public class SystemRole {
         validateDescription(newDescription);
         this.description = newDescription;
     }
+
+    // ==================== Verificação ====================
+    /**
+     * Verifica se uma role pertence a um sistema pelo id do sistema
+     * 
+     * @param systemId id do sistema para verificação
+     * @return true se a role pertencer ao sistema, false caso contrário
+     */
+    public boolean belongsTo(SystemId systemId) {
+        return this.system_id.equals(systemId);
+    }
 }

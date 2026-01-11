@@ -26,18 +26,10 @@ public class UserSystem {
      * @param status status do vínculo
      */
     public UserSystem(UserSystemId id, User user, ClientSystem system, BindingStatus status) {
-        if (id == null) {
-            throw new DomainException("ID é obrigatório no vínculo UserSystem");
-        }
-        if (user == null) {
-            throw new DomainException("User é obrigatório no vínculo UserSystem");
-        }
-        if (system == null) {
-            throw new DomainException("System é obrigatório no vínculo UserSystem");
-        }
-        if (status == null) {
-            throw new DomainException("Status do vínculo não pode ser nulo");
-        }
+        validateId(id);
+        validateUser(user);
+        validateSystem(system);
+        validateStatus(status);
 
         this.id = id;
         this.user = user;
@@ -61,6 +53,50 @@ public class UserSystem {
 
     public BindingStatus getStatus() {
         return status;
+    }
+
+    // ==================== Validações ====================
+
+    private void validateId(UserSystemId id) {
+        if (id == null) {
+            throw new DomainException("UserSystemId é obrigatório no vínculo UserSystem");
+        }
+    }
+
+    private void validateUser(User user) {
+        if (user == null) {
+            throw new DomainException("User é obrigatório no vínculo UserSystem");
+        }
+    }
+
+    private void validateSystem(ClientSystem system) {
+        if (system == null) {
+            throw new DomainException("System é obrigatório no vínculo UserSystem");
+        }
+    }
+
+    private void validateStatus(BindingStatus status) {
+        if (status == null) {
+            throw new DomainException("Status do vínculo não pode ser nulo");
+        }
+    }
+
+    /**
+     * Valida se o vínculo está ativo, lançando uma exceção caso contrário.
+     * <p>
+     * Se o vínculo não estiver ativo, lança uma exceção.
+     * </p>
+     */
+    public void validateAccess() {
+        if (!user.isActive()) {
+            throw new DomainException("Usuário não está ativo");
+        }
+        if (!system.isActive()) {
+            throw new DomainException("Sistema não está ativo");
+        }
+        if (!isActive()) {
+            throw new DomainException("Usuário não possui acesso ativo ao sistema");
+        }
     }
 
     // ==================== Gerenciamento de Status ====================
@@ -105,15 +141,16 @@ public class UserSystem {
     }
 
     /**
-     * Valida se o vínculo está ativo, lançando uma exceção caso contrário.
+     * Desbloqueia o vínculo, retornando-o para o status ATIVO.
      * <p>
-     * Se o vínculo não estiver ativo, lança uma exceção.
+     * Se o vínculo não estiver bloqueado, lança uma exceção.
      * </p>
      */
-    public void validateAccess() {
-        if (!isActive()) {
-            throw new DomainException("Usuário não possui acesso ativo ao sistema");
+    public void unblock() {
+        if (this.status != BindingStatus.BLOCKED) {
+            throw new DomainException("Vínculo não está bloqueado");
         }
+        this.status = BindingStatus.ACTIVE;
     }
 
     // ==================== Métodos Auxiliares ====================

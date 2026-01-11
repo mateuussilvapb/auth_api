@@ -171,6 +171,20 @@ class UserSystemTest {
         assertEquals(BindingStatus.BLOCKED, userSystem.getStatus());
     }
 
+    @Test
+    void unblockUserSystem() {
+        UserSystem userSystem = new UserSystem(id, user, system, BindingStatus.BLOCKED);
+        userSystem.unblock();
+        assertEquals(BindingStatus.ACTIVE, userSystem.getStatus());
+    }
+    
+    @Test
+    void unblockNotBlockedUserSystem() {
+        UserSystem userSystem = new UserSystem(id, user, system, BindingStatus.ACTIVE);
+        assertThrows(DomainException.class, userSystem::unblock);
+    }
+        
+
     /**
      * Testa a ativação de um vínculo já ativo.
      */
@@ -224,5 +238,21 @@ class UserSystemTest {
     void validateUserSystemAccessBlocked() {
         UserSystem userSystem = new UserSystem(id, user, system, BindingStatus.BLOCKED);
         assertThrows(DomainException.class, userSystem::validateAccess);
+    }
+    
+    @Test
+    void validateAccessInactiveUser() {
+        user.disable();
+        UserSystem userSystem = new UserSystem(id, user, system, BindingStatus.ACTIVE);
+        DomainException ex = assertThrows(DomainException.class, userSystem::validateAccess);
+        assertEquals("Usuário não está ativo", ex.getMessage());
+    }
+
+    @Test
+    void validateAccessInactiveSystem() {
+        system.deactivate();
+        UserSystem userSystem = new UserSystem(id, user, system, BindingStatus.ACTIVE);
+        DomainException ex = assertThrows(DomainException.class, userSystem::validateAccess);
+        assertEquals("Sistema não está ativo", ex.getMessage());
     }
 }
