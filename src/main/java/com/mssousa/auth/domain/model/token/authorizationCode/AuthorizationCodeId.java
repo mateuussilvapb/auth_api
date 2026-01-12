@@ -1,4 +1,4 @@
-package com.mssousa.auth.domain.model.token;
+package com.mssousa.auth.domain.model.token.authorizationCode;
 
 import com.mssousa.auth.domain.exception.DomainException;
 import com.mssousa.auth.domain.model.shared.DomainId;

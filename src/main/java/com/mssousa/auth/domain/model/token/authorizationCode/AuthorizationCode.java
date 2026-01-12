@@ -1,4 +1,4 @@
-package com.mssousa.auth.domain.model.token;
+package com.mssousa.auth.domain.model.token.authorizationCode;
 
 import java.time.Instant;
 import java.util.Objects;

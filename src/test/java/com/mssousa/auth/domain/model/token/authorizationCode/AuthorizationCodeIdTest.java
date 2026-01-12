@@ -1,4 +1,4 @@
-package com.mssousa.auth.domain.model.token;
+package com.mssousa.auth.domain.model.token.authorizationCode;
 
 import com.mssousa.auth.domain.exception.DomainException;
 
@@ -72,7 +72,7 @@ class AuthorizationCodeIdTest {
     void testAuthorizationCodeIdValue() {
         Long expectedValue = 42L;
         AuthorizationCodeId authorizationCodeId = new AuthorizationCodeId(expectedValue);
-        
+
         assertEquals(expectedValue, authorizationCodeId.value());
     }
 
@@ -89,7 +89,7 @@ class AuthorizationCodeIdTest {
     void testAuthorizationCodeIdImmutability() {
         AuthorizationCodeId authorizationCodeId = new AuthorizationCodeId(100L);
         Long value = authorizationCodeId.value();
-        
+
         // O valor retornado deve ser o mesmo sempre
         assertEquals(value, authorizationCodeId.value());
         assertEquals(100L, authorizationCodeId.value());

@@ -1,4 +1,4 @@
-package com.mssousa.auth.domain.model.token;
+package com.mssousa.auth.domain.model.token.authorizationCode;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -13,6 +13,8 @@ import com.mssousa.auth.domain.exception.DomainException;
 import com.mssousa.auth.domain.model.system.ClientSystem;
 import com.mssousa.auth.domain.model.system.SystemId;
 import com.mssousa.auth.domain.model.system.SystemStatus;
+import com.mssousa.auth.domain.model.token.authorizationCode.AuthorizationCode;
+import com.mssousa.auth.domain.model.token.authorizationCode.AuthorizationCodeId;
 import com.mssousa.auth.domain.model.user.Email;
 import com.mssousa.auth.domain.model.user.Password;
 import com.mssousa.auth.domain.model.user.User;
