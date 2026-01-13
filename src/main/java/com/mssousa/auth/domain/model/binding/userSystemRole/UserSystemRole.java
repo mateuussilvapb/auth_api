@@ -2,8 +2,8 @@ package com.mssousa.auth.domain.model.binding.userSystemRole;
 
 import com.mssousa.auth.domain.exception.DomainException;
 import com.mssousa.auth.domain.model.binding.BindingStatus;
-import com.mssousa.auth.domain.model.binding.userSystem.UserSystem;
-import com.mssousa.auth.domain.model.role.SystemRole;
+import com.mssousa.auth.domain.model.binding.userSystem.UserSystemId;
+import com.mssousa.auth.domain.model.role.SystemRoleId;
 
 /**
  * Entidade de domínio representando um vínculo usuário-perfil no Auth Server.
@@ -15,8 +15,8 @@ import com.mssousa.auth.domain.model.role.SystemRole;
 public class UserSystemRole {
 
     private final UserSystemRoleId id;
-    private final UserSystem userSystem;
-    private final SystemRole role;
+    private final UserSystemId userSystemId;
+    private final SystemRoleId systemRoleId;
 
     private BindingStatus status;
 
@@ -30,18 +30,18 @@ public class UserSystemRole {
      */
     public UserSystemRole(
             UserSystemRoleId id,
-            UserSystem userSystem,
-            SystemRole role,
+            UserSystemId userSystemId,
+            SystemRoleId systemRoleId,
             BindingStatus status
     ) {
         validateId(id);
-        validateUserSystem(userSystem);
-        validateRole(role);
+        validateUserSystemId(userSystemId);
+        validateRoleId(systemRoleId);
         validateStatus(status);
 
         this.id = id;
-        this.userSystem = userSystem;
-        this.role = role;
+        this.userSystemId = userSystemId;
+        this.systemRoleId = systemRoleId;
         this.status = status;
     }
 
@@ -51,12 +51,12 @@ public class UserSystemRole {
         return id;
     }
 
-    public UserSystem getUserSystem() {
-        return userSystem;
+    public UserSystemId getUserSystemId() {
+        return userSystemId;
     }
 
-    public SystemRole getRole() {
-        return role;
+    public SystemRoleId getSystemRoleId() {
+        return systemRoleId;
     }
 
     public BindingStatus getStatus() {
@@ -71,15 +71,15 @@ public class UserSystemRole {
         }
     }
 
-    private void validateUserSystem(UserSystem userSystem) {
-        if (userSystem == null) {
-            throw new DomainException("UserSystem é obrigatório no vínculo UserSystemRole");
+    private void validateUserSystemId(UserSystemId userSystemId) {
+        if (userSystemId == null) {
+            throw new DomainException("UserSystemId é obrigatório no vínculo UserSystemRole");
         }
     }
 
-    private void validateRole(SystemRole role) {
-        if (role == null) {
-            throw new DomainException("SystemRole é obrigatório no vínculo UserSystemRole");
+    private void validateRoleId(SystemRoleId systemRoleId) {
+        if (systemRoleId == null) {
+            throw new DomainException("SystemRoleId é obrigatório no vínculo UserSystemRole");
         }
     }
 
@@ -93,19 +93,9 @@ public class UserSystemRole {
     /**
      * Valida se o vínculo está ativo
      * 
-     * Um role só concede acesso se:
-     * - o vínculo UserSystem estiver ativo
-     * - o próprio role estiver ativo
-     * 
      * @throws DomainException se o vínculo não estiver ativo
      */
     public void validateAccess() {
-        userSystem.validateAccess();
-        
-        // Adicionar esta verificação que está faltando
-        if (!role.isActive()) {
-            throw new DomainException("O Perfil (Role) está inativo e não pode conceder acesso");
-        }
         if (!isActive()) {
             throw new DomainException("Perfil não está ativo para este usuário no sistema");
         }

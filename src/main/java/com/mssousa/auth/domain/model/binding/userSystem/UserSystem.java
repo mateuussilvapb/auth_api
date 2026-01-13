@@ -2,8 +2,8 @@ package com.mssousa.auth.domain.model.binding.userSystem;
 
 import com.mssousa.auth.domain.exception.DomainException;
 import com.mssousa.auth.domain.model.binding.BindingStatus;
-import com.mssousa.auth.domain.model.system.ClientSystem;
-import com.mssousa.auth.domain.model.user.User;
+import com.mssousa.auth.domain.model.system.SystemId;
+import com.mssousa.auth.domain.model.user.UserId;
 
 /**
  * Entidade de domínio representando um vínculo usuário-sistema.
@@ -13,8 +13,8 @@ import com.mssousa.auth.domain.model.user.User;
  */
 public class UserSystem {
     private final UserSystemId id;
-    private final User user;
-    private final ClientSystem system;
+    private final UserId userId;
+    private final SystemId systemId;
     private BindingStatus status;
 
     /**
@@ -25,15 +25,15 @@ public class UserSystem {
      * @param system sistema associado ao vínculo
      * @param status status do vínculo
      */
-    public UserSystem(UserSystemId id, User user, ClientSystem system, BindingStatus status) {
+    public UserSystem(UserSystemId id, UserId userId, SystemId systemId, BindingStatus status) {
         validateId(id);
-        validateUser(user);
-        validateSystem(system);
         validateStatus(status);
+        validateUserId(userId);
+        validateSystemId(systemId);
 
         this.id = id;
-        this.user = user;
-        this.system = system;
+        this.userId = userId;
+        this.systemId = systemId;
         this.status = status;
     }
 
@@ -43,12 +43,12 @@ public class UserSystem {
         return id;
     }
 
-    public User getUser() {
-        return user;
+    public UserId getUserId() {
+        return userId;
     }
 
-    public ClientSystem getSystem() {
-        return system;
+    public SystemId getSystemId() {
+        return systemId;
     }
 
     public BindingStatus getStatus() {
@@ -63,15 +63,15 @@ public class UserSystem {
         }
     }
 
-    private void validateUser(User user) {
-        if (user == null) {
-            throw new DomainException("User é obrigatório no vínculo UserSystem");
+    private void validateUserId(UserId userId) {
+        if (userId == null) {
+            throw new DomainException("UserId é obrigatório no vínculo UserSystem");
         }
     }
 
-    private void validateSystem(ClientSystem system) {
-        if (system == null) {
-            throw new DomainException("System é obrigatório no vínculo UserSystem");
+    private void validateSystemId(SystemId systemId) {
+        if (systemId == null) {
+            throw new DomainException("SystemId é obrigatório no vínculo UserSystem");
         }
     }
 
@@ -88,12 +88,6 @@ public class UserSystem {
      * </p>
      */
     public void validateAccess() {
-        if (!user.isActive()) {
-            throw new DomainException("Usuário não está ativo");
-        }
-        if (!system.isActive()) {
-            throw new DomainException("Sistema não está ativo");
-        }
         if (!isActive()) {
             throw new DomainException("Usuário não possui acesso ativo ao sistema");
         }

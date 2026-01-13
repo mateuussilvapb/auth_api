@@ -1,21 +1,16 @@
 package com.mssousa.auth.domain.model.binding.userSystem;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.mssousa.auth.domain.exception.DomainException;
 import com.mssousa.auth.domain.model.binding.BindingStatus;
-import com.mssousa.auth.domain.model.system.ClientSystem;
 import com.mssousa.auth.domain.model.system.SystemId;
-import com.mssousa.auth.domain.model.system.SystemStatus;
-import com.mssousa.auth.domain.model.user.Email;
-import com.mssousa.auth.domain.model.user.Password;
-import com.mssousa.auth.domain.model.user.User;
 import com.mssousa.auth.domain.model.user.UserId;
-import com.mssousa.auth.domain.model.user.UserStatus;
-import com.mssousa.auth.domain.model.user.Username;
 
 /**
  * Testes unitários da entidade de domínio {@link UserSystem}.
@@ -28,27 +23,14 @@ import com.mssousa.auth.domain.model.user.Username;
  */
 class UserSystemTest {
     private UserSystemId id;
-    private User user;
-    private ClientSystem system;
+    private UserId userId;
+    private SystemId systemId;
 
     @BeforeEach
     void setUp() {
         id = new UserSystemId(1L);
-        user = new User(
-                new UserId(1L),
-                new Username("testuser"),
-                new Email("test@example.com"),
-                Password.fromPlainText("password123"),
-                false,
-                UserStatus.ACTIVE,
-                "Test User");
-        system = new ClientSystem(
-                new SystemId(1L),
-                "Test System",
-                "test@example.com",
-                "password123",
-                "http://localhost:8080",
-                SystemStatus.ACTIVE);
+        userId = new UserId(1L);
+        systemId = new SystemId(1L);
     }
 
     // ==================== Criação e Getters ====================
@@ -58,12 +40,12 @@ class UserSystemTest {
      */
     @Test
     void createUserSystem() {
-        UserSystem userSystem = new UserSystem(id, user, system, BindingStatus.ACTIVE);
+        UserSystem userSystem = new UserSystem(id, userId, systemId, BindingStatus.ACTIVE);
 
         assertNotNull(userSystem);
         assertEquals(id, userSystem.getId());
-        assertEquals(user, userSystem.getUser());
-        assertEquals(system, userSystem.getSystem());
+        assertEquals(userId, userSystem.getUserId());
+        assertEquals(systemId, userSystem.getSystemId());
         assertEquals(BindingStatus.ACTIVE, userSystem.getStatus());
     }
 
@@ -73,7 +55,7 @@ class UserSystemTest {
     @Test
     void createUserSystemWithNullUser() {
         assertThrows(DomainException.class,
-                () -> new UserSystem(id, null, system, BindingStatus.ACTIVE));
+                () -> new UserSystem(id, null, systemId, BindingStatus.ACTIVE));
     }
 
     /**
@@ -82,7 +64,7 @@ class UserSystemTest {
     @Test
     void createUserSystemWithNullSystem() {
         assertThrows(DomainException.class,
-                () -> new UserSystem(id, user, null, BindingStatus.ACTIVE));
+                () -> new UserSystem(id, userId, null, BindingStatus.ACTIVE));
     }
 
     /**
@@ -91,7 +73,7 @@ class UserSystemTest {
     @Test
     void createUserSystemWithNullStatus() {
         assertThrows(DomainException.class,
-                () -> new UserSystem(id, user, system, null));
+                () -> new UserSystem(id, userId, systemId, null));
     }
 
     /**
@@ -100,7 +82,7 @@ class UserSystemTest {
     @Test
     void createUserSystemWithNullId() {
         assertThrows(DomainException.class,
-                () -> new UserSystem(null, user, system, BindingStatus.ACTIVE));
+                () -> new UserSystem(null, userId, systemId, BindingStatus.ACTIVE));
     }
 
     /**
@@ -108,7 +90,7 @@ class UserSystemTest {
      */
     @Test
     void getUserSystemId() {
-        UserSystem userSystem = new UserSystem(id, user, system, BindingStatus.ACTIVE);
+        UserSystem userSystem = new UserSystem(id, userId, systemId, BindingStatus.ACTIVE);
         assertEquals(id, userSystem.getId());
     }
 
@@ -117,8 +99,8 @@ class UserSystemTest {
      */
     @Test
     void getUserSystemUser() {
-        UserSystem userSystem = new UserSystem(id, user, system, BindingStatus.ACTIVE);
-        assertEquals(user, userSystem.getUser());
+        UserSystem userSystem = new UserSystem(id, userId, systemId, BindingStatus.ACTIVE);
+        assertEquals(userId, userSystem.getUserId());
     }
 
     /**
@@ -126,8 +108,8 @@ class UserSystemTest {
      */
     @Test
     void getUserSystemSystem() {
-        UserSystem userSystem = new UserSystem(id, user, system, BindingStatus.ACTIVE);
-        assertEquals(system, userSystem.getSystem());
+        UserSystem userSystem = new UserSystem(id, userId, systemId, BindingStatus.ACTIVE);
+        assertEquals(systemId, userSystem.getSystemId());
     }
 
     /**
@@ -135,7 +117,7 @@ class UserSystemTest {
      */
     @Test
     void getUserSystemStatus() {
-        UserSystem userSystem = new UserSystem(id, user, system, BindingStatus.ACTIVE);
+        UserSystem userSystem = new UserSystem(id, userId, systemId, BindingStatus.ACTIVE);
         assertEquals(BindingStatus.ACTIVE, userSystem.getStatus());
     }
 
@@ -146,7 +128,7 @@ class UserSystemTest {
      */
     @Test
     void activateUserSystem() {
-        UserSystem userSystem = new UserSystem(id, user, system, BindingStatus.INACTIVE);
+        UserSystem userSystem = new UserSystem(id, userId, systemId, BindingStatus.INACTIVE);
         userSystem.activate();
         assertEquals(BindingStatus.ACTIVE, userSystem.getStatus());
     }
@@ -156,7 +138,7 @@ class UserSystemTest {
      */
     @Test
     void deactivateUserSystem() {
-        UserSystem userSystem = new UserSystem(id, user, system, BindingStatus.ACTIVE);
+        UserSystem userSystem = new UserSystem(id, userId, systemId, BindingStatus.ACTIVE);
         userSystem.deactivate();
         assertEquals(BindingStatus.INACTIVE, userSystem.getStatus());
     }
@@ -166,21 +148,21 @@ class UserSystemTest {
      */
     @Test
     void blockUserSystem() {
-        UserSystem userSystem = new UserSystem(id, user, system, BindingStatus.ACTIVE);
+        UserSystem userSystem = new UserSystem(id, userId, systemId, BindingStatus.ACTIVE);
         userSystem.block();
         assertEquals(BindingStatus.BLOCKED, userSystem.getStatus());
     }
 
     @Test
     void unblockUserSystem() {
-        UserSystem userSystem = new UserSystem(id, user, system, BindingStatus.BLOCKED);
+        UserSystem userSystem = new UserSystem(id, userId, systemId, BindingStatus.BLOCKED);
         userSystem.unblock();
         assertEquals(BindingStatus.ACTIVE, userSystem.getStatus());
     }
     
     @Test
     void unblockNotBlockedUserSystem() {
-        UserSystem userSystem = new UserSystem(id, user, system, BindingStatus.ACTIVE);
+        UserSystem userSystem = new UserSystem(id, userId, systemId, BindingStatus.ACTIVE);
         assertThrows(DomainException.class, userSystem::unblock);
     }
         
@@ -190,7 +172,7 @@ class UserSystemTest {
      */
     @Test
     void activateAlreadyActiveUserSystem() {
-        UserSystem userSystem = new UserSystem(id, user, system, BindingStatus.ACTIVE);
+        UserSystem userSystem = new UserSystem(id, userId, systemId, BindingStatus.ACTIVE);
         assertThrows(DomainException.class, userSystem::activate);
     }
 
@@ -199,7 +181,7 @@ class UserSystemTest {
      */
     @Test
     void deactivateAlreadyInactiveUserSystem() {
-        UserSystem userSystem = new UserSystem(id, user, system, BindingStatus.INACTIVE);
+        UserSystem userSystem = new UserSystem(id, userId, systemId, BindingStatus.INACTIVE);
         assertThrows(DomainException.class, userSystem::deactivate);
     }
 
@@ -208,7 +190,7 @@ class UserSystemTest {
      */
     @Test
     void blockAlreadyBlockedUserSystem() {
-        UserSystem userSystem = new UserSystem(id, user, system, BindingStatus.BLOCKED);
+        UserSystem userSystem = new UserSystem(id, userId, systemId, BindingStatus.BLOCKED);
         assertThrows(DomainException.class, userSystem::block);
     }
 
@@ -218,7 +200,7 @@ class UserSystemTest {
      */
     @Test
     void validateUserSystemAccess() {
-        UserSystem userSystem = new UserSystem(id, user, system, BindingStatus.ACTIVE);
+        UserSystem userSystem = new UserSystem(id, userId, systemId, BindingStatus.ACTIVE);
         userSystem.validateAccess();
     }
 
@@ -227,7 +209,7 @@ class UserSystemTest {
      */
     @Test
     void validateUserSystemAccessInactive() {
-        UserSystem userSystem = new UserSystem(id, user, system, BindingStatus.INACTIVE);
+        UserSystem userSystem = new UserSystem(id, userId, systemId, BindingStatus.INACTIVE);
         assertThrows(DomainException.class, userSystem::validateAccess);
     }
 
@@ -236,23 +218,7 @@ class UserSystemTest {
      */
     @Test
     void validateUserSystemAccessBlocked() {
-        UserSystem userSystem = new UserSystem(id, user, system, BindingStatus.BLOCKED);
+        UserSystem userSystem = new UserSystem(id, userId, systemId, BindingStatus.BLOCKED);
         assertThrows(DomainException.class, userSystem::validateAccess);
-    }
-    
-    @Test
-    void validateAccessInactiveUser() {
-        user.disable();
-        UserSystem userSystem = new UserSystem(id, user, system, BindingStatus.ACTIVE);
-        DomainException ex = assertThrows(DomainException.class, userSystem::validateAccess);
-        assertEquals("Usuário não está ativo", ex.getMessage());
-    }
-
-    @Test
-    void validateAccessInactiveSystem() {
-        system.deactivate();
-        UserSystem userSystem = new UserSystem(id, user, system, BindingStatus.ACTIVE);
-        DomainException ex = assertThrows(DomainException.class, userSystem::validateAccess);
-        assertEquals("Sistema não está ativo", ex.getMessage());
     }
 }

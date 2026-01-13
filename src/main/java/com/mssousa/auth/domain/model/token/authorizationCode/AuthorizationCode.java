@@ -5,14 +5,21 @@ import java.util.Objects;
 import java.util.UUID;
 
 import com.mssousa.auth.domain.exception.DomainException;
-import com.mssousa.auth.domain.model.system.ClientSystem;
+import com.mssousa.auth.domain.model.system.SystemId;
 import com.mssousa.auth.domain.model.user.User;
 
+/**
+ * Entidade de domínio representando um Código de autorização para solicitação de token.
+ * <p>
+ * Um AuthorizationCode é um token temporário que é gerado quando um usuário solicita
+ * a autorização de um sistema cliente para acessar os recursos de um usuário.
+ * </p>
+ */
 public class AuthorizationCode {
     private final AuthorizationCodeId id;
     private final String code;
     private final User user;
-    private final ClientSystem system;
+    private final SystemId systemId;
 
     private final Instant expiresAt;
     private Boolean used;
@@ -26,14 +33,14 @@ public class AuthorizationCode {
             AuthorizationCodeId id,
             String code,
             User user,
-            ClientSystem system,
+            SystemId systemId,
             Instant expiresAt,
             Boolean used
     ) {
         this.id = id;
         this.code = code;
         this.user = user;
-        this.system = system;
+        this.systemId = systemId;
         this.expiresAt = expiresAt;
         this.used = used;
         
@@ -47,7 +54,7 @@ public class AuthorizationCode {
     public static AuthorizationCode create(
             AuthorizationCodeId id,
             User user,
-            ClientSystem system,
+            SystemId systemId,
             Instant expiresAt
     ) {
         if (expiresAt == null || expiresAt.isBefore(Instant.now())) {
@@ -58,7 +65,7 @@ public class AuthorizationCode {
             id,
             UUID.randomUUID().toString(),
             user,
-            system,
+            systemId,
             expiresAt,
             false
         );
@@ -76,8 +83,8 @@ public class AuthorizationCode {
         if (user == null) {
             throw new DomainException("Usuário é obrigatório para AuthorizationCode");
         }
-        if (system == null) {
-            throw new DomainException("Sistema é obrigatório para AuthorizationCode");
+        if (systemId == null) {
+            throw new DomainException("O ID do sistema é obrigatório para AuthorizationCode");
         }
         if (code == null || code.trim().isEmpty()) {
              throw new DomainException("Code é obrigatório");
@@ -118,8 +125,8 @@ public class AuthorizationCode {
         return used == true;
     }
 
-    public boolean belongsTo(ClientSystem system) {
-        return Objects.equals(this.system, system);
+    public boolean belongsTo(SystemId systemId) {
+        return Objects.equals(this.systemId, systemId);
     }
 
     // ==================== Getters ====================
@@ -135,8 +142,8 @@ public class AuthorizationCode {
         return user;
     }
 
-    public ClientSystem getSystem() {
-        return system;
+    public SystemId getSystemId() {
+        return systemId;
     }
 
     public Instant getExpiresAt() {

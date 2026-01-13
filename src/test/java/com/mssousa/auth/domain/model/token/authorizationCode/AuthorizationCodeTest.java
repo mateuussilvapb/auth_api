@@ -1,6 +1,11 @@
 package com.mssousa.auth.domain.model.token.authorizationCode;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -10,11 +15,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.mssousa.auth.domain.exception.DomainException;
-import com.mssousa.auth.domain.model.system.ClientSystem;
 import com.mssousa.auth.domain.model.system.SystemId;
-import com.mssousa.auth.domain.model.system.SystemStatus;
-import com.mssousa.auth.domain.model.token.authorizationCode.AuthorizationCode;
-import com.mssousa.auth.domain.model.token.authorizationCode.AuthorizationCodeId;
 import com.mssousa.auth.domain.model.user.Email;
 import com.mssousa.auth.domain.model.user.Password;
 import com.mssousa.auth.domain.model.user.User;
@@ -26,7 +27,7 @@ class AuthorizationCodeTest {
 
     private AuthorizationCodeId id;
     private User user;
-    private ClientSystem system;
+    private SystemId systemId;
     private Instant futureExpiration;
 
     @BeforeEach
@@ -45,27 +46,21 @@ class AuthorizationCodeTest {
                 "Test User");
 
         // Setup ClientSystem
-        system = new ClientSystem(
-                new SystemId(1L),
-                "Test System",
-                "test@example.com",
-                "password123",
-                "http://localhost:8080",
-                SystemStatus.ACTIVE);
+        systemId = new SystemId(1L);
     }
 
     // ==================== Criação e Factory ====================
 
     @Test
     void createNewAuthorizationCode() {
-        AuthorizationCode authCode = AuthorizationCode.create(id, user, system, futureExpiration);
+        AuthorizationCode authCode = AuthorizationCode.create(id, user, systemId, futureExpiration);
 
         assertNotNull(authCode);
         assertNotNull(authCode.getCode());
         assertFalse(authCode.getCode().isEmpty());
         assertEquals(id, authCode.getId());
         assertEquals(user, authCode.getUser());
-        assertEquals(system, authCode.getSystem());
+        assertEquals(systemId, authCode.getSystemId());
         assertEquals(futureExpiration, authCode.getExpiresAt());
         assertFalse(authCode.getUsed());
         assertFalse(authCode.isUsed());
@@ -75,7 +70,7 @@ class AuthorizationCodeTest {
     @Test
     void reconstituteAuthorizationCode() {
         String code = UUID.randomUUID().toString();
-        AuthorizationCode authCode = new AuthorizationCode(id, code, user, system, futureExpiration, true);
+        AuthorizationCode authCode = new AuthorizationCode(id, code, user, systemId, futureExpiration, true);
 
         assertNotNull(authCode);
         assertEquals(code, authCode.getCode());
@@ -87,7 +82,7 @@ class AuthorizationCodeTest {
         Instant pastExpiration = Instant.now().minus(1, ChronoUnit.MINUTES);
         
         DomainException ex = assertThrows(DomainException.class,
-                () -> AuthorizationCode.create(id, user, system, pastExpiration));
+                () -> AuthorizationCode.create(id, user, systemId, pastExpiration));
         
         assertEquals("Data de expiração inválida para novos AuthorizationCode", ex.getMessage());
     }
@@ -95,7 +90,7 @@ class AuthorizationCodeTest {
     @Test
     void createWithNullExpiration() {
         DomainException ex = assertThrows(DomainException.class,
-                () -> AuthorizationCode.create(id, user, system, null));
+                () -> AuthorizationCode.create(id, user, systemId, null));
         
         assertEquals("Data de expiração inválida para novos AuthorizationCode", ex.getMessage());
     }
@@ -105,13 +100,13 @@ class AuthorizationCodeTest {
     @Test
     void createWithNullId() {
         assertThrows(DomainException.class,
-                () -> new AuthorizationCode(null, "code", user, system, futureExpiration, false));
+                () -> new AuthorizationCode(null, "code", user, systemId, futureExpiration, false));
     }
 
     @Test
     void createWithNullUser() {
         assertThrows(DomainException.class,
-                () -> new AuthorizationCode(id, "code", null, system, futureExpiration, false));
+                () -> new AuthorizationCode(id, "code", null, systemId, futureExpiration, false));
     }
 
     @Test
@@ -123,26 +118,26 @@ class AuthorizationCodeTest {
     @Test
     void createWithNullCode() {
         assertThrows(DomainException.class,
-                () -> new AuthorizationCode(id, null, user, system, futureExpiration, false));
+                () -> new AuthorizationCode(id, null, user, systemId, futureExpiration, false));
     }
 
     @Test
     void createWithEmptyCode() {
         assertThrows(DomainException.class,
-                () -> new AuthorizationCode(id, "   ", user, system, futureExpiration, false));
+                () -> new AuthorizationCode(id, "   ", user, systemId, futureExpiration, false));
     }
 
     @Test
     void createWithNullExpiresAt() {
         assertThrows(DomainException.class,
-                () -> new AuthorizationCode(id, "code", user, system, null, false));
+                () -> new AuthorizationCode(id, "code", user, systemId, null, false));
     }
 
     // ==================== Regras de Negócio e Validações ====================
 
     @Test
     void validateUsableSuccess() {
-        AuthorizationCode authCode = AuthorizationCode.create(id, user, system, futureExpiration);
+        AuthorizationCode authCode = AuthorizationCode.create(id, user, systemId, futureExpiration);
         assertDoesNotThrow(authCode::validateUsable);
     }
 
@@ -150,7 +145,7 @@ class AuthorizationCodeTest {
     void validateUsableExpired() {
         Instant pastExpiration = Instant.now().minus(1, ChronoUnit.MINUTES);
         // Usando o construtor para forçar um objeto expirado (pois o factory não permite)
-        AuthorizationCode authCode = new AuthorizationCode(id, "code", user, system, pastExpiration, false);
+        AuthorizationCode authCode = new AuthorizationCode(id, "code", user, systemId, pastExpiration, false);
         
         DomainException ex = assertThrows(DomainException.class, authCode::validateUsable);
         assertEquals("AuthorizationCode expirado", ex.getMessage());
@@ -159,7 +154,7 @@ class AuthorizationCodeTest {
 
     @Test
     void validateUsableAlreadyUsed() {
-        AuthorizationCode authCode = new AuthorizationCode(id, "code", user, system, futureExpiration, true);
+        AuthorizationCode authCode = new AuthorizationCode(id, "code", user, systemId, futureExpiration, true);
         
         DomainException ex = assertThrows(DomainException.class, authCode::validateUsable);
         assertEquals("AuthorizationCode já foi utilizado", ex.getMessage());
@@ -168,7 +163,7 @@ class AuthorizationCodeTest {
 
     @Test
     void markAsUsedSuccess() {
-        AuthorizationCode authCode = AuthorizationCode.create(id, user, system, futureExpiration);
+        AuthorizationCode authCode = AuthorizationCode.create(id, user, systemId, futureExpiration);
         
         assertFalse(authCode.isUsed());
         authCode.markAsUsed();
@@ -178,28 +173,22 @@ class AuthorizationCodeTest {
     @Test
     void markAsUsedExampleFail() {
         // Se tentar marcar como usado algo que já foi usado ou expirou, deve falhar no validateUsable interno
-        AuthorizationCode authCode = new AuthorizationCode(id, "code", user, system, futureExpiration, true);
+        AuthorizationCode authCode = new AuthorizationCode(id, "code", user, systemId, futureExpiration, true);
         
         assertThrows(DomainException.class, authCode::markAsUsed);
     }
 
     @Test
     void belongsToSameSystem() {
-        AuthorizationCode authCode = AuthorizationCode.create(id, user, system, futureExpiration);
-        assertTrue(authCode.belongsTo(system));
+        AuthorizationCode authCode = AuthorizationCode.create(id, user, systemId, futureExpiration);
+        assertTrue(authCode.belongsTo(systemId));
     }
 
     @Test
     void belongsToDifferentSystem() {
-        ClientSystem otherSystem = new ClientSystem(
-                new SystemId(2L),
-                "Other System",
-                "other@example.com",
-                "password123",
-                "http://localhost:9090",
-                SystemStatus.ACTIVE);
+        SystemId otherSystemId = new SystemId(2L);
 
-        AuthorizationCode authCode = AuthorizationCode.create(id, user, system, futureExpiration);
-        assertFalse(authCode.belongsTo(otherSystem));
+        AuthorizationCode authCode = AuthorizationCode.create(id, user, systemId, futureExpiration);
+        assertFalse(authCode.belongsTo(otherSystemId));
     }
 }
