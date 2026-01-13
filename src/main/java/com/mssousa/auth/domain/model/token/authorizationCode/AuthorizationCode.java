@@ -122,7 +122,7 @@ public class AuthorizationCode {
     }
 
     public boolean isUsed() {
-        return used == true;
+        return Boolean.TRUE.equals(used);
     }
 
     public boolean belongsTo(SystemId systemId) {
