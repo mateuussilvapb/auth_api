@@ -1,7 +1,6 @@
 package com.mssousa.auth.domain.model.token.passwordResetToken;
 
 import java.time.Instant;
-import java.util.Objects;
 import java.util.UUID;
 
 import com.mssousa.auth.domain.exception.DomainException;
