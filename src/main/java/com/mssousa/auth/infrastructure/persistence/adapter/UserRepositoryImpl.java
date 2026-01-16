@@ -1,4 +1,4 @@
-package com.mssousa.auth.infrastructure.persistence.jpa.adapter;
+package com.mssousa.auth.infrastructure.persistence.adapter;
 
 import com.mssousa.auth.domain.model.user.Email;
 import com.mssousa.auth.domain.model.user.User;
