@@ -1,4 +1,4 @@
-package com.mssousa.auth.infrastructure.persistence.repository.adapter;
+package com.mssousa.auth.infrastructure.persistence.adapter;
 
 import com.mssousa.auth.domain.model.token.passwordResetToken.PasswordResetToken;
 import com.mssousa.auth.domain.model.token.passwordResetToken.PasswordResetTokenId;
@@ -6,9 +6,10 @@ import com.mssousa.auth.domain.model.token.passwordResetToken.ResetTokenValue;
 import com.mssousa.auth.domain.repository.PasswordResetTokenRepository;
 import com.mssousa.auth.infrastructure.persistence.entity.PasswordResetTokenEntity;
 import com.mssousa.auth.infrastructure.persistence.entity.UserEntity;
+import com.mssousa.auth.infrastructure.persistence.jpa.PasswordResetTokenJpaRepository;
+import com.mssousa.auth.infrastructure.persistence.jpa.UserJpaRepository;
 import com.mssousa.auth.infrastructure.persistence.mapper.AuthMapper;
-import com.mssousa.auth.infrastructure.persistence.repository.PasswordResetTokenJpaRepository;
-import com.mssousa.auth.infrastructure.persistence.repository.UserJpaRepository;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

@@ -1,4 +1,4 @@
-package com.mssousa.auth.infrastructure.persistence.repository.adapter;
+package com.mssousa.auth.infrastructure.persistence.adapter;
 
 import com.mssousa.auth.domain.model.token.authorizationCode.AuthorizationCode;
 import com.mssousa.auth.domain.model.token.authorizationCode.AuthorizationCodeId;
@@ -6,10 +6,11 @@ import com.mssousa.auth.domain.repository.AuthorizationCodeRepository;
 import com.mssousa.auth.infrastructure.persistence.entity.AuthorizationCodeEntity;
 import com.mssousa.auth.infrastructure.persistence.entity.ClientSystemEntity;
 import com.mssousa.auth.infrastructure.persistence.entity.UserEntity;
+import com.mssousa.auth.infrastructure.persistence.jpa.AuthorizationCodeJpaRepository;
+import com.mssousa.auth.infrastructure.persistence.jpa.ClientSystemJpaRepository;
+import com.mssousa.auth.infrastructure.persistence.jpa.UserJpaRepository;
 import com.mssousa.auth.infrastructure.persistence.mapper.AuthMapper;
-import com.mssousa.auth.infrastructure.persistence.repository.AuthorizationCodeJpaRepository;
-import com.mssousa.auth.infrastructure.persistence.repository.ClientSystemJpaRepository;
-import com.mssousa.auth.infrastructure.persistence.repository.UserJpaRepository;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

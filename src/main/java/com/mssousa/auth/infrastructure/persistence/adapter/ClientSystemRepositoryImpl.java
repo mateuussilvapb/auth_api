@@ -1,11 +1,12 @@
-package com.mssousa.auth.infrastructure.persistence.repository.adapter;
+package com.mssousa.auth.infrastructure.persistence.adapter;
 
 import com.mssousa.auth.domain.model.system.ClientSystem;
 import com.mssousa.auth.domain.model.system.SystemId;
 import com.mssousa.auth.domain.repository.ClientSystemRepository;
 import com.mssousa.auth.infrastructure.persistence.entity.ClientSystemEntity;
+import com.mssousa.auth.infrastructure.persistence.jpa.ClientSystemJpaRepository;
 import com.mssousa.auth.infrastructure.persistence.mapper.AuthMapper;
-import com.mssousa.auth.infrastructure.persistence.repository.ClientSystemJpaRepository;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

@@ -1,4 +1,4 @@
-package com.mssousa.auth.infrastructure.persistence.repository;
+package com.mssousa.auth.infrastructure.persistence.jpa;
 
 import com.mssousa.auth.infrastructure.persistence.entity.PasswordResetTokenEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
