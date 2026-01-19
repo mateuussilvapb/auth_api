@@ -1,35 +1,57 @@
-spring:
+# ==========================================
+# BASE CONFIGURATION (COMMON TO ALL PROFILES)
+# ==========================================
 
+spring:
+  application:
+    name: auth_server
+  
+  profiles:
+    active: dev  # Profile default
+
+  # JPA - Configurações comuns
   jpa:
-    show-sql: true
+    open-in-view: false
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: validate
     properties:
       hibernate:
         format_sql: true
-        ddl-auto: validate
+  
+  # Flyway - Configurações comuns
   flyway:
     enabled: true
+    baseline-on-migrate: true
+  
+  # Hikari Pool - Configurações comuns
+  datasource:
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 30000
 
-  profiles:
-    active: dev
-
-  application:
-    name: auth_server
-
-logging:
-  level:
-    org:
-      hibernate:
-        SQL: DEBUG
-        type:
-          descriptor:
-            sql:
-              BasicBinder: TRACE
-
+# Server - Configurações comuns
 server:
   port: 8080
 
+# Actuator - Configurações comuns
 management:
   endpoints:
     web:
       exposure:
-        include: caches
+        include: health,info,metrics,prometheus
+
+# JWT - Configurações base (usa env vars)
+auth:
+  jwt:
+    secret-key: ${JWT_SECRET:CHANGE-ME-IN-PRODUCTION}
+    issuer: ${JWT_ISSUER:https://auth.mssousa.com}
+    expiration-ms: 3600000  # 1 hora
+    token-version: 1
+
+# Logging - Configurações base
+logging:
+  level:
+    root: INFO
+    com.mssousa.auth: INFO

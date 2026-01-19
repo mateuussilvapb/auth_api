@@ -1,36 +1,55 @@
+# =============================================
+# DEVELOPMENT OVERRIDES (Sobrescreve application.yml)
+# =============================================
+
+# CORS - Específico de dev
 cors:
   allowed-origins: http://localhost:4200
 
 spring:
+  # Database - Conexão local
   datasource:
     url: jdbc:postgresql://localhost:5432/app_auth_server
-    driver-class-name: org.postgresql.Driver
     username: postgres
     password: 123456
-
+  
+  # JPA - Overrides para dev
   jpa:
-    show-sql: true
-    hibernate:
-      ddl-auto: update
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true  # Mostra SQL em dev
     properties:
       hibernate:
-        format_sql: true
+        use_sql_comments: true  # SQL comentado
+  
+  # Flyway - Validação extra em dev
+  flyway:
+    validate-on-migrate: true
 
-  # security:
-  #   oauth2:
-  #     resourceserver:
-  #       jwt:
-  #         issuer-uri: http://localhost:8080/realms/${realm}
-  #         jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
+# JWT - Chave fixa para dev (facilita testes)
+auth:
+  jwt:
+    secret-key: dev-secret-key-only-for-local-development-minimum-32-characters-required
+    issuer: http://localhost:8080
+    expiration-ms: 7200000  # 2 horas em dev
 
-  #         client:
-  #           registration:
-  #             keycloak:
-  #               client-id: ${client_id_keycloak}
-  #               authorization-grant-type: authorization_code
-  #               scope: openid
-  #           provider:
-  #             keycloak:
-  #               issuer-uri: http://keycloak:8080/realms/manager
-  #               user-name-attribute: preferred_username
+# Logging - Debug em dev
+logging:
+  level:
+    com.mssousa.auth: DEBUG
+    org.springframework.security: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    io.jsonwebtoken: DEBUG
+
+# Server - Detalhes de erro em dev
+server:
+  error:
+    include-message: always
+    include-binding-errors: always
+    include-stacktrace: on_param
+    include-exception: true
+
+# Actuator - Detalhes completos em dev
+management:
+  endpoint:
+    health:
+      show-details: always
