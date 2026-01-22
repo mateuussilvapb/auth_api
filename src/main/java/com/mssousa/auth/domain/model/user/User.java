@@ -14,7 +14,7 @@ public class User {
 
     private final UserId id;
     private final Username username;
-    private final Email email;
+    private Email email;
     private Password password;
     private boolean master;
     private UserStatus status;
@@ -220,5 +220,22 @@ public class User {
             return true;
         }
         return status == UserStatus.ACTIVE;
+    }
+
+    // ==================== Atualização de Perfil ====================
+
+    /**
+     * Atualiza os dados de perfil do usuário.
+     *
+     * @param name novo nome
+     * @param email novo e-mail
+     */
+    public void updateProfile(String name, String email) {
+        if (name != null && !name.isBlank()) {
+            this.name = name;
+        }
+        if (email != null && !email.isBlank()) {
+            this.email = new Email(email);
+        }
     }
 }

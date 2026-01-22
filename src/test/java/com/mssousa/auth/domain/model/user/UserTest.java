@@ -67,10 +67,45 @@ class UserTest {
         assertEquals(email, user.getEmail());
     }
 
+
     @Test
     void testGetName() {
         User user = new User(userId, username, email, password, false, UserStatus.ACTIVE, name);
         assertEquals(name, user.getName());
+    }
+
+    // ==================== Atualização de Perfil ====================
+
+    @Test
+    void testUpdateProfile() {
+        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE, name);
+        String newName = "Updated Name";
+        String newEmail = "updated@example.com";
+
+        user.updateProfile(newName, newEmail);
+
+        assertEquals(newName, user.getName());
+        assertEquals(new Email(newEmail), user.getEmail());
+    }
+
+    @Test
+    void testUpdateProfileWithNulls() {
+        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE, name);
+
+        user.updateProfile(null, null);
+
+        assertEquals(name, user.getName());
+        assertEquals(email, user.getEmail());
+    }
+
+    @Test
+    void testUpdateProfileWithEmptyStrings() {
+        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE, name);
+
+        user.updateProfile("", "  ");
+
+        assertEquals(name, user.getName());
+        assertEquals(email, user.getEmail());
     }
 
     // ==================== Gerenciamento de Status ====================
