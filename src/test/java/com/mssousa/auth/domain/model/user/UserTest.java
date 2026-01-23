@@ -43,6 +43,54 @@ class UserTest {
     }
 
     @Test
+    void testCreateUserWithNullId() {
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
+            () -> new User(null, username, email, password, false, UserStatus.ACTIVE, name));
+        assertEquals("UserId não pode ser nulo", exception.getMessage());
+    }
+
+    @Test
+    void testCreateUserWithNullUsername() {
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
+            () -> new User(userId, null, email, password, false, UserStatus.ACTIVE, name));
+        assertEquals("Username não pode ser nulo", exception.getMessage());
+    }
+
+    @Test
+    void testCreateUserWithNullEmail() {
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
+            () -> new User(userId, username, null, password, false, UserStatus.ACTIVE, name));
+        assertEquals("Email não pode ser nulo", exception.getMessage());
+    }
+
+    @Test
+    void testCreateUserWithNullPassword() {
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
+            () -> new User(userId, username, email, null, false, UserStatus.ACTIVE, name));
+        assertEquals("Password não pode ser nulo", exception.getMessage());
+    }
+
+    @Test
+    void testCreateUserWithNullName() {
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
+            () -> new User(userId, username, email, password, false, UserStatus.ACTIVE, null));
+        assertEquals("Nome do usuário não pode ser nulo ou vazio", exception.getMessage());
+    }
+
+    @Test
+    void testCreateUserWithBlankName() {
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
+            () -> new User(userId, username, email, password, false, UserStatus.ACTIVE, "  "));
+        assertEquals("Nome do usuário não pode ser nulo ou vazio", exception.getMessage());
+    }
+
+    @Test
+    void testCreateUserWithNullStatusDefaultsToActive() {
+        User user = new User(userId, username, email, password, false, null, name);
+        assertEquals(UserStatus.ACTIVE, user.getStatus());
+    }
+
+    @Test
     void testCreateMasterUser() {
         User user = new User(userId, username, email, password, true, UserStatus.ACTIVE, name);
 

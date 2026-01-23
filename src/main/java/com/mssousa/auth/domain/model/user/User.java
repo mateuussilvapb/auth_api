@@ -32,13 +32,51 @@ public class User {
      * @param name nome do usuário
      */
     public User(UserId id, Username username, Email email, Password password, boolean master, UserStatus status, String name) {
+        validateId(id);
+        validateUsername(username);
+        validateEmail(email);
+        validatePassword(password);
+        validateName(name);
+
         this.id = id;
         this.username = username;
         this.email = email;
         this.password = password;
         this.master = master;
-        this.status = status;
+        this.status = status != null ? status : UserStatus.ACTIVE;
         this.name = name;
+    }
+
+    // ==================== Validações ====================
+
+    private void validateId(UserId id) {
+        if (id == null) {
+            throw new IllegalArgumentException("UserId não pode ser nulo");
+        }
+    }
+
+    private void validateUsername(Username username) {
+        if (username == null) {
+            throw new IllegalArgumentException("Username não pode ser nulo");
+        }
+    }
+
+    private void validateEmail(Email email) {
+        if (email == null) {
+            throw new IllegalArgumentException("Email não pode ser nulo");
+        }
+    }
+
+    private void validatePassword(Password password) {
+        if (password == null) {
+            throw new IllegalArgumentException("Password não pode ser nulo");
+        }
+    }
+
+    private void validateName(String name) {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("Nome do usuário não pode ser nulo ou vazio");
+        }
     }
 
     // ==================== Getters ====================
