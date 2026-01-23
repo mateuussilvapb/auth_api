@@ -7,11 +7,15 @@ import com.mssousa.auth.domain.model.shared.DomainId;
  * Value Object representando o identificador único de um vínculo usuário-sistema.
  * Garante que o ID seja válido conforme regras de negócio.
  */
-public class UserSystemId extends DomainId {
+public final class UserSystemId extends DomainId {
  
-    public UserSystemId(Long value) {
+    private UserSystemId(Long value) {
         super(value);
         validate(value);
+    }
+
+    public static UserSystemId of(Long value) {
+        return new UserSystemId(value);
     }
 
     private void validate(Long value) {

@@ -217,7 +217,7 @@ class MasterUserPolicyTest {
     private User createMasterUser() {
         // public User(UserId id, Username username, Email email, Password password, boolean master, UserStatus status, String name) {
         return new User(
-            new UserId(1L),
+            UserId.of(1L),
             new Username("admin"),
             new Email("admin@test.com"),
             Password.fromPlainText("Password123"),
@@ -229,7 +229,7 @@ class MasterUserPolicyTest {
 
     private User createRegularUser() {
         return new User(
-            new UserId(2L),
+            UserId.of(2L),
             new Username("user"),
             new Email("user@test.com"),
             Password.fromPlainText("Password123"),

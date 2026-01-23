@@ -26,8 +26,8 @@ class PasswordResetTokenTest {
 
     @BeforeEach
     void setUp() {
-        id = new PasswordResetTokenId(1L);
-        userId = new UserId(123L);
+        id = PasswordResetTokenId.of(1L);
+        userId = UserId.of(123L);
         value = new ResetTokenValue("12345678901234567890123456789012");
         futureExpiration = Instant.now().plus(1, ChronoUnit.HOURS);
     }

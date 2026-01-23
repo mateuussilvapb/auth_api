@@ -9,9 +9,13 @@ import com.mssousa.auth.domain.model.shared.DomainId;
  */
 public final class AuthorizationCodeId extends DomainId {
 
-    public AuthorizationCodeId(Long value) {
+    private AuthorizationCodeId(Long value) {
         super(value);
         validate(value);
+    }
+
+    public static AuthorizationCodeId of(Long value) {
+        return new AuthorizationCodeId(value);
     }
 
     private void validate(Long value) {

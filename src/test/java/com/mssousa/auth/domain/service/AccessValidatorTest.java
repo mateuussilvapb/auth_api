@@ -200,7 +200,7 @@ class AccessValidatorTest {
     // Helper methods
     private User createMasterUser() {
         return new User(
-                new UserId(1L),
+                UserId.of(1L),
                 new Username("admin"),
                 new Email("admin@test.com"),
                 Password.fromPlainText("Password123"),
@@ -211,7 +211,7 @@ class AccessValidatorTest {
 
     private User createRegularUser() {
         return new User(
-                new UserId(2L),
+                UserId.of(2L),
                 new Username("user"),
                 new Email("user@test.com"),
                 Password.fromPlainText("Password123"),
@@ -222,7 +222,7 @@ class AccessValidatorTest {
 
     private ClientSystem createActiveSystem() {
         return new ClientSystem(
-                new SystemId(100L),
+                SystemId.of(100L),
                 "test-client-id",
                 "test-secret-123",
                 "Test System",
@@ -232,7 +232,7 @@ class AccessValidatorTest {
 
     private UserSystem createActiveBinding(User user, ClientSystem system) {
         return new UserSystem(
-                new UserSystemId(1L),
+                UserSystemId.of(1L),
                 user.getId(),
                 system.getId(),
                 BindingStatus.ACTIVE);

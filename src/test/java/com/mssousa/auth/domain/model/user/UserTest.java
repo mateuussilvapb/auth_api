@@ -19,7 +19,7 @@ class UserTest {
 
     @BeforeEach
     void setUp() {
-        userId = new UserId(1L);
+        userId = UserId.of(1L);
         username = new Username("testuser");
         email = new Email("test@example.com");
         password = Password.fromPlainText("password123");
@@ -299,7 +299,7 @@ class UserTest {
     @Test
     void testMasterCanAccessAnything() {
         User master = new User(userId, username, email, password, true, UserStatus.BLOCKED, name);
-        ClientSystem system = new ClientSystem(new SystemId(1L), "test-client", "secret", "Test System", "https://example.com/callback", SystemStatus.ACTIVE);
+        ClientSystem system = new ClientSystem(SystemId.of(1L), "test-client", "secret", "Test System", "https://example.com/callback", SystemStatus.ACTIVE);
         
         assertTrue(master.canAccess(system));
     }
@@ -308,7 +308,7 @@ class UserTest {
     void testNonMasterRequiresActiveStatus() {
         User blockedUser = new User(userId, username, email, password, false, UserStatus.BLOCKED, name);
         User activeUser = new User(userId, username, email, password, false, UserStatus.ACTIVE, name);
-        ClientSystem system = new ClientSystem(new SystemId(1L), "test-client", "secret", "Test System", "https://example.com/callback", SystemStatus.ACTIVE);
+        ClientSystem system = new ClientSystem(SystemId.of(1L), "test-client", "secret", "Test System", "https://example.com/callback", SystemStatus.ACTIVE);
         
         assertFalse(blockedUser.canAccess(system));
         assertTrue(activeUser.canAccess(system));
@@ -319,7 +319,7 @@ class UserTest {
     @Test
     void testCanAccessWhenActive() {
         User user = new User(userId, username, email, password, false, UserStatus.ACTIVE, name);
-        ClientSystem system = new ClientSystem(new SystemId(1L), "test-client", "secret", "Test System", "https://example.com/callback", SystemStatus.ACTIVE);
+        ClientSystem system = new ClientSystem(SystemId.of(1L), "test-client", "secret", "Test System", "https://example.com/callback", SystemStatus.ACTIVE);
         
         assertTrue(user.canAccess(system));
     }
@@ -327,7 +327,7 @@ class UserTest {
     @Test
     void testCannotAccessWhenBlocked() {
         User user = new User(userId, username, email, password, false, UserStatus.BLOCKED, name);
-        ClientSystem system = new ClientSystem(new SystemId(1L), "test-client", "secret", "Test System", "https://example.com/callback", SystemStatus.ACTIVE);
+        ClientSystem system = new ClientSystem(SystemId.of(1L), "test-client", "secret", "Test System", "https://example.com/callback", SystemStatus.ACTIVE);
         
         assertFalse(user.canAccess(system));
     }
@@ -335,7 +335,7 @@ class UserTest {
     @Test
     void testCannotAccessWhenDisabled() {
         User user = new User(userId, username, email, password, false, UserStatus.DISABLED, name);
-        ClientSystem system = new ClientSystem(new SystemId(1L), "test-client", "secret", "Test System", "https://example.com/callback", SystemStatus.ACTIVE);
+        ClientSystem system = new ClientSystem(SystemId.of(1L), "test-client", "secret", "Test System", "https://example.com/callback", SystemStatus.ACTIVE);
         
         assertFalse(user.canAccess(system));
     }
@@ -345,7 +345,7 @@ class UserTest {
         User masterBlocked = new User(userId, username, email, password, true, UserStatus.BLOCKED, name);
         User masterDisabled = new User(userId, username, email, password, true, UserStatus.DISABLED, name);
         User masterActive = new User(userId, username, email, password, true, UserStatus.ACTIVE, name);
-        ClientSystem system = new ClientSystem(new SystemId(1L), "test-client", "secret", "Test System", "https://example.com/callback", SystemStatus.ACTIVE);
+        ClientSystem system = new ClientSystem(SystemId.of(1L), "test-client", "secret", "Test System", "https://example.com/callback", SystemStatus.ACTIVE);
         
         assertTrue(masterBlocked.canAccess(system));
         assertTrue(masterDisabled.canAccess(system));
@@ -409,7 +409,7 @@ class UserTest {
         // Master pode acessar mesmo se bloqueado
         user.block();
         assertTrue(user.canLogin());
-        assertTrue(user.canAccess(new ClientSystem(new SystemId(1L), "test-client", "secret", "Test System", "https://example.com/callback", SystemStatus.ACTIVE)));
+        assertTrue(user.canAccess(new ClientSystem(SystemId.of(1L), "test-client", "secret", "Test System", "https://example.com/callback", SystemStatus.ACTIVE)));
     }
 
     @Test

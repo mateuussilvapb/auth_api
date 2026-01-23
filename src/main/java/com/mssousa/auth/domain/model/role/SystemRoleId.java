@@ -9,9 +9,13 @@ import com.mssousa.auth.domain.model.shared.DomainId;
  */
 public final class SystemRoleId extends DomainId {
 
-    public SystemRoleId(Long value) {
+    private SystemRoleId(Long value) {
         super(value);
         validate(value);
+    }
+
+    public static SystemRoleId of(Long value) {
+        return new SystemRoleId(value);
     }
 
     private void validate(Long value) {

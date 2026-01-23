@@ -43,14 +43,14 @@ class JwtPayloadTest {
         expiresAt = issuedAt.plusSeconds(3600);
         jwtId = "jwt-id-123";
 
-        userId = new UserId(1L);
+        userId = UserId.of(1L);
         username = "testuser";
         email = "test@example.com";
         name = "Test User";
 
         master = false;
 
-        systemId = new SystemId(10L);
+        systemId = SystemId.of(10L);
         systemRoles = List.of("ADMIN", "TEACHER");
 
         authMethod = "password";

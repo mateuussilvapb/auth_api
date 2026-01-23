@@ -39,24 +39,24 @@ import com.mssousa.auth.infrastructure.persistence.entity.UserSystemRoleEntity;
 public class AuthMapper {
 
     /**
-     * Define o ID de uma entidade JPA usando reflexão.
-     * <p>
-     * ⚠️ USO INTERNO: Este método é necessário porque não utilizamos setId() público em {@link com.mssousa.auth.infrastructure.persistence.entity.BaseJpaEntity}.
-     * para preservar a imutabilidade do ID. Ele é usado APENAS para reconstruir
-     * entidades JPA que representam objetos de domínio já persistidos (update).
-     * </p>
-     * <p>
-     * Para novas entidades, o ID será gerado automaticamente pelo @PrePersist.
-     * </p>
+     * Define o ID de uma entidade JPA a partir do ID já existente no domínio.
+     *
+     * ⚠️ Regra arquitetural:
+     * - O ID DEVE ser gerado no Application Service.
+     * - O domínio DEVE possuir identidade antes da persistência.
+     * - A camada de persistência NÃO gera identidade.
      *
      * @param entity A entidade JPA que terá o ID definido
      * @param id     O valor do ID a ser definido
      */
     private void setEntityId(BaseJpaEntity entity, Long id) {
         if (id == null) {
-            return; // Não faz nada se ID for null - será gerado pelo @PrePersist
+            throw new IllegalStateException(
+                "ID da entidade JPA não pode ser nulo. " +
+                "O ID deve ser gerado no Application Service antes da persistência."
+            );
         }
-        
+
         try {
             Field idField = BaseJpaEntity.class.getDeclaredField("id");
             idField.setAccessible(true);
@@ -71,7 +71,7 @@ public class AuthMapper {
     public User toDomain(UserEntity entity) {
         if (entity == null) return null;
         return new User(
-            new UserId(entity.getId()),
+            UserId.of(entity.getId()),
             new Username(entity.getUsername()),
             new Email(entity.getEmail()),
             Password.fromHash(entity.getPasswordHash()),
@@ -100,7 +100,7 @@ public class AuthMapper {
     public ClientSystem toDomain(ClientSystemEntity entity) {
         if (entity == null) return null;
         return new ClientSystem(
-            new SystemId(entity.getId()),
+            SystemId.of(entity.getId()),
             entity.getClientId(),
             entity.getClientSecret(),
             entity.getName(),
@@ -127,8 +127,8 @@ public class AuthMapper {
     public SystemRole toDomain(SystemRoleEntity entity) {
         if (entity == null) return null;
         return new SystemRole(
-            new SystemRoleId(entity.getId()),
-            new SystemId(entity.getSystem().getId()),
+            SystemRoleId.of(entity.getId()),
+            SystemId.of(entity.getSystem().getId()),
             entity.getCode(),
             entity.getDescription(),
             SystemRoleStatus.valueOf(entity.getStatus())
@@ -152,9 +152,9 @@ public class AuthMapper {
     public UserSystem toDomain(UserSystemEntity entity) {
         if (entity == null) return null;
         return new UserSystem(
-            new UserSystemId(entity.getId()),
-            new UserId(entity.getUser().getId()),
-            new SystemId(entity.getSystem().getId()),
+            UserSystemId.of(entity.getId()),
+            UserId.of(entity.getUser().getId()),
+            SystemId.of(entity.getSystem().getId()),
             BindingStatus.valueOf(entity.getStatus())
         );
     }
@@ -175,9 +175,9 @@ public class AuthMapper {
     public UserSystemRole toDomain(UserSystemRoleEntity entity) {
         if (entity == null) return null;
         return new UserSystemRole(
-            new UserSystemRoleId(entity.getId()),
-            new UserSystemId(entity.getUserSystem().getId()),
-            new SystemRoleId(entity.getSystemRole().getId()),
+            UserSystemRoleId.of(entity.getId()),
+            UserSystemId.of(entity.getUserSystem().getId()),
+            SystemRoleId.of(entity.getSystemRole().getId()),
             BindingStatus.valueOf(entity.getStatus())
         );
     }
@@ -198,10 +198,10 @@ public class AuthMapper {
     public AuthorizationCode toDomain(AuthorizationCodeEntity entity) {
         if (entity == null) return null;
         return new AuthorizationCode(
-            new AuthorizationCodeId(entity.getId()),
+            AuthorizationCodeId.of(entity.getId()),
             entity.getCode(),
             toDomain(entity.getUser()), // Reutiliza o mapper de User
-            new SystemId(entity.getSystem().getId()),
+            SystemId.of(entity.getSystem().getId()),
             entity.getExpiresAt(),
             entity.isUsed()
         );
@@ -225,9 +225,9 @@ public class AuthMapper {
     public PasswordResetToken toDomain(PasswordResetTokenEntity entity) {
         if (entity == null) return null;
         return new PasswordResetToken(
-            new PasswordResetTokenId(entity.getId()),
+            PasswordResetTokenId.of(entity.getId()),
             new ResetTokenValue(entity.getToken()),
-            new UserId(entity.getUser().getId()),
+            UserId.of(entity.getUser().getId()),
             entity.getExpiresAt(),
             entity.isUsed()
         );

@@ -13,45 +13,45 @@ class UserSystemRoleIdTest {
     
      @Test
     void testValiduserSystemRoleId() {
-        UserSystemRoleId userSystemRoleId = new UserSystemRoleId(1L);
+        UserSystemRoleId userSystemRoleId = UserSystemRoleId.of(1L);
         assertEquals(1L, userSystemRoleId.value());
     }
 
     @Test
     void testValidUserSystemRoleIdLargeNumber() {
-        UserSystemRoleId userSystemRoleId = new UserSystemRoleId(999999999L);
+        UserSystemRoleId userSystemRoleId = UserSystemRoleId.of(999999999L);
         assertEquals(999999999L, userSystemRoleId.value());
     }
 
     @Test
     void testInvalidUserSystemRoleIdNull() {
-        NullPointerException exception = assertThrows(NullPointerException.class, () -> new UserSystemRoleId(null));
+        NullPointerException exception = assertThrows(NullPointerException.class, () -> UserSystemRoleId.of(null));
         assertNotNull(exception);
     }
 
     @Test
     void testInvalidUserSystemRoleIdZero() {
-        DomainException exception = assertThrows(DomainException.class, () -> new UserSystemRoleId(0L));
+        DomainException exception = assertThrows(DomainException.class, () -> UserSystemRoleId.of(0L));
         assertEquals("UserSystemRoleId deve ser um número positivo", exception.getMessage());
     }
 
     @Test
     void testInvalidUserSystemRoleIdNegative() {
-        DomainException exception = assertThrows(DomainException.class, () -> new UserSystemRoleId(-1L));
+        DomainException exception = assertThrows(DomainException.class, () -> UserSystemRoleId.of(-1L));
         assertEquals("UserSystemRoleId deve ser um número positivo", exception.getMessage());
     }
 
     @Test
     void testInvalidUserSystemRoleIdLargeNegative() {
-        DomainException exception = assertThrows(DomainException.class, () -> new UserSystemRoleId(-999999L));
+        DomainException exception = assertThrows(DomainException.class, () -> UserSystemRoleId.of(-999999L));
         assertEquals("UserSystemRoleId deve ser um número positivo", exception.getMessage());
     }
 
     @Test
     void testUserSystemRoleIdEquality() {
-        UserSystemRoleId userSystemRoleId1 = new UserSystemRoleId(123L);
-        UserSystemRoleId userSystemRoleId2 = new UserSystemRoleId(123L);
-        UserSystemRoleId userSystemRoleId3 = new UserSystemRoleId(456L);
+        UserSystemRoleId userSystemRoleId1 = UserSystemRoleId.of(123L);
+        UserSystemRoleId userSystemRoleId2 = UserSystemRoleId.of(123L);
+        UserSystemRoleId userSystemRoleId3 = UserSystemRoleId.of(456L);
 
         assertEquals(userSystemRoleId1, userSystemRoleId2);
         assertNotEquals(userSystemRoleId1, userSystemRoleId3);
@@ -59,30 +59,30 @@ class UserSystemRoleIdTest {
 
     @Test
     void testUserSystemRoleIdHashCode() {
-        UserSystemRoleId userSystemRoleId1 = new UserSystemRoleId(123L);
-        UserSystemRoleId userSystemRoleId2 = new UserSystemRoleId(123L);
+        UserSystemRoleId userSystemRoleId1 = UserSystemRoleId.of(123L);
+        UserSystemRoleId userSystemRoleId2 = UserSystemRoleId.of(123L);
 
         assertEquals(userSystemRoleId1.hashCode(), userSystemRoleId2.hashCode());
     }
 
     @Test
     void testUserSystemRoleIdToString() {
-        UserSystemRoleId userSystemRoleId = new UserSystemRoleId(12345L);
+        UserSystemRoleId userSystemRoleId = UserSystemRoleId.of(12345L);
         assertEquals("12345", userSystemRoleId.toString());
     }
 
     @Test
     void testUserSystemRoleIdValue() {
         Long expectedValue = 42L;
-        UserSystemRoleId userSystemRoleId = new UserSystemRoleId(expectedValue);
+        UserSystemRoleId userSystemRoleId = UserSystemRoleId.of(expectedValue);
         
         assertEquals(expectedValue, userSystemRoleId.value());
     }
 
     @Test
     void testDifferentUserSystemRoleIdsNotEqual() {
-        UserSystemRoleId userSystemRoleId1 = new UserSystemRoleId(1L);
-        UserSystemRoleId userSystemRoleId2 = new UserSystemRoleId(2L);
+        UserSystemRoleId userSystemRoleId1 = UserSystemRoleId.of(1L);
+        UserSystemRoleId userSystemRoleId2 = UserSystemRoleId.of(2L);
 
         assertNotEquals(userSystemRoleId1, userSystemRoleId2);
         assertNotEquals(userSystemRoleId1.hashCode(), userSystemRoleId2.hashCode());
@@ -90,7 +90,7 @@ class UserSystemRoleIdTest {
 
     @Test
     void testUserSystemRoleIdImmutability() {
-        UserSystemRoleId userSystemRoleId = new UserSystemRoleId(100L);
+        UserSystemRoleId userSystemRoleId = UserSystemRoleId.of(100L);
         Long value = userSystemRoleId.value();
         
         // O valor retornado deve ser o mesmo sempre
@@ -101,7 +101,7 @@ class UserSystemRoleIdTest {
     @Test
     void testUserSystemRoleIdWithMaxLong() {
         // Testar com o maior valor possível de Long
-        UserSystemRoleId userSystemRoleId = new UserSystemRoleId(Long.MAX_VALUE);
+        UserSystemRoleId userSystemRoleId = UserSystemRoleId.of(Long.MAX_VALUE);
         assertEquals(Long.MAX_VALUE, userSystemRoleId.value());
     }
 }

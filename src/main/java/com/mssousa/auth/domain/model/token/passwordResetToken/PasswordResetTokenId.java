@@ -7,11 +7,15 @@ import com.mssousa.auth.domain.model.shared.DomainId;
  * Value Object representando o identificador único de um PasswordResetToken.
  * Garante que o ID seja válido conforme regras de negócio.
  */
-public class PasswordResetTokenId extends DomainId {
+public final class PasswordResetTokenId extends DomainId {
  
-    public PasswordResetTokenId(Long value) {
+    private PasswordResetTokenId(Long value) {
         super(value);
         validate(value);
+    }
+
+    public static PasswordResetTokenId of(Long value) {
+        return new PasswordResetTokenId(value);
     }
 
     private void validate(Long value) {

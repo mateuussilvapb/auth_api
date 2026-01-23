@@ -7,11 +7,15 @@ import com.mssousa.auth.domain.model.shared.DomainId;
  * Value Object representando o identificador único de um vínculo usuário-perfil.
  * Garante que o ID seja válido conforme regras de negócio.
  */
-public class UserSystemRoleId extends DomainId {
+public final class UserSystemRoleId extends DomainId {
  
-    public UserSystemRoleId(Long value) {
+    private UserSystemRoleId(Long value) {
         super(value);
         validate(value);
+    }
+
+    public static UserSystemRoleId of(Long value) {
+        return new UserSystemRoleId(value);
     }
 
     private void validate(Long value) {

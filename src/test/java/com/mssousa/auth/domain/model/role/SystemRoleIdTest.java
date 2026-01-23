@@ -24,7 +24,7 @@ class SystemRoleIdTest {
 
     @Test
     void shouldCreateSystemRoleIdWhenValueIsPositive() {
-        SystemRoleId id = new SystemRoleId(1L);
+        SystemRoleId id = SystemRoleId.of(1L);
 
         assertNotNull(id);
         assertEquals(1L, id.value());
@@ -38,7 +38,7 @@ class SystemRoleIdTest {
     void shouldThrowExceptionWhenValueIsZero() {
         DomainException exception = assertThrows(
                 DomainException.class,
-                () -> new SystemRoleId(0L)
+                () -> SystemRoleId.of(0L)
         );
 
         assertEquals("SystemRoleId deve ser um número positivo", exception.getMessage());
@@ -48,7 +48,7 @@ class SystemRoleIdTest {
     void shouldThrowExceptionWhenValueIsNegative() {
         DomainException exception = assertThrows(
                 DomainException.class,
-                () -> new SystemRoleId(-1L)
+                () -> SystemRoleId.of(-1L)
         );
 
         assertEquals("SystemRoleId deve ser um número positivo", exception.getMessage());
@@ -64,7 +64,7 @@ class SystemRoleIdTest {
          */
         assertThrows(
                 NullPointerException.class,
-                () -> new SystemRoleId(null)
+                () -> SystemRoleId.of(null)
         );
     }
 
@@ -74,8 +74,8 @@ class SystemRoleIdTest {
 
     @Test
     void shouldBeEqualWhenValuesAreEqual() {
-        SystemRoleId id1 = new SystemRoleId(10L);
-        SystemRoleId id2 = new SystemRoleId(10L);
+        SystemRoleId id1 = SystemRoleId.of(10L);
+        SystemRoleId id2 = SystemRoleId.of(10L);
 
         assertEquals(id1, id2);
         assertEquals(id1.hashCode(), id2.hashCode());
@@ -83,15 +83,15 @@ class SystemRoleIdTest {
 
     @Test
     void shouldNotBeEqualWhenValuesAreDifferent() {
-        SystemRoleId id1 = new SystemRoleId(10L);
-        SystemRoleId id2 = new SystemRoleId(20L);
+        SystemRoleId id1 = SystemRoleId.of(10L);
+        SystemRoleId id2 = SystemRoleId.of(20L);
 
         assertNotEquals(id1, id2);
     }
 
     @Test
     void shouldNotBeEqualToDifferentClassEvenWithSameValue() {
-        SystemRoleId id = new SystemRoleId(1L);
+        SystemRoleId id = SystemRoleId.of(1L);
 
         /*
          * Como DomainId utiliza getClass() no equals,
@@ -107,7 +107,7 @@ class SystemRoleIdTest {
 
     @Test
     void shouldReturnStringRepresentationOfValue() {
-        SystemRoleId id = new SystemRoleId(99L);
+        SystemRoleId id = SystemRoleId.of(99L);
 
         assertEquals("99", id.toString());
     }

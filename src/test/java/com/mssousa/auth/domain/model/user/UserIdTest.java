@@ -9,45 +9,45 @@ class UserIdTest {
 
     @Test
     void testValidUserId() {
-        UserId userId = new UserId(1L);
+        UserId userId = UserId.of(1L);
         assertEquals(1L, userId.value());
     }
 
     @Test
     void testValidUserIdLargeNumber() {
-        UserId userId = new UserId(999999999L);
+        UserId userId = UserId.of(999999999L);
         assertEquals(999999999L, userId.value());
     }
 
     @Test
     void testInvalidUserIdNull() {
-        NullPointerException exception = assertThrows(NullPointerException.class, () -> new UserId(null));
+        NullPointerException exception = assertThrows(NullPointerException.class, () -> UserId.of(null));
         assertNotNull(exception);
     }
 
     @Test
     void testInvalidUserIdZero() {
-        DomainException exception = assertThrows(DomainException.class, () -> new UserId(0L));
+        DomainException exception = assertThrows(DomainException.class, () -> UserId.of(0L));
         assertEquals("UserId deve ser um número positivo", exception.getMessage());
     }
 
     @Test
     void testInvalidUserIdNegative() {
-        DomainException exception = assertThrows(DomainException.class, () -> new UserId(-1L));
+        DomainException exception = assertThrows(DomainException.class, () -> UserId.of(-1L));
         assertEquals("UserId deve ser um número positivo", exception.getMessage());
     }
 
     @Test
     void testInvalidUserIdLargeNegative() {
-        DomainException exception = assertThrows(DomainException.class, () -> new UserId(-999999L));
+        DomainException exception = assertThrows(DomainException.class, () -> UserId.of(-999999L));
         assertEquals("UserId deve ser um número positivo", exception.getMessage());
     }
 
     @Test
     void testUserIdEquality() {
-        UserId userId1 = new UserId(123L);
-        UserId userId2 = new UserId(123L);
-        UserId userId3 = new UserId(456L);
+        UserId userId1 = UserId.of(123L);
+        UserId userId2 = UserId.of(123L);
+        UserId userId3 = UserId.of(456L);
 
         assertEquals(userId1, userId2);
         assertNotEquals(userId1, userId3);
@@ -55,30 +55,30 @@ class UserIdTest {
 
     @Test
     void testUserIdHashCode() {
-        UserId userId1 = new UserId(123L);
-        UserId userId2 = new UserId(123L);
+        UserId userId1 = UserId.of(123L);
+        UserId userId2 = UserId.of(123L);
 
         assertEquals(userId1.hashCode(), userId2.hashCode());
     }
 
     @Test
     void testUserIdToString() {
-        UserId userId = new UserId(12345L);
+        UserId userId = UserId.of(12345L);
         assertEquals("12345", userId.toString());
     }
 
     @Test
     void testUserIdValue() {
         Long expectedValue = 42L;
-        UserId userId = new UserId(expectedValue);
+        UserId userId = UserId.of(expectedValue);
         
         assertEquals(expectedValue, userId.value());
     }
 
     @Test
     void testDifferentUserIdsNotEqual() {
-        UserId userId1 = new UserId(1L);
-        UserId userId2 = new UserId(2L);
+        UserId userId1 = UserId.of(1L);
+        UserId userId2 = UserId.of(2L);
 
         assertNotEquals(userId1, userId2);
         assertNotEquals(userId1.hashCode(), userId2.hashCode());
@@ -86,7 +86,7 @@ class UserIdTest {
 
     @Test
     void testUserIdImmutability() {
-        UserId userId = new UserId(100L);
+        UserId userId = UserId.of(100L);
         Long value = userId.value();
         
         // O valor retornado deve ser o mesmo sempre
@@ -97,7 +97,7 @@ class UserIdTest {
     @Test
     void testUserIdWithMaxLong() {
         // Testar com o maior valor possível de Long
-        UserId userId = new UserId(Long.MAX_VALUE);
+        UserId userId = UserId.of(Long.MAX_VALUE);
         assertEquals(Long.MAX_VALUE, userId.value());
     }
 }

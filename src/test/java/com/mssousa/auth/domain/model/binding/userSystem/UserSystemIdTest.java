@@ -13,45 +13,45 @@ class UserSystemIdTest {
     
      @Test
     void testValidUserSystemId() {
-        UserSystemId userSystemId = new UserSystemId(1L);
+        UserSystemId userSystemId = UserSystemId.of(1L);
         assertEquals(1L, userSystemId.value());
     }
 
     @Test
     void testValidUserSystemIdLargeNumber() {
-        UserSystemId userSystemId = new UserSystemId(999999999L);
+        UserSystemId userSystemId = UserSystemId.of(999999999L);
         assertEquals(999999999L, userSystemId.value());
     }
 
     @Test
     void testInvalidUserSystemIdNull() {
-        NullPointerException exception = assertThrows(NullPointerException.class, () -> new UserSystemId(null));
+        NullPointerException exception = assertThrows(NullPointerException.class, () -> UserSystemId.of(null));
         assertNotNull(exception);
     }
 
     @Test
     void testInvalidUserSystemIdZero() {
-        DomainException exception = assertThrows(DomainException.class, () -> new UserSystemId(0L));
+        DomainException exception = assertThrows(DomainException.class, () -> UserSystemId.of(0L));
         assertEquals("UserSystemId deve ser um número positivo", exception.getMessage());
     }
 
     @Test
     void testInvalidUserSystemIdNegative() {
-        DomainException exception = assertThrows(DomainException.class, () -> new UserSystemId(-1L));
+        DomainException exception = assertThrows(DomainException.class, () -> UserSystemId.of(-1L));
         assertEquals("UserSystemId deve ser um número positivo", exception.getMessage());
     }
 
     @Test
     void testInvalidUserSystemIdLargeNegative() {
-        DomainException exception = assertThrows(DomainException.class, () -> new UserSystemId(-999999L));
+        DomainException exception = assertThrows(DomainException.class, () -> UserSystemId.of(-999999L));
         assertEquals("UserSystemId deve ser um número positivo", exception.getMessage());
     }
 
     @Test
     void testUserSystemIdEquality() {
-        UserSystemId userSystemId1 = new UserSystemId(123L);
-        UserSystemId userSystemId2 = new UserSystemId(123L);
-        UserSystemId userSystemId3 = new UserSystemId(456L);
+        UserSystemId userSystemId1 = UserSystemId.of(123L);
+        UserSystemId userSystemId2 = UserSystemId.of(123L);
+        UserSystemId userSystemId3 = UserSystemId.of(456L);
 
         assertEquals(userSystemId1, userSystemId2);
         assertNotEquals(userSystemId1, userSystemId3);
@@ -59,30 +59,30 @@ class UserSystemIdTest {
 
     @Test
     void testUserSystemIdHashCode() {
-        UserSystemId userSystemId1 = new UserSystemId(123L);
-        UserSystemId userSystemId2 = new UserSystemId(123L);
+        UserSystemId userSystemId1 = UserSystemId.of(123L);
+        UserSystemId userSystemId2 = UserSystemId.of(123L);
 
         assertEquals(userSystemId1.hashCode(), userSystemId2.hashCode());
     }
 
     @Test
     void testUserSystemIdToString() {
-        UserSystemId userSystemId = new UserSystemId(12345L);
+        UserSystemId userSystemId = UserSystemId.of(12345L);
         assertEquals("12345", userSystemId.toString());
     }
 
     @Test
     void testUserSystemIdValue() {
         Long expectedValue = 42L;
-        UserSystemId userSystemId = new UserSystemId(expectedValue);
+        UserSystemId userSystemId = UserSystemId.of(expectedValue);
         
         assertEquals(expectedValue, userSystemId.value());
     }
 
     @Test
     void testDifferentUserSystemIdsNotEqual() {
-        UserSystemId userSystemId1 = new UserSystemId(1L);
-        UserSystemId userSystemId2 = new UserSystemId(2L);
+        UserSystemId userSystemId1 = UserSystemId.of(1L);
+        UserSystemId userSystemId2 = UserSystemId.of(2L);
 
         assertNotEquals(userSystemId1, userSystemId2);
         assertNotEquals(userSystemId1.hashCode(), userSystemId2.hashCode());
@@ -90,7 +90,7 @@ class UserSystemIdTest {
 
     @Test
     void testUserSystemIdImmutability() {
-        UserSystemId userSystemId = new UserSystemId(100L);
+        UserSystemId userSystemId = UserSystemId.of(100L);
         Long value = userSystemId.value();
         
         // O valor retornado deve ser o mesmo sempre
@@ -101,7 +101,7 @@ class UserSystemIdTest {
     @Test
     void testUserSystemIdWithMaxLong() {
         // Testar com o maior valor possível de Long
-        UserSystemId userSystemId = new UserSystemId(Long.MAX_VALUE);
+        UserSystemId userSystemId = UserSystemId.of(Long.MAX_VALUE);
         assertEquals(Long.MAX_VALUE, userSystemId.value());
     }
 }

@@ -32,12 +32,12 @@ class AuthorizationCodeTest {
 
     @BeforeEach
     void setUp() {
-        id = new AuthorizationCodeId(1L);
+        id = AuthorizationCodeId.of(1L);
         futureExpiration = Instant.now().plus(10, ChronoUnit.MINUTES);
 
         // Setup User
         user = new User(
-                new UserId(1L),
+                UserId.of(1L),
                 new Username("testuser"),
                 new Email("test@example.com"),
                 Password.fromPlainText("password123"),
@@ -46,7 +46,7 @@ class AuthorizationCodeTest {
                 "Test User");
 
         // Setup ClientSystem
-        systemId = new SystemId(1L);
+        systemId = SystemId.of(1L);
     }
 
     // ==================== Criação e Factory ====================
@@ -186,7 +186,7 @@ class AuthorizationCodeTest {
 
     @Test
     void belongsToDifferentSystem() {
-        SystemId otherSystemId = new SystemId(2L);
+        SystemId otherSystemId = SystemId.of(2L);
 
         AuthorizationCode authCode = AuthorizationCode.create(id, user, systemId, futureExpiration);
         assertFalse(authCode.belongsTo(otherSystemId));

@@ -2,7 +2,7 @@ package com.mssousa.auth.domain.model.shared;
 
 import java.util.Objects;
 
-public class DomainId {
+public abstract class DomainId {
     protected final Long value;
 
     protected DomainId(Long value) {

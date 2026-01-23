@@ -24,9 +24,9 @@ class UserSystemRoleTest {
     
     @BeforeEach
     void setUp() {
-        id = new UserSystemRoleId(1L);
-        userSystemId = new UserSystemId(1L);
-        systemRoleId = new SystemRoleId(1L);
+        id = UserSystemRoleId.of(1L);
+        userSystemId = UserSystemId.of(1L);
+        systemRoleId = SystemRoleId.of(1L);
     }
 
     // ==================== Criação e Getters ====================

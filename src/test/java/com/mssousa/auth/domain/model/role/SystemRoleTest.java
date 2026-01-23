@@ -28,8 +28,8 @@ class SystemRoleTest {
 
     @BeforeEach
     void setUp() {
-        this.id = new SystemRoleId(1L);
-        this.systemId = new SystemId(1L);
+        this.id = SystemRoleId.of(1L);
+        this.systemId = SystemId.of(1L);
         this.code = "ADMIN";
         this.description = "Perfil administrativo";
     }

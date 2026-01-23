@@ -9,9 +9,13 @@ import com.mssousa.auth.domain.model.shared.DomainId;
  */
 public final class UserId extends DomainId {
 
-    public UserId(Long value) {
+    private UserId(Long value) {
         super(value);
         validate(value);
+    }
+
+    public static UserId of(Long value) {
+        return new UserId(value);
     }
 
     private void validate(Long value) {

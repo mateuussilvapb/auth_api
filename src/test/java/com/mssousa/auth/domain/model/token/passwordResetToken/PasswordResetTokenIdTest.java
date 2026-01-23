@@ -13,45 +13,45 @@ class PasswordResetTokenIdTest {
     
      @Test
     void testValidPasswordResetTokenId() {
-        PasswordResetTokenId passwordResetTokenId = new PasswordResetTokenId(1L);
+        PasswordResetTokenId passwordResetTokenId = PasswordResetTokenId.of(1L);
         assertEquals(1L, passwordResetTokenId.value());
     }
 
     @Test
     void testValidPasswordResetTokenIdLargeNumber() {
-        PasswordResetTokenId passwordResetTokenId = new PasswordResetTokenId(999999999L);
+        PasswordResetTokenId passwordResetTokenId = PasswordResetTokenId.of(999999999L);
         assertEquals(999999999L, passwordResetTokenId.value());
     }
 
     @Test
     void testInvalidPasswordResetTokenIdNull() {
-        NullPointerException exception = assertThrows(NullPointerException.class, () -> new PasswordResetTokenId(null));
+        NullPointerException exception = assertThrows(NullPointerException.class, () -> PasswordResetTokenId.of(null));
         assertNotNull(exception);
     }
 
     @Test
     void testInvalidPasswordResetTokenIdZero() {
-        DomainException exception = assertThrows(DomainException.class, () -> new PasswordResetTokenId(0L));
+        DomainException exception = assertThrows(DomainException.class, () -> PasswordResetTokenId.of(0L));
         assertEquals("PasswordResetTokenId deve ser um número positivo", exception.getMessage());
     }
 
     @Test
     void testInvalidPasswordResetTokenIdNegative() {
-        DomainException exception = assertThrows(DomainException.class, () -> new PasswordResetTokenId(-1L));
+        DomainException exception = assertThrows(DomainException.class, () -> PasswordResetTokenId.of(-1L));
         assertEquals("PasswordResetTokenId deve ser um número positivo", exception.getMessage());
     }
 
     @Test
     void testInvalidPasswordResetTokenIdLargeNegative() {
-        DomainException exception = assertThrows(DomainException.class, () -> new PasswordResetTokenId(-999999L));
+        DomainException exception = assertThrows(DomainException.class, () -> PasswordResetTokenId.of(-999999L));
         assertEquals("PasswordResetTokenId deve ser um número positivo", exception.getMessage());
     }
 
     @Test
     void testPasswordResetTokenIdEquality() {
-        PasswordResetTokenId passwordResetTokenId1 = new PasswordResetTokenId(123L);
-        PasswordResetTokenId passwordResetTokenId2 = new PasswordResetTokenId(123L);
-        PasswordResetTokenId passwordResetTokenId3 = new PasswordResetTokenId(456L);
+        PasswordResetTokenId passwordResetTokenId1 = PasswordResetTokenId.of(123L);
+        PasswordResetTokenId passwordResetTokenId2 = PasswordResetTokenId.of(123L);
+        PasswordResetTokenId passwordResetTokenId3 = PasswordResetTokenId.of(456L);
 
         assertEquals(passwordResetTokenId1, passwordResetTokenId2);
         assertNotEquals(passwordResetTokenId1, passwordResetTokenId3);
@@ -59,30 +59,30 @@ class PasswordResetTokenIdTest {
 
     @Test
     void testPasswordResetTokenIdHashCode() {
-        PasswordResetTokenId passwordResetTokenId1 = new PasswordResetTokenId(123L);
-        PasswordResetTokenId passwordResetTokenId2 = new PasswordResetTokenId(123L);
+        PasswordResetTokenId passwordResetTokenId1 = PasswordResetTokenId.of(123L);
+        PasswordResetTokenId passwordResetTokenId2 = PasswordResetTokenId.of(123L);
 
         assertEquals(passwordResetTokenId1.hashCode(), passwordResetTokenId2.hashCode());
     }
 
     @Test
     void testPasswordResetTokenIdToString() {
-        PasswordResetTokenId passwordResetTokenId = new PasswordResetTokenId(12345L);
+        PasswordResetTokenId passwordResetTokenId = PasswordResetTokenId.of(12345L);
         assertEquals("12345", passwordResetTokenId.toString());
     }
 
     @Test
     void testPasswordResetTokenIdValue() {
         Long expectedValue = 42L;
-        PasswordResetTokenId passwordResetTokenId = new PasswordResetTokenId(expectedValue);
+        PasswordResetTokenId passwordResetTokenId = PasswordResetTokenId.of(expectedValue);
         
         assertEquals(expectedValue, passwordResetTokenId.value());
     }
 
     @Test
     void testDifferentPasswordResetTokenIdsNotEqual() {
-        PasswordResetTokenId passwordResetTokenId1 = new PasswordResetTokenId(1L);
-        PasswordResetTokenId passwordResetTokenId2 = new PasswordResetTokenId(2L);
+        PasswordResetTokenId passwordResetTokenId1 = PasswordResetTokenId.of(1L);
+        PasswordResetTokenId passwordResetTokenId2 = PasswordResetTokenId.of(2L);
 
         assertNotEquals(passwordResetTokenId1, passwordResetTokenId2);
         assertNotEquals(passwordResetTokenId1.hashCode(), passwordResetTokenId2.hashCode());
@@ -90,7 +90,7 @@ class PasswordResetTokenIdTest {
 
     @Test
     void testPasswordResetTokenIdImmutability() {
-        PasswordResetTokenId passwordResetTokenId = new PasswordResetTokenId(100L);
+        PasswordResetTokenId passwordResetTokenId = PasswordResetTokenId.of(100L);
         Long value = passwordResetTokenId.value();
         
         // O valor retornado deve ser o mesmo sempre
@@ -101,7 +101,7 @@ class PasswordResetTokenIdTest {
     @Test
     void testPasswordResetTokenIdWithMaxLong() {
         // Testar com o maior valor possível de Long
-        PasswordResetTokenId passwordResetTokenId = new PasswordResetTokenId(Long.MAX_VALUE);
+        PasswordResetTokenId passwordResetTokenId = PasswordResetTokenId.of(Long.MAX_VALUE);
         assertEquals(Long.MAX_VALUE, passwordResetTokenId.value());
     }
 }

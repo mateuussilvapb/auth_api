@@ -16,7 +16,7 @@ class ClientSystemTest {
 
     @BeforeEach
     void setUp() {
-        systemId = new SystemId(1L);
+        systemId = SystemId.of(1L);
         clientId = "test-client-id";
         clientSecret = "test-secret-123";
         name = "Test System";

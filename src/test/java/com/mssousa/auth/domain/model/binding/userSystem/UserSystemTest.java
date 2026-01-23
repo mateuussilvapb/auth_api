@@ -28,9 +28,9 @@ class UserSystemTest {
 
     @BeforeEach
     void setUp() {
-        id = new UserSystemId(1L);
-        userId = new UserId(1L);
-        systemId = new SystemId(1L);
+        id = UserSystemId.of(1L);
+        userId = UserId.of(1L);
+        systemId = SystemId.of(1L);
     }
 
     // ==================== Criação e Getters ====================
