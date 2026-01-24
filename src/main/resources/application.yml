@@ -55,3 +55,22 @@ logging:
   level:
     root: INFO
     com.mssousa.auth: INFO
+
+# Email Configuration
+spring:
+  mail:
+    host: ${SMTP_HOST:smtp.gmail.com}
+    port: ${SMTP_PORT:587}
+    username: ${SMTP_USERNAME}
+    password: ${SMTP_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+# Custom Email Properties
+auth:
+  email:
+    sender: ${EMAIL_SENDER:noreply@mssousa.com}
