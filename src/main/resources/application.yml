@@ -56,11 +56,18 @@ logging:
     root: INFO
     com.mssousa.auth: INFO
 
-# Email Configuration
+# Propriedades do email
+SMTP_HOST: smtp.gmail.com
+SMTP_PORT: 587
+SMTP_USERNAME: mateuussilvapb@gmail.com
+SMTP_PASSWORD: teste
+EMAIL_SENDER: noreply@mssousa.com
+
+# Configurações do email
 spring:
   mail:
-    host: ${SMTP_HOST:smtp.gmail.com}
-    port: ${SMTP_PORT:587}
+    host: ${SMTP_HOST}
+    port: ${SMTP_PORT}
     username: ${SMTP_USERNAME}
     password: ${SMTP_PASSWORD}
     properties:
@@ -73,4 +80,4 @@ spring:
 # Custom Email Properties
 auth:
   email:
-    sender: ${EMAIL_SENDER:noreply@mssousa.com}
+    sender: ${EMAIL_SENDER}
