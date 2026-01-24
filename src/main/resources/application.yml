@@ -2,6 +2,13 @@
 # BASE CONFIGURATION (COMMON TO ALL PROFILES)
 # ==========================================
 
+# Propriedades do email
+SMTP_HOST: smtp.gmail.com
+SMTP_PORT: 587
+SMTP_USERNAME: mateuussilvapb@gmail.com
+SMTP_PASSWORD: teste
+EMAIL_SENDER: noreply@mssousa.com
+
 spring:
   application:
     name: auth_server
@@ -31,6 +38,19 @@ spring:
       minimum-idle: 2
       connection-timeout: 30000
 
+  # Email Configuration
+  mail:
+    host: ${SMTP_HOST}
+    port: ${SMTP_PORT}
+    username: ${SMTP_USERNAME}
+    password: ${SMTP_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
 # Server - Configurações comuns
 server:
   port: 8080
@@ -50,34 +70,12 @@ auth:
     expiration-ms: 3600000  # 1 hora
     token-version: 1
 
+  email:
+    sender: ${EMAIL_SENDER}
+
 # Logging - Configurações base
 logging:
   level:
     root: INFO
     com.mssousa.auth: INFO
 
-# Propriedades do email
-SMTP_HOST: smtp.gmail.com
-SMTP_PORT: 587
-SMTP_USERNAME: mateuussilvapb@gmail.com
-SMTP_PASSWORD: teste
-EMAIL_SENDER: noreply@mssousa.com
-
-# Configurações do email
-spring:
-  mail:
-    host: ${SMTP_HOST}
-    port: ${SMTP_PORT}
-    username: ${SMTP_USERNAME}
-    password: ${SMTP_PASSWORD}
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-
-# Custom Email Properties
-auth:
-  email:
-    sender: ${EMAIL_SENDER}
