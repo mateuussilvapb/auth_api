@@ -1,5 +1,11 @@
 package com.mssousa.auth.infrastructure.persistence.adapter;
 
+import java.util.Optional;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Component;
+
 import com.mssousa.auth.domain.model.user.Email;
 import com.mssousa.auth.domain.model.user.User;
 import com.mssousa.auth.domain.model.user.UserId;
@@ -10,9 +16,6 @@ import com.mssousa.auth.infrastructure.persistence.jpa.UserJpaRepository;
 import com.mssousa.auth.infrastructure.persistence.mapper.AuthMapper;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
-
-import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -59,5 +62,11 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public void deleteById(UserId id) {
         jpaRepository.deleteById(id.value());
+    }
+
+    @Override
+    public Page<User> findAll(Pageable pageable) {
+        return jpaRepository.findAll(pageable)
+                .map(mapper::toDomain);
     }
 }

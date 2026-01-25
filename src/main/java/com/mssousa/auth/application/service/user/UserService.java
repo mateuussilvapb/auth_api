@@ -2,6 +2,8 @@ package com.mssousa.auth.application.service.user;
 
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,6 +15,7 @@ import com.mssousa.auth.domain.model.user.User;
 import com.mssousa.auth.domain.model.user.UserId;
 import com.mssousa.auth.domain.model.user.Username;
 import com.mssousa.auth.domain.repository.UserRepository;
+import com.mssousa.auth.domain.service.EmailSender;
 import com.mssousa.auth.domain.service.MasterUserPolicy;
 
 import lombok.RequiredArgsConstructor;
@@ -24,6 +27,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final MasterUserPolicy masterUserPolicy;
     private final IdGenerator idGenerator;
+    private final EmailSender emailSender;
 
     @Transactional
     public User createUser(String username, String email, String password, String name, boolean master, User creator) {
@@ -55,8 +59,12 @@ public class UserService {
             com.mssousa.auth.domain.model.user.UserStatus.ACTIVE,
             name
         );
-
-        return userRepository.save(newUser);
+        
+        User savedUser = userRepository.save(newUser);
+        
+        emailSender.send(savedUser.getEmail().value(), "Bem-vindo ao Auth Server", "Olá " + savedUser.getName() + ", seu cadastro foi realizado com sucesso.");
+        
+        return savedUser;
     }
     
     // Sobrecarga para criação inicial ou por sistema (sem creator explícito se não for master)
@@ -159,6 +167,11 @@ public class UserService {
     @Transactional(readOnly = true)
     public Optional<User> findByEmail(String email) {
         return userRepository.findByEmail(new Email(email));
+    }
+
+    @Transactional(readOnly = true)
+    public Page<User> findAll(Pageable pageable) {
+        return userRepository.findAll(pageable);
     }
 
     @Transactional

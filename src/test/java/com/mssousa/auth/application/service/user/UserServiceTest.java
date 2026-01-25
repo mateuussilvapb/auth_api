@@ -7,6 +7,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -17,14 +18,20 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import com.mssousa.auth.domain.exception.DomainException;
+import com.mssousa.auth.domain.model.shared.IdGenerator;
 import com.mssousa.auth.domain.model.user.Email;
 import com.mssousa.auth.domain.model.user.Password;
 import com.mssousa.auth.domain.model.user.User;
 import com.mssousa.auth.domain.model.user.UserId;
+import com.mssousa.auth.domain.model.user.UserStatus;
 import com.mssousa.auth.domain.model.user.Username;
 import com.mssousa.auth.domain.repository.UserRepository;
+import com.mssousa.auth.domain.service.EmailSender;
 import com.mssousa.auth.domain.service.MasterUserPolicy;
 
 @ExtendWith(MockitoExtension.class)
@@ -38,7 +45,10 @@ class UserServiceTest {
     private MasterUserPolicy masterUserPolicy;
 
     @Mock
-    private com.mssousa.auth.domain.model.shared.IdGenerator idGenerator;
+    private IdGenerator idGenerator;
+
+    @Mock
+    private EmailSender emailSender;
 
     @InjectMocks
     private UserService userService;
@@ -54,7 +64,7 @@ class UserServiceTest {
             new Email("user@example.com"),
             Password.fromPlainText("Pass1234"),
             false,
-            com.mssousa.auth.domain.model.user.UserStatus.ACTIVE,
+            UserStatus.ACTIVE,
             "Regular User"
         );
 
@@ -64,7 +74,7 @@ class UserServiceTest {
             new Email("admin@example.com"),
             Password.fromPlainText("Pass1234"),
             true,
-            com.mssousa.auth.domain.model.user.UserStatus.ACTIVE,
+            UserStatus.ACTIVE,
             "Admin User"
         );
     }
@@ -89,6 +99,7 @@ class UserServiceTest {
             assertThat(created).isNotNull();
             assertThat(created.getUsername().value()).isEqualTo("newuser");
             verify(userRepository).save(any(User.class));
+            verify(emailSender).send(any(), any(), any());
         }
 
         @Test
@@ -137,6 +148,29 @@ class UserServiceTest {
              .hasMessageContaining("Apenas usuários MASTER");
              
             verify(userRepository, never()).save(any());
+        }
+    }
+
+    @Nested
+    @DisplayName("Busca de Usuários (Pagination)")
+    class FindAllTests {
+
+        @Test
+        @DisplayName("Deve retornar página de usuários")
+        void shouldReturnPageOfUsers() {
+            // Arrange
+            Pageable pageable = Pageable.unpaged();
+            Page<User> userPage = new PageImpl<>(List.of(regularUser));
+            when(userRepository.findAll(pageable)).thenReturn(userPage);
+
+            // Act
+            Page<User> result = userService.findAll(pageable);
+
+            // Assert
+            assertThat(result).isNotNull();
+            assertThat(result.getContent()).hasSize(1);
+            assertThat(result.getContent().get(0)).isEqualTo(regularUser);
+            verify(userRepository).findAll(pageable);
         }
     }
 

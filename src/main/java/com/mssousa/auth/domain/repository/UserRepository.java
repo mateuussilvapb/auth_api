@@ -1,10 +1,14 @@
 package com.mssousa.auth.domain.repository;
 
+import java.util.Optional;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import com.mssousa.auth.domain.model.user.Email;
 import com.mssousa.auth.domain.model.user.User;
 import com.mssousa.auth.domain.model.user.UserId;
 import com.mssousa.auth.domain.model.user.Username;
-import java.util.Optional;
 
 public interface UserRepository {
     User save(User user);
@@ -14,4 +18,5 @@ public interface UserRepository {
     boolean existsByUsername(Username username);
     boolean existsByEmail(Email email);
     void deleteById(UserId id);
+    Page<User> findAll(Pageable pageable);
 }
