@@ -201,8 +201,8 @@ class AccessValidatorTest {
     private User createMasterUser() {
         return new User(
                 UserId.of(1L),
-                new Username("admin"),
-                new Email("admin@test.com"),
+                Username.of("admin"),
+                Email.of("admin@test.com"),
                 Password.fromPlainText("Password123"),
                 true, // MASTER,
                 UserStatus.ACTIVE,
@@ -212,8 +212,8 @@ class AccessValidatorTest {
     private User createRegularUser() {
         return new User(
                 UserId.of(2L),
-                new Username("user"),
-                new Email("user@test.com"),
+                Username.of("user"),
+                Email.of("user@test.com"),
                 Password.fromPlainText("Password123"),
                 false, // NOT MASTER
                 UserStatus.ACTIVE,

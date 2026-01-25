@@ -273,7 +273,7 @@ public class User {
             this.name = name;
         }
         if (email != null && !email.isBlank()) {
-            this.email = new Email(email);
+            this.email = Email.of(email);
         }
     }
 }

@@ -72,8 +72,8 @@ public class AuthMapper {
         if (entity == null) return null;
         return new User(
             UserId.of(entity.getId()),
-            new Username(entity.getUsername()),
-            new Email(entity.getEmail()),
+            Username.of(entity.getUsername()),
+            Email.of(entity.getEmail()),
             Password.fromHash(entity.getPasswordHash()),
             entity.isMaster(),
             UserStatus.valueOf(entity.getStatus()),

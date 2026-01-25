@@ -9,64 +9,64 @@ class UsernameTest {
 
     @Test
     void testValidUsername() {
-        Username username = new Username("user123");
+        Username username = Username.of("user123");
         assertEquals("user123", username.value());
     }
 
     @Test
     void testValidUsernameWithUnderscore() {
-        Username username = new Username("john_doe");
+        Username username = Username.of("john_doe");
         assertEquals("john_doe", username.value());
     }
 
     @Test
     void testInvalidUsernameNull() {
-        DomainException exception = assertThrows(DomainException.class, () -> new Username(null));
+        DomainException exception = assertThrows(DomainException.class, () -> Username.of(null));
         assertEquals("Username não pode ser nulo ou vazio", exception.getMessage());
     }
 
     @Test
     void testInvalidUsernameEmpty() {
-        DomainException exception = assertThrows(DomainException.class, () -> new Username(""));
+        DomainException exception = assertThrows(DomainException.class, () -> Username.of(""));
         assertEquals("Username não pode ser nulo ou vazio", exception.getMessage());
     }
 
     @Test
     void testInvalidUsernameBlank() {
-        DomainException exception = assertThrows(DomainException.class, () -> new Username("   "));
+        DomainException exception = assertThrows(DomainException.class, () -> Username.of("   "));
         assertEquals("Username não pode ser nulo ou vazio", exception.getMessage());
     }
 
     @Test
     void testInvalidUsernameTooShort() {
-        DomainException exception = assertThrows(DomainException.class, () -> new Username("ab"));
+        DomainException exception = assertThrows(DomainException.class, () -> Username.of("ab"));
         assertEquals("Username deve ter pelo menos 3 caracteres", exception.getMessage());
     }
 
     @Test
     void testInvalidUsernameTooLong() {
         String longUsername = "a".repeat(51);
-        DomainException exception = assertThrows(DomainException.class, () -> new Username(longUsername));
+        DomainException exception = assertThrows(DomainException.class, () -> Username.of(longUsername));
         assertEquals("Username não pode exceder 50 caracteres", exception.getMessage());
     }
 
     @Test
     void testInvalidUsernameSpecialChars() {
-        DomainException exception = assertThrows(DomainException.class, () -> new Username("user@123"));
+        DomainException exception = assertThrows(DomainException.class, () -> Username.of("user@123"));
         assertEquals("Username deve conter apenas caracteres alfanuméricos e sublinhados", exception.getMessage());
     }
 
     @Test
     void testInvalidUsernameWithSpace() {
-        DomainException exception = assertThrows(DomainException.class, () -> new Username("user name"));
+        DomainException exception = assertThrows(DomainException.class, () -> Username.of("user name"));
         assertEquals("Username deve conter apenas caracteres alfanuméricos e sublinhados", exception.getMessage());
     }
 
     @Test
     void testUsernameEquality() {
-        Username username1 = new Username("testuser");
-        Username username2 = new Username("testuser");
-        Username username3 = new Username("otheruser");
+        Username username1 = Username.of("testuser");
+        Username username2 = Username.of("testuser");
+        Username username3 = Username.of("otheruser");
 
         assertEquals(username1, username2);
         assertNotEquals(username1, username3);
@@ -74,15 +74,15 @@ class UsernameTest {
 
     @Test
     void testUsernameHashCode() {
-        Username username1 = new Username("testuser");
-        Username username2 = new Username("testuser");
+        Username username1 = Username.of("testuser");
+        Username username2 = Username.of("testuser");
 
         assertEquals(username1.hashCode(), username2.hashCode());
     }
 
     @Test
     void testUsernameToString() {
-        Username username = new Username("testuser");
+        Username username = Username.of("testuser");
         assertEquals("testuser", username.toString());
     }
 }

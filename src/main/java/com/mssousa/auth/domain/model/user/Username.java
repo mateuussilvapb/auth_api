@@ -17,9 +17,13 @@ public final class Username {
 
     private final String value;
 
-    public Username(String value) {
+    private Username(String value) {
         validate(value);
         this.value = value;
+    }
+
+    public static Username of(String value) {
+        return new Username(value);
     }
 
     private void validate(String value) {

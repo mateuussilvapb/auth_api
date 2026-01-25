@@ -218,8 +218,8 @@ class MasterUserPolicyTest {
         // public User(UserId id, Username username, Email email, Password password, boolean master, UserStatus status, String name) {
         return new User(
             UserId.of(1L),
-            new Username("admin"),
-            new Email("admin@test.com"),
+            Username.of("admin"),
+            Email.of("admin@test.com"),
             Password.fromPlainText("Password123"),
             true,  // MASTER
             UserStatus.ACTIVE,
@@ -230,8 +230,8 @@ class MasterUserPolicyTest {
     private User createRegularUser() {
         return new User(
             UserId.of(2L),
-            new Username("user"),
-            new Email("user@test.com"),
+            Username.of("user"),
+            Email.of("user@test.com"),
             Password.fromPlainText("Password123"),
             false,  // NOT MASTER
             UserStatus.ACTIVE,

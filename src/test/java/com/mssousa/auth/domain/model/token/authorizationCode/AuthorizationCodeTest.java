@@ -38,8 +38,8 @@ class AuthorizationCodeTest {
         // Setup User
         user = new User(
                 UserId.of(1L),
-                new Username("testuser"),
-                new Email("test@example.com"),
+                Username.of("testuser"),
+                Email.of("test@example.com"),
                 Password.fromPlainText("password123"),
                 false,
                 UserStatus.ACTIVE,

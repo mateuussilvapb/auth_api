@@ -20,8 +20,8 @@ class UserTest {
     @BeforeEach
     void setUp() {
         userId = UserId.of(1L);
-        username = new Username("testuser");
-        email = new Email("test@example.com");
+        username = Username.of("testuser");
+        email = Email.of("test@example.com");
         password = Password.fromPlainText("password123");
         name = "Test User";
     }
@@ -133,7 +133,7 @@ class UserTest {
         user.updateProfile(newName, newEmail);
 
         assertEquals(newName, user.getName());
-        assertEquals(new Email(newEmail), user.getEmail());
+        assertEquals(Email.of(newEmail), user.getEmail());
     }
 
     @Test

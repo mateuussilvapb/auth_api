@@ -60,8 +60,8 @@ class UserServiceTest {
     void setUp() {
         regularUser = new User(
             UserId.of(1L),
-            new Username("user"),
-            new Email("user@example.com"),
+            Username.of("user"),
+            Email.of("user@example.com"),
             Password.fromPlainText("Pass1234"),
             false,
             UserStatus.ACTIVE,
@@ -70,8 +70,8 @@ class UserServiceTest {
 
         masterUser = new User(
             UserId.of(2L),
-            new Username("admin"),
-            new Email("admin@example.com"),
+            Username.of("admin"),
+            Email.of("admin@example.com"),
             Password.fromPlainText("Pass1234"),
             true,
             UserStatus.ACTIVE,
@@ -198,7 +198,7 @@ class UserServiceTest {
         void shouldFailUpdateWithDuplicateEmail() {
             // Arrange
             when(userRepository.findById(any())).thenReturn(Optional.of(regularUser));
-            when(userRepository.existsByEmail(new Email("duplicate@example.com"))).thenReturn(true);
+            when(userRepository.existsByEmail(Email.of("duplicate@example.com"))).thenReturn(true);
 
             // Act & Assert
             assertThatThrownBy(() -> 

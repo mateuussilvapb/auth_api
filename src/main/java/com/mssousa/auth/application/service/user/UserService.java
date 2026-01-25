@@ -39,11 +39,11 @@ public class UserService {
         }
 
         // Validações de unicidade
-        if (userRepository.existsByUsername(new Username(username))) {
+        if (userRepository.existsByUsername(Username.of(username))) {
             throw new DomainException("Username '" + username + "' já está em uso.");
         }
 
-        if (userRepository.existsByEmail(new Email(email))) {
+        if (userRepository.existsByEmail(Email.of(email))) {
             throw new DomainException("Email '" + email + "' já está em uso.");
         }
 
@@ -52,8 +52,8 @@ public class UserService {
         // Criação do usuário
         User newUser = new User(
             UserId.of(id),
-            new Username(username),
-            new Email(email),
+            Username.of(username),
+            Email.of(email),
             Password.fromPlainText(password),
             master,
             com.mssousa.auth.domain.model.user.UserStatus.ACTIVE,
@@ -79,7 +79,7 @@ public class UserService {
 
         // Se email mudou, validar unicidade
         if (!user.getEmail().value().equals(newEmail)) {
-            if (userRepository.existsByEmail(new Email(newEmail))) {
+            if (userRepository.existsByEmail(Email.of(newEmail))) {
                 throw new DomainException("Email '" + newEmail + "' já está em uso.");
             }
         }
@@ -161,12 +161,12 @@ public class UserService {
     
     @Transactional(readOnly = true)
     public Optional<User> findByUsername(String username) {
-        return userRepository.findByUsername(new Username(username));
+        return userRepository.findByUsername(Username.of(username));
     }
 
     @Transactional(readOnly = true)
     public Optional<User> findByEmail(String email) {
-        return userRepository.findByEmail(new Email(email));
+        return userRepository.findByEmail(Email.of(email));
     }
 
     @Transactional(readOnly = true)

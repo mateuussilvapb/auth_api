@@ -16,10 +16,14 @@ public final class Email {
 
     private final String value;
 
-    public Email(String value) {
+    private Email(String value) {
         String normalized = normalize(value);
         validate(normalized);
         this.value = normalized;
+    }
+
+    public static Email of(String value) {
+        return new Email(value);
     }
 
     private void validate(String value) {
