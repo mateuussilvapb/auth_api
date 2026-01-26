@@ -13,6 +13,7 @@ import com.mssousa.auth.domain.model.user.Email;
 import com.mssousa.auth.domain.model.user.Password;
 import com.mssousa.auth.domain.model.user.User;
 import com.mssousa.auth.domain.model.user.UserId;
+import com.mssousa.auth.domain.model.user.UserStatus;
 import com.mssousa.auth.domain.model.user.Username;
 import com.mssousa.auth.domain.repository.UserRepository;
 import com.mssousa.auth.domain.service.EmailSender;
@@ -50,15 +51,15 @@ public class UserService {
         Long id = idGenerator.generate();
 
         // Criação do usuário
-        User newUser = new User(
-            UserId.of(id),
-            Username.of(username),
-            Email.of(email),
-            Password.fromPlainText(password),
-            master,
-            com.mssousa.auth.domain.model.user.UserStatus.ACTIVE,
-            name
-        );
+        User newUser = User.builder()
+            .id(UserId.of(id))
+            .username(Username.of(username))
+            .email(Email.of(email))
+            .password(Password.fromPlainText(password))
+            .master(master)
+            .status(UserStatus.ACTIVE)
+            .name(name)
+            .build();
         
         User savedUser = userRepository.save(newUser);
         
@@ -84,7 +85,8 @@ public class UserService {
             }
         }
 
-        user.updateProfile(newName, newEmail);
+        user.updateName(newName);
+        user.updateEmail(Email.of(newEmail));
         return userRepository.save(user);
     }
 

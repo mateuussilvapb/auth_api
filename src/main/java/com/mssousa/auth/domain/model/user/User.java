@@ -1,7 +1,6 @@
 package com.mssousa.auth.domain.model.user;
 
 import com.mssousa.auth.domain.exception.DomainException;
-import com.mssousa.auth.domain.model.system.ClientSystem;
 
 /**
  * Entidade de domínio representando um Usuário no sistema de autenticação.
@@ -11,72 +10,56 @@ import com.mssousa.auth.domain.model.system.ClientSystem;
  * </p>
  */
 public class User {
+    
+    // Mensagens de erro para validações
+    public static final String DEFAULT_ERROR_ID = "Id não pode ser nulo";
+    public static final String DEFAULT_ERROR_NAME = "Nome do usuário não pode ser nulo ou vazio";
+    public static final String ERROR_USER_NOT_BLOCKED = "Usuário não está bloqueado";
 
     private final UserId id;
     private final Username username;
     private Email email;
     private Password password;
+    private String name;
     private boolean master;
     private UserStatus status;
-    private String name;
 
     /**
      * Cria um novo usuário.
-     *
-     * @param id identificador único do usuário
-     * @param username nome de usuário
-     * @param email endereço de e-mail
-     * @param password senha (hash BCrypt)
-     * @param master indica se o usuário é master
-     * @param status status do usuário
-     * @param name nome do usuário
+     * 
+     * @param builder Builder com os dados do usuário
      */
-    public User(UserId id, Username username, Email email, Password password, boolean master, UserStatus status, String name) {
-        validateId(id);
-        validateUsername(username);
-        validateEmail(email);
-        validatePassword(password);
-        validateName(name);
-
-        this.id = id;
-        this.username = username;
-        this.email = email;
-        this.password = password;
-        this.master = master;
-        this.status = status != null ? status : UserStatus.ACTIVE;
-        this.name = name;
+    private User(Builder builder) {
+        this.id = builder.id;
+        this.username = builder.username;
+        this.email = builder.email;
+        this.password = builder.password;
+        this.name = builder.name;
+        this.master = builder.master;
+        this.status = builder.status;
+        
+        validate();
     }
 
     // ==================== Validações ====================
 
-    private void validateId(UserId id) {
+    private void validate() {
         if (id == null) {
-            throw new IllegalArgumentException("UserId não pode ser nulo");
+            throw new IllegalArgumentException(DEFAULT_ERROR_ID);
         }
-    }
-
-    private void validateUsername(Username username) {
         if (username == null) {
-            throw new IllegalArgumentException("Username não pode ser nulo");
+            throw new IllegalArgumentException(Username.DEFAULT_ERROR_USERNAME);
         }
-    }
-
-    private void validateEmail(Email email) {
         if (email == null) {
-            throw new IllegalArgumentException("Email não pode ser nulo");
+            throw new IllegalArgumentException(Email.DEFAULT_ERROR_EMAIL);
         }
-    }
-
-    private void validatePassword(Password password) {
         if (password == null) {
-            throw new IllegalArgumentException("Password não pode ser nulo");
+            throw new IllegalArgumentException(Password.DEFAULT_ERROR_PASSWORD);
         }
-    }
-
-    private void validateName(String name) {
         if (name == null || name.isBlank()) {
-            throw new IllegalArgumentException("Nome do usuário não pode ser nulo ou vazio");
+            throw new IllegalArgumentException(DEFAULT_ERROR_NAME);
         }
+        // Status é garantido pelo Builder (sempre != null)
     }
 
     // ==================== Getters ====================
@@ -113,7 +96,7 @@ public class User {
 
     /**
      * Ativa o usuário, permitindo acesso ao sistema.
-     * Se o usuário já estiver ativo, nenhuma ação é tomada.
+     * Operação idempotente - pode ser chamada múltiplas vezes sem efeitos colaterais.
      */
     public void activate() {
         this.status = UserStatus.ACTIVE;
@@ -122,13 +105,9 @@ public class User {
     /**
      * Bloqueia o usuário, impedindo acesso ao sistema.
      * Usado geralmente para violações de segurança ou políticas.
-     *
-     * @throws DomainException se o usuário já estiver bloqueado
+     * Operação idempotente.
      */
     public void block() {
-        if (this.status == UserStatus.BLOCKED) {
-            throw new DomainException("Usuário já está bloqueado");
-        }
         this.status = UserStatus.BLOCKED;
     }
 
@@ -139,7 +118,7 @@ public class User {
      */
     public void unblock() {
         if (this.status != UserStatus.BLOCKED) {
-            throw new DomainException("Usuário não está bloqueado");
+            throw new DomainException(ERROR_USER_NOT_BLOCKED);
         }
         this.status = UserStatus.ACTIVE;
     }
@@ -147,13 +126,9 @@ public class User {
     /**
      * Desabilita o usuário temporariamente.
      * Diferente de bloqueio, usado para suspensões temporárias.
-     *
-     * @throws DomainException se o usuário já estiver desabilitado
+     * Operação idempotente.
      */
     public void disable() {
-        if (this.status == UserStatus.DISABLED) {
-            throw new DomainException("Usuário já está desabilitado");
-        }
         this.status = UserStatus.DISABLED;
     }
 
@@ -194,7 +169,7 @@ public class User {
      */
     public void changePassword(Password newPassword) {
         if (newPassword == null) {
-            throw new IllegalArgumentException("Nova senha não pode ser nula");
+            throw new IllegalArgumentException(Password.DEFAULT_ERROR_PASSWORD);
         }
         this.password = newPassword;
     }
@@ -228,52 +203,124 @@ public class User {
     // ==================== Controle de Acesso ====================
 
     /**
-     * Verifica se o usuário pode acessar um sistema cliente específico.
-     * <p>
-     * Usuários master sempre podem acessar.
-     * Usuários não-master precisam estar ativos.
-     * </p>
-     *
-     * @param system sistema cliente a verificar acesso
-     * @return true se o usuário pode acessar o sistema
-     */
-    public boolean canAccess(ClientSystem system) {
-        if (master) {
-            return true;
-        }
-        return status == UserStatus.ACTIVE;
-    }
-
-    /**
      * Verifica se o usuário pode fazer login no sistema.
      * <p>
+     * Esta verificação é sobre o estado do USUÁRIO, não sobre sistemas externos.
      * Usuários master sempre podem fazer login.
      * Usuários não-master precisam estar ativos.
+     * </p>
+     * <p>
+     * Nota: A validação de acesso a sistemas específicos deve ser feita
+     * na camada de Application, pois envolve múltiplos agregados.
      * </p>
      *
      * @return true se o usuário pode fazer login
      */
     public boolean canLogin() {
-        if (master) {
-            return true;
-        }
-        return status == UserStatus.ACTIVE;
+        return master || status == UserStatus.ACTIVE;
     }
 
     // ==================== Atualização de Perfil ====================
 
     /**
-     * Atualiza os dados de perfil do usuário.
+     * Atualiza o nome do usuário.
      *
      * @param name novo nome
-     * @param email novo e-mail
+     * @throws IllegalArgumentException se o nome for nulo ou vazio
      */
-    public void updateProfile(String name, String email) {
-        if (name != null && !name.isBlank()) {
-            this.name = name;
+    public void updateName(String name) {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException(DEFAULT_ERROR_NAME);
         }
-        if (email != null && !email.isBlank()) {
-            this.email = Email.of(email);
+        this.name = name;
+    }
+
+    /**
+     * Atualiza o email do usuário.
+     *
+     * @param email novo email
+     * @throws IllegalArgumentException se o email for nulo
+     */
+    public void updateEmail(Email email) {
+        if (email == null) {
+            throw new IllegalArgumentException(Email.DEFAULT_ERROR_EMAIL);
+        }
+        this.email = email;
+    }
+
+    // ==================== Padrão Builder ====================
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+        private UserId id;
+        private Username username;
+        private Email email;
+        private Password password;
+        private String name;
+        private boolean master = false;
+        private UserStatus status = UserStatus.ACTIVE;
+
+        public Builder id(UserId id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder username(Username username) {
+            this.username = username;
+            return this;
+        }
+
+        public Builder email(Email email) {
+            this.email = email;
+            return this;
+        }
+
+        public Builder password(Password password) {
+            this.password = password;
+            return this;
+        }
+
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder master(boolean master) {
+            this.master = master;
+            return this;
+        }
+
+        public Builder status(UserStatus status) {
+            if (status == null) {
+                this.status = UserStatus.ACTIVE;
+                return this;
+            }
+            this.status = status;
+            return this;
+        }
+
+        public User build() {
+            // Validação de campos obrigatórios
+            if (id == null) {
+                throw new IllegalArgumentException(User.DEFAULT_ERROR_ID);
+            }
+            if (username == null) {
+                throw new IllegalArgumentException(Username.DEFAULT_ERROR_USERNAME);
+            }
+            if (email == null) {
+                throw new IllegalArgumentException(Email.DEFAULT_ERROR_EMAIL);
+            }
+            if (password == null) {
+                throw new IllegalArgumentException(Password.DEFAULT_ERROR_PASSWORD);
+            }
+            if (name == null || name.isBlank()) {
+                throw new IllegalArgumentException(User.DEFAULT_ERROR_NAME);
+            }
+            
+            return new User(this);
         }
     }
 }

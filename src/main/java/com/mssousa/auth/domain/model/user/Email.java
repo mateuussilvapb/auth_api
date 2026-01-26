@@ -11,6 +11,9 @@ import java.util.regex.Pattern;
  */
 public final class Email {
 
+    public static final String DEFAULT_ERROR_EMAIL = "Email não pode ser nulo ou vazio";
+    public static final String DEFAULT_ERROR_EMAIL_FORMAT = "Formato de email inválido";
+
     private static final Pattern EMAIL_PATTERN = 
         Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
 
@@ -28,11 +31,11 @@ public final class Email {
 
     private void validate(String value) {
         if (value == null || value.isBlank()) {
-            throw new DomainException("Email não pode ser nulo ou vazio");
+            throw new IllegalArgumentException(DEFAULT_ERROR_EMAIL);
         }
 
         if (!EMAIL_PATTERN.matcher(value).matches()) {
-            throw new DomainException("Formato de email inválido");
+            throw new DomainException(DEFAULT_ERROR_EMAIL_FORMAT);
         }
     }
 

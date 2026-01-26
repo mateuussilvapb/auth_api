@@ -70,15 +70,15 @@ public class AuthMapper {
 
     public User toDomain(UserEntity entity) {
         if (entity == null) return null;
-        return new User(
-            UserId.of(entity.getId()),
-            Username.of(entity.getUsername()),
-            Email.of(entity.getEmail()),
-            Password.fromHash(entity.getPasswordHash()),
-            entity.isMaster(),
-            UserStatus.valueOf(entity.getStatus()),
-            entity.getName()
-        );
+        return User.builder()
+            .id(UserId.of(entity.getId()))
+            .username(Username.of(entity.getUsername()))
+            .email(Email.of(entity.getEmail()))
+            .password(Password.fromHash(entity.getPasswordHash()))
+            .master(entity.isMaster())
+            .status(UserStatus.valueOf(entity.getStatus()))
+            .name(entity.getName())
+            .build();
     }
 
     public UserEntity toEntity(User user) {

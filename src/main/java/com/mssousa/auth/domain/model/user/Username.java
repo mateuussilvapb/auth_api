@@ -11,6 +11,11 @@ import java.util.regex.Pattern;
  */
 public final class Username {
 
+    public static final String DEFAULT_ERROR_USERNAME = "Username não pode ser nulo ou vazio";
+    public static final String DEFAULT_ERROR_USERNAME_MIN_LENGTH = "Username deve ter pelo menos 3 caracteres";
+    public static final String DEFAULT_ERROR_USERNAME_MAX_LENGTH = "Username não pode exceder 50 caracteres";
+    public static final String DEFAULT_ERROR_USERNAME_PATTERN = "Username deve conter apenas caracteres alfanuméricos e sublinhados";
+
     private static final int MIN_LENGTH = 3;
     private static final int MAX_LENGTH = 50;
     private static final Pattern VALID_PATTERN = Pattern.compile("^[a-zA-Z0-9_]+$");
@@ -28,19 +33,19 @@ public final class Username {
 
     private void validate(String value) {
         if (value == null || value.isBlank()) {
-            throw new DomainException("Username não pode ser nulo ou vazio");
+            throw new DomainException(DEFAULT_ERROR_USERNAME);
         }
 
         if (value.length() < MIN_LENGTH) {
-            throw new DomainException("Username deve ter pelo menos " + MIN_LENGTH + " caracteres");
+            throw new DomainException(DEFAULT_ERROR_USERNAME_MIN_LENGTH);
         }
 
         if (value.length() > MAX_LENGTH) {
-            throw new DomainException("Username não pode exceder " + MAX_LENGTH + " caracteres");
+            throw new DomainException(DEFAULT_ERROR_USERNAME_MAX_LENGTH);
         }
 
         if (!VALID_PATTERN.matcher(value).matches()) {
-            throw new DomainException("Username deve conter apenas caracteres alfanuméricos e sublinhados");
+            throw new DomainException(DEFAULT_ERROR_USERNAME_PATTERN);
         }
     }
 

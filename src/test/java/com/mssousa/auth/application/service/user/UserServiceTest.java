@@ -58,25 +58,25 @@ class UserServiceTest {
 
     @BeforeEach
     void setUp() {
-        regularUser = new User(
-            UserId.of(1L),
-            Username.of("user"),
-            Email.of("user@example.com"),
-            Password.fromPlainText("Pass1234"),
-            false,
-            UserStatus.ACTIVE,
-            "Regular User"
-        );
+        regularUser = User.builder()
+            .id(UserId.of(1L))
+            .username(Username.of("user"))
+            .email(Email.of("user@example.com"))
+            .password(Password.fromPlainText("Pass1234"))
+            .master(false)
+            .status(UserStatus.ACTIVE)
+            .name("Regular User")
+            .build();
 
-        masterUser = new User(
-            UserId.of(2L),
-            Username.of("admin"),
-            Email.of("admin@example.com"),
-            Password.fromPlainText("Pass1234"),
-            true,
-            UserStatus.ACTIVE,
-            "Admin User"
-        );
+        masterUser = User.builder()
+            .id(UserId.of(2L))
+            .username(Username.of("admin"))
+            .email(Email.of("admin@example.com"))
+            .password(Password.fromPlainText("Pass1234"))
+            .master(true)
+            .status(UserStatus.ACTIVE)
+            .name("Admin User")
+            .build();
     }
 
     @Nested

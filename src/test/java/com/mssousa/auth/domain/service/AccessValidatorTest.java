@@ -199,25 +199,27 @@ class AccessValidatorTest {
 
     // Helper methods
     private User createMasterUser() {
-        return new User(
-                UserId.of(1L),
-                Username.of("admin"),
-                Email.of("admin@test.com"),
-                Password.fromPlainText("Password123"),
-                true, // MASTER,
-                UserStatus.ACTIVE,
-                "Admin User");
+        return User.builder()
+        .id(UserId.of(1L))
+        .username(Username.of("admin"))
+        .email(Email.of("admin@test.com"))
+        .password(Password.fromPlainText("Password123"))
+        .master(true)
+        .status(UserStatus.ACTIVE)
+        .name("Admin User")
+        .build();
     }
 
     private User createRegularUser() {
-        return new User(
-                UserId.of(2L),
-                Username.of("user"),
-                Email.of("user@test.com"),
-                Password.fromPlainText("Password123"),
-                false, // NOT MASTER
-                UserStatus.ACTIVE,
-                "Regular User");
+        return User.builder()
+        .id(UserId.of(2L))
+        .username(Username.of("user"))
+        .email(Email.of("user@test.com"))
+        .password(Password.fromPlainText("Password123"))
+        .master(false)
+        .status(UserStatus.ACTIVE)
+        .name("Regular User")
+        .build();
     }
 
     private ClientSystem createActiveSystem() {

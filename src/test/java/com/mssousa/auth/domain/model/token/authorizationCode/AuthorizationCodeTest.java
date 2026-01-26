@@ -36,14 +36,15 @@ class AuthorizationCodeTest {
         futureExpiration = Instant.now().plus(10, ChronoUnit.MINUTES);
 
         // Setup User
-        user = new User(
-                UserId.of(1L),
-                Username.of("testuser"),
-                Email.of("test@example.com"),
-                Password.fromPlainText("password123"),
-                false,
-                UserStatus.ACTIVE,
-                "Test User");
+        user = User.builder()
+                .id(UserId.of(1L))
+                .username(Username.of("testuser"))
+                .email(Email.of("test@example.com"))
+                .password(Password.fromPlainText("password123"))
+                .master(false)
+                .status(UserStatus.ACTIVE)
+                .name("Test User")
+                .build();
 
         // Setup ClientSystem
         systemId = SystemId.of(1L);

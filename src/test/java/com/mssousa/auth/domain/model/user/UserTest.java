@@ -1,13 +1,16 @@
 package com.mssousa.auth.domain.model.user;
 
-import com.mssousa.auth.domain.exception.DomainException;
-import com.mssousa.auth.domain.model.system.ClientSystem;
-import com.mssousa.auth.domain.model.system.SystemId;
-import com.mssousa.auth.domain.model.system.SystemStatus;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import com.mssousa.auth.domain.exception.DomainException;
 
 class UserTest {
 
@@ -30,7 +33,15 @@ class UserTest {
 
     @Test
     void testCreateUser() {
-        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE, name);
+        User user = User.builder()
+                .id(userId)
+                .username(username)
+                .email(email)
+                .password(password)
+                .master(false)
+                .status(UserStatus.ACTIVE)
+                .name(name)
+                .build();
 
         assertNotNull(user);
         assertEquals(userId, user.getId());
@@ -45,80 +56,162 @@ class UserTest {
     @Test
     void testCreateUserWithNullId() {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
-            () -> new User(null, username, email, password, false, UserStatus.ACTIVE, name));
-        assertEquals("UserId não pode ser nulo", exception.getMessage());
+            () -> User.builder()
+                .id(null)
+                .username(username)
+                .email(email)
+                .password(password)
+                .master(false)
+                .status(UserStatus.ACTIVE)
+                .name(name)
+                .build());
+        assertEquals(User.DEFAULT_ERROR_ID, exception.getMessage());
     }
 
     @Test
     void testCreateUserWithNullUsername() {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
-            () -> new User(userId, null, email, password, false, UserStatus.ACTIVE, name));
-        assertEquals("Username não pode ser nulo", exception.getMessage());
+            () -> User.builder()
+                .id(userId)
+                .username(null)
+                .email(email)
+                .password(password)
+                .master(false)
+                .status(UserStatus.ACTIVE)
+                .name(name)
+                .build());
+        assertEquals(Username.DEFAULT_ERROR_USERNAME, exception.getMessage());
     }
 
     @Test
     void testCreateUserWithNullEmail() {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
-            () -> new User(userId, username, null, password, false, UserStatus.ACTIVE, name));
-        assertEquals("Email não pode ser nulo", exception.getMessage());
+            () -> User.builder()
+                .id(userId)
+                .username(username)
+                .email(null)
+                .password(password)
+                .master(false)
+                .status(UserStatus.ACTIVE)
+                .name(name)
+                .build());
+        assertEquals(Email.DEFAULT_ERROR_EMAIL, exception.getMessage());
     }
 
     @Test
     void testCreateUserWithNullPassword() {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
-            () -> new User(userId, username, email, null, false, UserStatus.ACTIVE, name));
-        assertEquals("Password não pode ser nulo", exception.getMessage());
+            () -> User.builder()
+                .id(userId)
+                .username(username)
+                .email(email)
+                .password(null)
+                .master(false)
+                .status(UserStatus.ACTIVE)
+                .name(name)
+                .build());
+        assertEquals(Password.DEFAULT_ERROR_PASSWORD, exception.getMessage());
     }
 
     @Test
     void testCreateUserWithNullName() {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
-            () -> new User(userId, username, email, password, false, UserStatus.ACTIVE, null));
-        assertEquals("Nome do usuário não pode ser nulo ou vazio", exception.getMessage());
+            () -> User.builder()
+                .id(userId)
+                .username(username)
+                .email(email)
+                .password(password)
+                .master(false)
+                .status(UserStatus.ACTIVE)
+                .name(null)
+                .build());
+        assertEquals(User.DEFAULT_ERROR_NAME, exception.getMessage());
     }
 
     @Test
     void testCreateUserWithBlankName() {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
-            () -> new User(userId, username, email, password, false, UserStatus.ACTIVE, "  "));
-        assertEquals("Nome do usuário não pode ser nulo ou vazio", exception.getMessage());
-    }
-
-    @Test
-    void testCreateUserWithNullStatusDefaultsToActive() {
-        User user = new User(userId, username, email, password, false, null, name);
-        assertEquals(UserStatus.ACTIVE, user.getStatus());
+            () -> User.builder()
+                .id(userId)
+                .username(username)
+                .email(email)
+                .password(password)
+                .master(false)
+                .status(UserStatus.ACTIVE)
+                .name("  ")
+                .build());
+        assertEquals(User.DEFAULT_ERROR_NAME, exception.getMessage());
     }
 
     @Test
     void testCreateMasterUser() {
-        User user = new User(userId, username, email, password, true, UserStatus.ACTIVE, name);
+        User user = User.builder()
+                .id(userId)
+                .username(username)
+                .email(email)
+                .password(password)
+                .master(true)
+                .status(UserStatus.ACTIVE)
+                .name(name)
+                .build();
 
         assertTrue(user.isMaster());
     }
 
     @Test
     void testGetId() {
-        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE, name);
+        User user = User.builder()
+                .id(userId)
+                .username(username)
+                .email(email)
+                .password(password)
+                .master(false)
+                .status(UserStatus.ACTIVE)
+                .name(name)
+                .build();
         assertEquals(userId, user.getId());
     }
 
     @Test
     void testGetUsername() {
-        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE, name);
+        User user = User.builder()
+                .id(userId)
+                .username(username)
+                .email(email)
+                .password(password)
+                .master(false)
+                .status(UserStatus.ACTIVE)
+                .name(name)
+                .build();
         assertEquals(username, user.getUsername());
     }
 
     @Test
     void testGetEmail() {
-        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE, name);
+        User user = User.builder()
+                .id(userId)
+                .username(username)
+                .email(email)
+                .password(password)
+                .master(false)
+                .status(UserStatus.ACTIVE)
+                .name(name)
+                .build();
         assertEquals(email, user.getEmail());
     }
 
 
     @Test
     void testGetName() {
-        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE, name);
+        User user = User.builder()
+                .id(userId)
+                .username(username)
+                .email(email)
+                .password(password)
+                .master(false)
+                .status(UserStatus.ACTIVE)
+                .name(name)
+                .build();
         assertEquals(name, user.getName());
     }
 
@@ -126,41 +219,106 @@ class UserTest {
 
     @Test
     void testUpdateProfile() {
-        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE, name);
+        User user = User.builder()
+                .id(userId)
+                .username(username)
+                .email(email)
+                .password(password)
+                .master(false)
+                .status(UserStatus.ACTIVE)
+                .name(name)
+                .build();
         String newName = "Updated Name";
         String newEmail = "updated@example.com";
 
-        user.updateProfile(newName, newEmail);
+        user.updateName(newName);
+        user.updateEmail(Email.of(newEmail));
 
         assertEquals(newName, user.getName());
         assertEquals(Email.of(newEmail), user.getEmail());
     }
 
     @Test
-    void testUpdateProfileWithNulls() {
-        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE, name);
+    void testUpdateNameWithNulls() {
+        User user = User.builder()
+                .id(userId)
+                .username(username)
+                .email(email)
+                .password(password)
+                .master(false)
+                .status(UserStatus.ACTIVE)
+                .name(name)
+                .build();
 
-        user.updateProfile(null, null);
-
-        assertEquals(name, user.getName());
-        assertEquals(email, user.getEmail());
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
+            () -> user.updateName(null));
+        assertEquals(User.DEFAULT_ERROR_NAME, exception.getMessage());
     }
 
     @Test
-    void testUpdateProfileWithEmptyStrings() {
-        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE, name);
+    void testUpdateNameWithEmptyStrings() {
+        User user = User.builder()
+                .id(userId)
+                .username(username)
+                .email(email)
+                .password(password)
+                .master(false)
+                .status(UserStatus.ACTIVE)
+                .name(name)
+                .build();
 
-        user.updateProfile("", "  ");
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
+            () -> user.updateName(""));
+        assertEquals(User.DEFAULT_ERROR_NAME, exception.getMessage());
+    }
 
-        assertEquals(name, user.getName());
-        assertEquals(email, user.getEmail());
+    @Test
+    void testUpdateEmailWithNulls() {
+        User user = User.builder()
+                .id(userId)
+                .username(username)
+                .email(email)
+                .password(password)
+                .master(false)
+                .status(UserStatus.ACTIVE)
+                .name(name)
+                .build();
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
+            () -> user.updateEmail(null));
+        assertEquals(Email.DEFAULT_ERROR_EMAIL, exception.getMessage());
+    }
+
+    @Test
+    void testUpdateEmailWithEmptyStrings() {
+        User user = User.builder()
+                .id(userId)
+                .username(username)
+                .email(email)
+                .password(password)
+                .master(false)
+                .status(UserStatus.ACTIVE)
+                .name(name)
+                .build();
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
+            () -> user.updateEmail(Email.of("")));
+        assertEquals(Email.DEFAULT_ERROR_EMAIL, exception.getMessage());
     }
 
     // ==================== Gerenciamento de Status ====================
 
     @Test
     void testActivateUser() {
-        User user = new User(userId, username, email, password, false, UserStatus.BLOCKED, name);
+        User user = User.builder()
+                .id(userId)
+                .username(username)
+                .email(email)
+                .password(password)
+                .master(false)
+                .status(UserStatus.BLOCKED)
+                .name(name)
+                .build();
         
         user.activate();
         
@@ -170,7 +328,15 @@ class UserTest {
 
     @Test
     void testActivateAlreadyActiveUser() {
-        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE, name);
+        User user = User.builder()
+                .id(userId)
+                .username(username)
+                .email(email)
+                .password(password)
+                .master(false)
+                .status(UserStatus.ACTIVE)
+                .name(name)
+                .build();
         
         user.activate(); // Não deve lançar exceção
         
@@ -179,7 +345,15 @@ class UserTest {
 
     @Test
     void testBlockUser() {
-        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE, name);
+        User user = User.builder()
+                .id(userId)
+                .username(username)
+                .email(email)
+                .password(password)
+                .master(false)
+                .status(UserStatus.ACTIVE)
+                .name(name)
+                .build();
         
         user.block();
         
@@ -188,16 +362,16 @@ class UserTest {
     }
 
     @Test
-    void testBlockAlreadyBlockedUser() {
-        User user = new User(userId, username, email, password, false, UserStatus.BLOCKED, name);
-        
-        DomainException exception = assertThrows(DomainException.class, user::block);
-        assertEquals("Usuário já está bloqueado", exception.getMessage());
-    }
-
-    @Test
     void testUnblockUser() {
-        User user = new User(userId, username, email, password, false, UserStatus.BLOCKED, name);
+        User user = User.builder()
+                .id(userId)
+                .username(username)
+                .email(email)
+                .password(password)
+                .master(false)
+                .status(UserStatus.BLOCKED)
+                .name(name)
+                .build();
         
         user.unblock();
         
@@ -206,16 +380,16 @@ class UserTest {
     }
 
     @Test
-    void testUnblockNotBlockedUser() {
-        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE, name);
-        
-        DomainException exception = assertThrows(DomainException.class, user::unblock);
-        assertEquals("Usuário não está bloqueado", exception.getMessage());
-    }
-
-    @Test
     void testDisableUser() {
-        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE, name);
+        User user = User.builder()
+                .id(userId)
+                .username(username)
+                .email(email)
+                .password(password)
+                .master(false)
+                .status(UserStatus.ACTIVE)
+                .name(name)
+                .build();
         
         user.disable();
         
@@ -224,17 +398,25 @@ class UserTest {
     }
 
     @Test
-    void testDisableAlreadyDisabledUser() {
-        User user = new User(userId, username, email, password, false, UserStatus.DISABLED, name);
-        
-        DomainException exception = assertThrows(DomainException.class, user::disable);
-        assertEquals("Usuário já está desabilitado", exception.getMessage());
-    }
-
-    @Test
     void testIsActive() {
-        User activeUser = new User(userId, username, email, password, false, UserStatus.ACTIVE, name);
-        User blockedUser = new User(userId, username, email, password, false, UserStatus.BLOCKED, name);
+        User activeUser = User.builder()
+                .id(userId)
+                .username(username)
+                .email(email)
+                .password(password)
+                .master(false)
+                .status(UserStatus.ACTIVE)
+                .name(name)
+                .build();
+        User blockedUser = User.builder()
+                .id(userId)
+                .username(username)
+                .email(email)
+                .password(password)
+                .master(false)
+                .status(UserStatus.BLOCKED)
+                .name(name)
+                .build();
         
         assertTrue(activeUser.isActive());
         assertFalse(blockedUser.isActive());
@@ -242,8 +424,24 @@ class UserTest {
 
     @Test
     void testIsBlocked() {
-        User blockedUser = new User(userId, username, email, password, false, UserStatus.BLOCKED, name);
-        User activeUser = new User(userId, username, email, password, false, UserStatus.ACTIVE, name);
+        User blockedUser = User.builder()
+                .id(userId)
+                .username(username)
+                .email(email)
+                .password(password)
+                .master(false)
+                .status(UserStatus.BLOCKED)
+                .name(name)
+                .build();
+        User activeUser = User.builder()
+                .id(userId)
+                .username(username)
+                .email(email)
+                .password(password)
+                .master(false)
+                .status(UserStatus.ACTIVE)
+                .name(name)
+                .build();
         
         assertTrue(blockedUser.isBlocked());
         assertFalse(activeUser.isBlocked());
@@ -251,8 +449,24 @@ class UserTest {
 
     @Test
     void testIsDisabled() {
-        User disabledUser = new User(userId, username, email, password, false, UserStatus.DISABLED, name);
-        User activeUser = new User(userId, username, email, password, false, UserStatus.ACTIVE, name);
+        User disabledUser = User.builder()
+                .id(userId)
+                .username(username)
+                .email(email)
+                .password(password)
+                .master(false)
+                .status(UserStatus.DISABLED)
+                .name(name)
+                .build();
+        User activeUser = User.builder()
+                .id(userId)
+                .username(username)
+                .email(email)
+                .password(password)
+                .master(false)
+                .status(UserStatus.ACTIVE)
+                .name(name)
+                .build();
         
         assertTrue(disabledUser.isDisabled());
         assertFalse(activeUser.isDisabled());
@@ -260,7 +474,15 @@ class UserTest {
 
     @Test
     void testStatusTransitions() {
-        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE, name);
+        User user = User.builder()
+                .id(userId)
+                .username(username)
+                .email(email)
+                .password(password)
+                .master(false)
+                .status(UserStatus.ACTIVE)
+                .name(name)
+                .build();
         
         // ACTIVE -> BLOCKED
         user.block();
@@ -283,7 +505,15 @@ class UserTest {
 
     @Test
     void testChangePassword() {
-        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE, name);
+        User user = User.builder()
+                .id(userId)
+                .username(username)
+                .email(email)
+                .password(password)
+                .master(false)
+                .status(UserStatus.ACTIVE)
+                .name(name)
+                .build();
         Password newPassword = Password.fromPlainText("newPassword456");
         
         user.changePassword(newPassword);
@@ -294,30 +524,62 @@ class UserTest {
 
     @Test
     void testChangePasswordWithNull() {
-        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE, name);
+        User user = User.builder()
+                .id(userId)
+                .username(username)
+                .email(email)
+                .password(password)
+                .master(false)
+                .status(UserStatus.ACTIVE)
+                .name(name)
+                .build();
         
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
             () -> user.changePassword(null));
-        assertEquals("Nova senha não pode ser nula", exception.getMessage());
+        assertEquals(Password.DEFAULT_ERROR_PASSWORD, exception.getMessage());
     }
 
     @Test
     void testVerifyCorrectPassword() {
-        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE, name);
+        User user = User.builder()
+                .id(userId)
+                .username(username)
+                .email(email)
+                .password(password)
+                .master(false)
+                .status(UserStatus.ACTIVE)
+                .name(name)
+                .build();
         
         assertTrue(user.verifyPassword("password123"));
     }
 
     @Test
     void testVerifyIncorrectPassword() {
-        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE, name);
+        User user = User.builder()
+                .id(userId)
+                .username(username)
+                .email(email)
+                .password(password)
+                .master(false)
+                .status(UserStatus.ACTIVE)
+                .name(name)
+                .build();
         
         assertFalse(user.verifyPassword("wrongPassword"));
     }
 
     @Test
     void testVerifyPasswordWithNull() {
-        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE, name);
+        User user = User.builder()
+                .id(userId)
+                .username(username)
+                .email(email)
+                .password(password)
+                .master(false)
+                .status(UserStatus.ACTIVE)
+                .name(name)
+                .build();
         
         assertFalse(user.verifyPassword(null));
     }
@@ -326,7 +588,15 @@ class UserTest {
 
     @Test
     void testPromoteToMaster() {
-        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE, name);
+        User user = User.builder()
+                .id(userId)
+                .username(username)
+                .email(email)
+                .password(password)
+                .master(false)
+                .status(UserStatus.ACTIVE)
+                .name(name)
+                .build();
         assertFalse(user.isMaster());
         
         user.promoteToMaster();
@@ -336,7 +606,15 @@ class UserTest {
 
     @Test
     void testDemoteFromMaster() {
-        User user = new User(userId, username, email, password, true, UserStatus.ACTIVE, name);
+        User user = User.builder()
+                .id(userId)
+                .username(username)
+                .email(email)
+                .password(password)
+                .master(true)
+                .status(UserStatus.ACTIVE)
+                .name(name)
+                .build();
         assertTrue(user.isMaster());
         
         user.demoteFromMaster();
@@ -345,88 +623,194 @@ class UserTest {
     }
 
     @Test
-    void testMasterCanAccessAnything() {
-        User master = new User(userId, username, email, password, true, UserStatus.BLOCKED, name);
-        ClientSystem system = new ClientSystem(SystemId.of(1L), "test-client", "secret", "Test System", "https://example.com/callback", SystemStatus.ACTIVE);
+    void testMasterCanLogin() {
+        User master = User.builder()
+                .id(userId)
+                .username(username)
+                .email(email)
+                .password(password)
+                .master(true)
+                .status(UserStatus.BLOCKED)
+                .name(name)
+                .build();
         
-        assertTrue(master.canAccess(system));
+        assertTrue(master.canLogin());
     }
 
     @Test
     void testNonMasterRequiresActiveStatus() {
-        User blockedUser = new User(userId, username, email, password, false, UserStatus.BLOCKED, name);
-        User activeUser = new User(userId, username, email, password, false, UserStatus.ACTIVE, name);
-        ClientSystem system = new ClientSystem(SystemId.of(1L), "test-client", "secret", "Test System", "https://example.com/callback", SystemStatus.ACTIVE);
+        User blockedUser = User.builder()
+                .id(userId)
+                .username(username)
+                .email(email)
+                .password(password)
+                .master(false)
+                .status(UserStatus.BLOCKED)
+                .name(name)
+                .build();
+        User activeUser = User.builder()
+                .id(userId)
+                .username(username)
+                .email(email)
+                .password(password)
+                .master(false)
+                .status(UserStatus.ACTIVE)
+                .name(name)
+                .build();
         
-        assertFalse(blockedUser.canAccess(system));
-        assertTrue(activeUser.canAccess(system));
+        assertFalse(blockedUser.canLogin());
+        assertTrue(activeUser.canLogin());
     }
 
     // ==================== Controle de Acesso ====================
 
     @Test
     void testCanAccessWhenActive() {
-        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE, name);
-        ClientSystem system = new ClientSystem(SystemId.of(1L), "test-client", "secret", "Test System", "https://example.com/callback", SystemStatus.ACTIVE);
+        User user = User.builder()
+                .id(userId)
+                .username(username)
+                .email(email)
+                .password(password)
+                .master(false)
+                .status(UserStatus.ACTIVE)
+                .name(name)
+                .build();
         
-        assertTrue(user.canAccess(system));
+        assertTrue(user.canLogin());
     }
 
     @Test
     void testCannotAccessWhenBlocked() {
-        User user = new User(userId, username, email, password, false, UserStatus.BLOCKED, name);
-        ClientSystem system = new ClientSystem(SystemId.of(1L), "test-client", "secret", "Test System", "https://example.com/callback", SystemStatus.ACTIVE);
+        User user = User.builder()
+                .id(userId)
+                .username(username)
+                .email(email)
+                .password(password)
+                .master(false)
+                .status(UserStatus.BLOCKED)
+                .name(name)
+                .build();
         
-        assertFalse(user.canAccess(system));
+        assertFalse(user.canLogin());
     }
 
     @Test
     void testCannotAccessWhenDisabled() {
-        User user = new User(userId, username, email, password, false, UserStatus.DISABLED, name);
-        ClientSystem system = new ClientSystem(SystemId.of(1L), "test-client", "secret", "Test System", "https://example.com/callback", SystemStatus.ACTIVE);
+        User user = User.builder()
+                .id(userId)
+                .username(username)
+                .email(email)
+                .password(password)
+                .master(false)
+                .status(UserStatus.DISABLED)
+                .name(name)
+                .build();
         
-        assertFalse(user.canAccess(system));
+        assertFalse(user.canLogin());
     }
 
     @Test
     void testMasterCanAlwaysAccess() {
-        User masterBlocked = new User(userId, username, email, password, true, UserStatus.BLOCKED, name);
-        User masterDisabled = new User(userId, username, email, password, true, UserStatus.DISABLED, name);
-        User masterActive = new User(userId, username, email, password, true, UserStatus.ACTIVE, name);
-        ClientSystem system = new ClientSystem(SystemId.of(1L), "test-client", "secret", "Test System", "https://example.com/callback", SystemStatus.ACTIVE);
+        User masterBlocked = User.builder()
+                .id(userId)
+                .username(username)
+                .email(email)
+                .password(password)
+                .master(true)
+                .status(UserStatus.BLOCKED)
+                .name(name)
+                .build();
+        User masterDisabled = User.builder()
+                .id(userId)
+                .username(username)
+                .email(email)
+                .password(password)
+                .master(true)
+                .status(UserStatus.DISABLED)
+                .name(name)
+                .build();
+        User masterActive = User.builder()
+                .id(userId)
+                .username(username)
+                .email(email)
+                .password(password)
+                .master(true)
+                .status(UserStatus.ACTIVE)
+                .name(name)
+                .build();
         
-        assertTrue(masterBlocked.canAccess(system));
-        assertTrue(masterDisabled.canAccess(system));
-        assertTrue(masterActive.canAccess(system));
+        assertTrue(masterBlocked.canLogin());
+        assertTrue(masterDisabled.canLogin());
+        assertTrue(masterActive.canLogin());
     }
 
     // ==================== Login ====================
 
     @Test
     void testCanLoginWhenActive() {
-        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE, name);
+        User user = User.builder()
+                .id(userId)
+                .username(username)
+                .email(email)
+                .password(password)
+                .master(false)
+                .status(UserStatus.ACTIVE)
+                .name(name)
+                .build();
         
         assertTrue(user.canLogin());
     }
 
     @Test
     void testCannotLoginWhenBlocked() {
-        User user = new User(userId, username, email, password, false, UserStatus.BLOCKED, name);
+        User user = User.builder()
+                .id(userId)
+                .username(username)
+                .email(email)
+                .password(password)
+                .master(false)
+                .status(UserStatus.BLOCKED)
+                .name(name)
+                .build();
         
         assertFalse(user.canLogin());
     }
 
     @Test
     void testCannotLoginWhenDisabled() {
-        User user = new User(userId, username, email, password, false, UserStatus.DISABLED, name);
+        User user = User.builder()
+                .id(userId)
+                .username(username)
+                .email(email)
+                .password(password)
+                .master(false)
+                .status(UserStatus.DISABLED)
+                .name(name)
+                .build();
         
         assertFalse(user.canLogin());
     }
 
     @Test
     void testMasterCanAlwaysLogin() {
-        User masterBlocked = new User(userId, username, email, password, true, UserStatus.BLOCKED, name);
-        User masterDisabled = new User(userId, username, email, password, true, UserStatus.DISABLED, name);
+        User masterBlocked = User.builder()
+                .id(userId)
+                .username(username)
+                .email(email)
+                .password(password)
+                .master(true)
+                .status(UserStatus.BLOCKED)
+                .name(name)
+                .build();
+        User masterDisabled = User.builder()
+                .id(userId)
+                .username(username)
+                .email(email)
+                .password(password)
+                .master(true)
+                .status(UserStatus.DISABLED)
+                .name(name)
+                .build();
         
         assertTrue(masterBlocked.canLogin());
         assertTrue(masterDisabled.canLogin());
@@ -437,7 +821,15 @@ class UserTest {
     @Test
     void testCompleteUserLifecycle() {
         // Criar usuário ativo
-        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE, name);
+        User user = User.builder()
+                .id(userId)
+                .username(username)
+                .email(email)
+                .password(password)
+                .master(false)
+                .status(UserStatus.ACTIVE)
+                .name(name)
+                .build();
         assertTrue(user.canLogin());
         
         // Bloquear por violação
@@ -457,12 +849,19 @@ class UserTest {
         // Master pode acessar mesmo se bloqueado
         user.block();
         assertTrue(user.canLogin());
-        assertTrue(user.canAccess(new ClientSystem(SystemId.of(1L), "test-client", "secret", "Test System", "https://example.com/callback", SystemStatus.ACTIVE)));
     }
 
     @Test
     void testPasswordChangeFlow() {
-        User user = new User(userId, username, email, password, false, UserStatus.ACTIVE, name);
+        User user = User.builder()
+                .id(userId)
+                .username(username)
+                .email(email)
+                .password(password)
+                .master(false)
+                .status(UserStatus.ACTIVE)
+                .name(name)
+                .build();
         
         // Verificar senha inicial
         assertTrue(user.verifyPassword("password123"));
@@ -475,5 +874,112 @@ class UserTest {
         // Verificar nova senha
         assertTrue(user.verifyPassword("newSecurePass999"));
         assertFalse(user.verifyPassword("password123"));
+    }
+
+    // ==================== Testes de Builder ====================
+
+    @Test
+    @DisplayName("Builder deve usar UserStatus.ACTIVE como padrão quando status é null")
+    void testBuilderSetsActiveStatusWhenNullProvided() {
+        User user = User.builder()
+                .id(userId)
+                .username(username)
+                .email(email)
+                .password(password)
+                .master(false)
+                .status(null)
+                .name(name)
+                .build();
+        
+        assertEquals(UserStatus.ACTIVE, user.getStatus());
+        assertTrue(user.isActive());
+    }
+
+    @Test
+    @DisplayName("Builder deve usar UserStatus.ACTIVE como padrão quando status não é informado")
+    void testBuilderDefaultsToActiveStatus() {
+        User user = User.builder()
+                .id(userId)
+                .username(username)
+                .email(email)
+                .password(password)
+                .name(name)
+                // Sem definir .status()
+                .build();
+        
+        assertEquals(UserStatus.ACTIVE, user.getStatus());
+    }
+
+    @Test
+    @DisplayName("Builder deve usar master=false como padrão quando não informado")
+    void testBuilderDefaultsToNonMaster() {
+        User user = User.builder()
+                .id(userId)
+                .username(username)
+                .email(email)
+                .password(password)
+                .name(name)
+                // Sem definir .master()
+                .build();
+        
+        assertFalse(user.isMaster());
+    }
+
+    // ==================== Testes de Exceções de Status ====================
+
+    @Test
+    @DisplayName("Desbloquear usuário não bloqueado deve lançar DomainException")
+    void testUnblockNonBlockedUserThrowsException() {
+        User activeUser = User.builder()
+                .id(userId)
+                .username(username)
+                .email(email)
+                .password(password)
+                .master(false)
+                .status(UserStatus.ACTIVE)
+                .name(name)
+                .build();
+        
+        DomainException exception = assertThrows(DomainException.class, 
+            () -> activeUser.unblock());
+        assertEquals(User.ERROR_USER_NOT_BLOCKED, exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("Desbloquear usuário desabilitado deve lançar DomainException")
+    void testUnblockDisabledUserThrowsException() {
+        User disabledUser = User.builder()
+                .id(userId)
+                .username(username)
+                .email(email)
+                .password(password)
+                .master(false)
+                .status(UserStatus.DISABLED)
+                .name(name)
+                .build();
+        
+        DomainException exception = assertThrows(DomainException.class, 
+            () -> disabledUser.unblock());
+        assertEquals(User.ERROR_USER_NOT_BLOCKED, exception.getMessage());
+    }
+
+    // ==================== Testes de Validação de Status null ====================
+
+    @Test
+    @DisplayName("Criar usuário com status explicitamente null no Builder usa ACTIVE")
+    void testCreateUserWithExplicitNullStatus() {
+        User user = User.builder()
+                .id(userId)
+                .username(username)
+                .email(email)
+                .password(password)
+                .name(name)
+                .status(null)  // Explicitamente null
+                .build();
+        
+        assertEquals(UserStatus.ACTIVE, user.getStatus());
+        assertFalse(user.isBlocked());
+        assertFalse(user.isDisabled());
+        assertTrue(user.isActive());
     }
 }

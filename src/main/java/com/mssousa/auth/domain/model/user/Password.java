@@ -11,6 +11,9 @@ import java.util.Objects;
  */
 public final class Password {
 
+    public static final String DEFAULT_ERROR_PASSWORD = "Senha não pode ser nula";
+    public static final String DEFAULT_ERROR_PASSWORD_MIN_LENGTH = "Senha deve ter pelo menos 8 caracteres";
+
     private static final int MIN_LENGTH = 8;
     private static final BCryptPasswordEncoder ENCODER = new BCryptPasswordEncoder(12);
 
@@ -44,18 +47,18 @@ public final class Password {
      */
     public static Password fromHash(String hashedPassword) {
         if (hashedPassword == null || hashedPassword.isBlank()) {
-            throw new DomainException("Senha hash não pode ser nula ou vazia");
+            throw new DomainException(DEFAULT_ERROR_PASSWORD);
         }
         return new Password(hashedPassword);
     }
 
     private static void validatePlainPassword(String plainPassword) {
         if (plainPassword == null || plainPassword.isBlank()) {
-            throw new DomainException("Senha não pode ser nula ou vazia");
+            throw new DomainException(DEFAULT_ERROR_PASSWORD);
         }
 
         if (plainPassword.length() < MIN_LENGTH) {
-            throw new DomainException("Senha deve ter pelo menos " + MIN_LENGTH + " caracteres");
+            throw new DomainException(DEFAULT_ERROR_PASSWORD_MIN_LENGTH);
         }
     }
 
