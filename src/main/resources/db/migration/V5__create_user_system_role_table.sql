@@ -2,6 +2,9 @@ CREATE TABLE user_system_role (
     id               BIGSERIAL PRIMARY KEY,
     user_system_id   BIGINT NOT NULL,
     system_role_id   BIGINT NOT NULL,
+    status       VARCHAR(20)  NOT NULL,
+    created_at  TIMESTAMP   NOT NULL DEFAULT NOW(),
+    created_by  VARCHAR(50),
 
     CONSTRAINT fk_usr_user_system
         FOREIGN KEY (user_system_id)
@@ -18,3 +21,4 @@ CREATE TABLE user_system_role (
 
 CREATE INDEX idx_usr_user_system_id ON user_system_role(user_system_id);
 CREATE INDEX idx_usr_system_role_id ON user_system_role(system_role_id);
+CREATE INDEX idx_usr_status ON user_system_role(status);

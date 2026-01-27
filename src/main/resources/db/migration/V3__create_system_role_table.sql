@@ -3,6 +3,7 @@ CREATE TABLE system_role (
     system_id    BIGINT       NOT NULL,
     code         VARCHAR(50)  NOT NULL,
     description  VARCHAR(255),
+    status       VARCHAR(20)  NOT NULL,
 
     created_at   TIMESTAMP    NOT NULL DEFAULT NOW(),
     created_by   VARCHAR(50),
@@ -16,3 +17,4 @@ CREATE TABLE system_role (
 );
 
 CREATE INDEX idx_system_role_system_id ON system_role(system_id);
+CREATE INDEX idx_system_role_status ON system_role(status);

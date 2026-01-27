@@ -4,7 +4,9 @@ CREATE TABLE password_reset_token (
     user_id     BIGINT       NOT NULL,
     expires_at  TIMESTAMP    NOT NULL,
     used        BOOLEAN      NOT NULL DEFAULT FALSE,
-    created_at  TIMESTAMP    NOT NULL DEFAULT NOW(),
+    
+    created_at  TIMESTAMP   NOT NULL DEFAULT NOW(),
+    created_by  VARCHAR(50),
 
     CONSTRAINT uq_password_reset_token UNIQUE (token),
 

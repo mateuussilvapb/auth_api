@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "password_reset_tokens")
+@Table(name = "password_reset_token")
 @Getter
 @Setter
 @NoArgsConstructor

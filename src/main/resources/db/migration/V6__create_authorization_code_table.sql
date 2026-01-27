@@ -5,7 +5,9 @@ CREATE TABLE authorization_code (
     system_id   BIGINT       NOT NULL,
     expires_at  TIMESTAMP    NOT NULL,
     used        BOOLEAN      NOT NULL DEFAULT FALSE,
-    created_at  TIMESTAMP    NOT NULL DEFAULT NOW(),
+    
+    created_at  TIMESTAMP   NOT NULL DEFAULT NOW(),
+    created_by  VARCHAR(50),
 
     CONSTRAINT uq_authorization_code UNIQUE (code),
 

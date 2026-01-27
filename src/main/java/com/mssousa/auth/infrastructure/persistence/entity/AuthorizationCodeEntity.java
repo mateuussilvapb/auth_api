@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "authorization_codes")
+@Table(name = "authorization_code")
 @Getter
 @Setter
 @NoArgsConstructor
