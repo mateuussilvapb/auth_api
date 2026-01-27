@@ -110,24 +110,24 @@ class JwtProviderAndValidatorTest {
     @DisplayName("Deve validar token para usuário MASTER sem roles")
     void shouldValidateTokenForMasterUserWithoutRoles() {
         // Arrange
-        JwtPayload masterPayload = new JwtPayload(
-                jwtProperties.getIssuer(),
-                "user123",
-                "system456",
-                Instant.now(),
-                Instant.now().plusMillis(jwtProperties.getExpirationMs()),
-                UUID.randomUUID().toString(),
-                UserId.of(123L),
-                "admin",
-                "admin@test.com",
-                "Admin User",
-                true, // master = true
-                SystemId.of(456L),
-                List.of(), // Sem roles (permitido para MASTER)
-                "password",
-                UUID.randomUUID().toString(),
-                jwtProperties.getTokenVersion()
-        );
+        JwtPayload masterPayload = JwtPayload.builder()
+                .issuer(jwtProperties.getIssuer())
+                .subject("user123")
+                .audience("system456")
+                .issuedAt(Instant.now())
+                .expiresAt(Instant.now().plusMillis(jwtProperties.getExpirationMs()))
+                .jwtId(UUID.randomUUID().toString())
+                .userId(UserId.of(123L))
+                .username("admin")
+                .email("admin@test.com")
+                .name("Admin User")
+                .master(true)
+                .systemId(SystemId.of(456L))
+                .systemRoles(List.of()) // Sem roles (permitido para MASTER)
+                .authMethod("password")
+                .sessionId(UUID.randomUUID().toString())
+                .tokenVersion(jwtProperties.getTokenVersion())
+                .build();
 
         // Act
         String token = jwtProvider.generateToken(masterPayload);
@@ -159,23 +159,23 @@ class JwtProviderAndValidatorTest {
 
     // Helper method para criar payload de teste
     private JwtPayload createTestPayload() {
-        return new JwtPayload(
-                jwtProperties.getIssuer(),
-                "user123",
-                "system456",
-                Instant.now(),
-                Instant.now().plusMillis(jwtProperties.getExpirationMs()),
-                UUID.randomUUID().toString(),
-                UserId.of(123L),
-                "testuser",
-                "test@example.com",
-                "Test User",
-                false,
-                SystemId.of(456L),
-                List.of("ROLE_USER", "ROLE_ADMIN"),
-                "password",
-                UUID.randomUUID().toString(),
-                jwtProperties.getTokenVersion()
-        );
+        return JwtPayload.builder()
+                .issuer(jwtProperties.getIssuer())
+                .subject("user123")
+                .audience("system456")
+                .issuedAt(Instant.now())
+                .expiresAt(Instant.now().plusMillis(jwtProperties.getExpirationMs()))
+                .jwtId(UUID.randomUUID().toString())
+                .userId(UserId.of(123L))
+                .username("testuser")
+                .email("test@example.com")
+                .name("Test User")
+                .master(false)
+                .systemId(SystemId.of(456L))
+                .systemRoles(List.of("ROLE_USER", "ROLE_ADMIN"))
+                .authMethod("password")
+                .sessionId(UUID.randomUUID().toString())
+                .tokenVersion(jwtProperties.getTokenVersion())
+                .build();
     }
 }

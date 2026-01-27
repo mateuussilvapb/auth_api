@@ -97,24 +97,24 @@ public class JwtValidator {
         String sessionId = claims.get("sessionId", String.class);
         Integer tokenVersion = claims.get("tokenVersion", Integer.class);
 
-        return new JwtPayload(
-                issuer,
-                subject,
-                audience,
-                issuedAt,
-                expiresAt,
-                jwtId,
-                UserId.of(userId),
-                username,
-                email,
-                name,
-                master,
-                SystemId.of(systemId),
-                systemRoles,
-                authMethod,
-                sessionId,
-                tokenVersion
-        );
+        return JwtPayload.builder()
+                .issuer(issuer)
+                .subject(subject)
+                .audience(audience)
+                .issuedAt(issuedAt)
+                .expiresAt(expiresAt)
+                .jwtId(jwtId)
+                .userId(UserId.of(userId))
+                .username(username)
+                .email(email)
+                .name(name)
+                .master(master)
+                .systemId(SystemId.of(systemId))
+                .systemRoles(systemRoles)
+                .authMethod(authMethod)
+                .sessionId(sessionId)
+                .tokenVersion(tokenVersion)
+                .build();
     }
 
     /**
