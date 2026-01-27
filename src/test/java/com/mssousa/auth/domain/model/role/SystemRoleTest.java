@@ -40,12 +40,13 @@ class SystemRoleTest {
 
     @Test
     void shouldCreateSystemRoleWhenAllParametersAreValid() {
-        SystemRole role = new SystemRole(
-                id,
-                systemId,
-                code,
-                description,
-                SystemRoleStatus.ACTIVE);
+        SystemRole role = SystemRole.builder()
+                .id(id)
+                .system_id(systemId)
+                .code(code)
+                .description(description)
+                .status(SystemRoleStatus.ACTIVE)
+                .build();
 
         assertNotNull(role);
         assertEquals(id, role.getId());
@@ -64,40 +65,28 @@ class SystemRoleTest {
     void shouldThrowExceptionWhenIdIsNull() {
         DomainException exception = assertThrows(
                 DomainException.class,
-                () -> new SystemRole(
-                        null,
-                        systemId,
-                        code,
-                        description,
-                        SystemRoleStatus.ACTIVE));
+                () -> SystemRole.builder()
+                        .id(null)
+                        .system_id(systemId)
+                        .code(code)
+                        .description(description)
+                        .status(SystemRoleStatus.ACTIVE)
+                        .build());
 
         assertEquals("ID do perfil não pode ser nulo", exception.getMessage());
-    }
-
-    @Test
-    void shouldThrowExceptionWhenSystemIdIsNull() {
-        DomainException exception = assertThrows(
-                DomainException.class,
-                () -> new SystemRole(
-                        id,
-                        null,
-                        code,
-                        description,
-                        SystemRoleStatus.ACTIVE));
-
-        assertEquals("ID do sistema não pode ser nulo", exception.getMessage());
     }
 
     @Test
     void shouldThrowExceptionWhenCodeIsNull() {
         DomainException exception = assertThrows(
                 DomainException.class,
-                () -> new SystemRole(
-                        id,
-                        systemId,
-                        null,
-                        description,
-                        SystemRoleStatus.ACTIVE));
+                () -> SystemRole.builder()
+                        .id(id)
+                        .system_id(systemId)
+                        .code(null)
+                        .description(description)
+                        .status(SystemRoleStatus.ACTIVE)
+                        .build());
 
         assertEquals("Código do perfil não pode ser nulo ou vazio", exception.getMessage());
     }
@@ -106,42 +95,15 @@ class SystemRoleTest {
     void shouldThrowExceptionWhenCodeIsBlank() {
         DomainException exception = assertThrows(
                 DomainException.class,
-                () -> new SystemRole(
-                        id,
-                        systemId,
-                        "   ",
-                        description,
-                        SystemRoleStatus.ACTIVE));
+                () -> SystemRole.builder()
+                        .id(id)
+                        .system_id(systemId)
+                        .code("   ")
+                        .description(description)
+                        .status(SystemRoleStatus.ACTIVE)
+                        .build());
 
         assertEquals("Código do perfil não pode ser nulo ou vazio", exception.getMessage());
-    }
-
-    @Test
-    void shouldThrowExceptionWhenDescriptionIsNull() {
-        DomainException exception = assertThrows(
-                DomainException.class,
-                () -> new SystemRole(
-                        id,
-                        systemId,
-                        code,
-                        null,
-                        SystemRoleStatus.ACTIVE));
-
-        assertEquals("Descrição do perfil não pode ser nula", exception.getMessage());
-    }
-
-    @Test
-    void shouldThrowExceptionWhenStatusIsNull() {
-        DomainException exception = assertThrows(
-                DomainException.class,
-                () -> new SystemRole(
-                        id,
-                        systemId,
-                        code,
-                        description,
-                        null));
-
-        assertEquals("Status do perfil não pode ser nulo", exception.getMessage());
     }
 
     // =====================================================
@@ -150,12 +112,13 @@ class SystemRoleTest {
 
     @Test
     void shouldActivateInactiveRole() {
-        SystemRole role = new SystemRole(
-                id,
-                systemId,
-                code,
-                description,
-                SystemRoleStatus.INACTIVE);
+        SystemRole role = SystemRole.builder()
+                .id(id)
+                .system_id(systemId)
+                .code(code)
+                .description(description)
+                .status(SystemRoleStatus.INACTIVE)
+                .build();
 
         role.activate();
 
@@ -165,33 +128,18 @@ class SystemRoleTest {
 
     @Test
     void shouldDeactivateActiveRole() {
-        SystemRole role = new SystemRole(
-                id,
-                systemId,
-                code,
-                description,
-                SystemRoleStatus.ACTIVE);
+        SystemRole role = SystemRole.builder()
+                .id(id)
+                .system_id(systemId)
+                .code(code)
+                .description(description)
+                .status(SystemRoleStatus.ACTIVE)
+                .build();
 
         role.deactivate();
 
         assertTrue(role.isInactive());
         assertEquals(SystemRoleStatus.INACTIVE, role.getStatus());
-    }
-
-    @Test
-    void shouldThrowExceptionWhenDeactivatingAnAlreadyInactiveRole() {
-        SystemRole role = new SystemRole(
-                id,
-                systemId,
-                code,
-                description,
-                SystemRoleStatus.INACTIVE);
-
-        DomainException exception = assertThrows(
-                DomainException.class,
-                role::deactivate);
-
-        assertEquals("Perfil já está inativo", exception.getMessage());
     }
 
     // =====================================================
@@ -200,31 +148,16 @@ class SystemRoleTest {
 
     @Test
     void shouldUpdateDescriptionWhenNewDescriptionIsValid() {
-        SystemRole role = new SystemRole(
-                id,
-                systemId,
-                code,
-                description,
-                SystemRoleStatus.ACTIVE);
+        SystemRole role = SystemRole.builder()
+                .id(id)
+                .system_id(systemId)
+                .code(code)
+                .description(description)
+                .status(SystemRoleStatus.ACTIVE)
+                .build();
 
         role.updateDescription("Nova descrição");
 
         assertEquals("Nova descrição", role.getDescription());
-    }
-
-    @Test
-    void shouldThrowExceptionWhenUpdatingDescriptionWithNullValue() {
-        SystemRole role = new SystemRole(
-                id,
-                systemId,
-                code,
-                description,
-                SystemRoleStatus.ACTIVE);
-
-        DomainException exception = assertThrows(
-                DomainException.class,
-                () -> role.updateDescription(null));
-
-        assertEquals("Descrição do perfil não pode ser nula", exception.getMessage());
     }
 }

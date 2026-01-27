@@ -11,6 +11,12 @@ import com.mssousa.auth.domain.model.system.SystemId;
  * </p>
  */
 public class SystemRole {
+    // Mensagens de erro para validações
+    private static final String ID_REQUIRED = "ID do perfil não pode ser nulo";
+    private static final String SYSTEM_ID_REQUIRED = "SystemId é obrigatório no vínculo UserSystem";
+    private static final String CODE_REQUIRED = "Código do perfil não pode ser nulo ou vazio";
+    private static final String STATUS_REQUIRED = "Status do vínculo não pode ser nulo";
+
     private final SystemRoleId id;
     private final SystemId system_id;
     private final String code;
@@ -20,24 +26,16 @@ public class SystemRole {
     /**
      * Cria um novo perfil.
      *
-     * @param id identificador único do perfil
-     * @param system_id identificador do sistema
-     * @param code código do perfil
-     * @param description descrição do perfil
-     * @param status status do perfil
+     * @param builder builder do perfil
      */
-    public SystemRole(SystemRoleId id, SystemId system_id, String code, String description, SystemRoleStatus status) {
-        validateId(id);
-        validateSystemId(system_id);
-        validateCode(code);
-        validateDescription(description);
-        validateStatus(status);
+    private SystemRole(Builder builder) {
+        this.id = builder.id;
+        this.system_id = builder.system_id;
+        this.code = builder.code;
+        this.description = builder.description;
+        this.status = builder.status;
 
-        this.id = id;
-        this.system_id = system_id;
-        this.code = code;
-        this.description = description;
-        this.status = status;
+        validate();
     }
 
     // ==================== Getters ====================
@@ -64,33 +62,21 @@ public class SystemRole {
 
     // ==================== Validações ====================
 
-    private void validateId(SystemRoleId id) {
+    private void validate() {
         if (id == null) {
-            throw new DomainException("ID do perfil não pode ser nulo");
+            throw new DomainException(ID_REQUIRED);
         }
-    }
 
-    private void validateSystemId(SystemId system_id) {
         if (system_id == null) {
-            throw new DomainException("ID do sistema não pode ser nulo");
+            throw new DomainException(SYSTEM_ID_REQUIRED);
         }
-    }
 
-    private void validateCode(String code) {
         if (code == null || code.isBlank()) {
-            throw new DomainException("Código do perfil não pode ser nulo ou vazio");
+            throw new DomainException(CODE_REQUIRED);
         }
-    }
 
-    private void validateDescription(String description) {
-        if (description == null) {
-            throw new DomainException("Descrição do perfil não pode ser nula");
-        }
-    }
-
-    private void validateStatus(SystemRoleStatus status) {
         if (status == null) {
-            throw new DomainException("Status do perfil não pode ser nulo");
+            throw new DomainException(STATUS_REQUIRED);
         }
     }
 
@@ -98,6 +84,7 @@ public class SystemRole {
 
     /**
      * Ativa o perfil, permitindo que ele seja atribuído a usuários.
+     * Operação idempotente - pode ser chamada múltiplas vezes sem efeitos colaterais.
      */
     public void activate() {
         this.status = SystemRoleStatus.ACTIVE;
@@ -105,13 +92,9 @@ public class SystemRole {
 
     /**
      * Desativa o perfil, impedindo que ele seja atribuído a usuários.
-     *
-     * @throws DomainException se o perfil já estiver inativo
+     * Operação idempotente - pode ser chamada múltiplas vezes sem efeitos colaterais.
      */
     public void deactivate() {
-        if (this.status == SystemRoleStatus.INACTIVE) {
-            throw new DomainException("Perfil já está inativo");
-        }
         this.status = SystemRoleStatus.INACTIVE;
     }
 
@@ -126,7 +109,7 @@ public class SystemRole {
      * Verifica se o perfil está inativo
      */
     public boolean isInactive() {
-        return this.status == SystemRoleStatus.INACTIVE;
+        return !this.isActive();
     }
 
     // ==================== Gerenciamento de Configurações ====================
@@ -135,10 +118,8 @@ public class SystemRole {
      * Atualiza a descrição do perfil.
      *
      * @param newDescription nova descrição
-     * @throws DomainException se a descrição for nula
      */
     public void updateDescription(String newDescription) {
-        validateDescription(newDescription);
         this.description = newDescription;
     }
 
@@ -151,5 +132,60 @@ public class SystemRole {
      */
     public boolean belongsTo(SystemId systemId) {
         return this.system_id.equals(systemId);
+    }
+
+    // ==================== Padrão Builder ====================
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+        private SystemRoleId id;
+        private SystemId system_id;
+        private String code;
+        private String description;
+        private SystemRoleStatus status;
+
+        public Builder id(SystemRoleId id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder system_id(SystemId system_id) {
+            this.system_id = system_id;
+            return this;
+        }
+
+        public Builder code(String code) {
+            this.code = code;
+            return this;
+        }
+
+        public Builder description(String description) {
+            this.description = description != null ? description : "";
+            return this;
+        }
+
+        public Builder status(SystemRoleStatus status) {
+            this.status = status;
+            return this;
+        }
+
+        public SystemRole build() {
+            if (this.id == null) {
+                throw new DomainException(ID_REQUIRED);
+            }
+            if (this.system_id == null) {
+                throw new DomainException(SYSTEM_ID_REQUIRED);
+            }
+            if (this.code == null || this.code.isBlank()) {
+                throw new DomainException(CODE_REQUIRED);
+            }
+            if (this.status == null) {
+                throw new DomainException(STATUS_REQUIRED);
+            }
+            return new SystemRole(this);
+        }
     }
 }

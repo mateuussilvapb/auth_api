@@ -126,13 +126,13 @@ public class AuthMapper {
 
     public SystemRole toDomain(SystemRoleEntity entity) {
         if (entity == null) return null;
-        return new SystemRole(
-            SystemRoleId.of(entity.getId()),
-            SystemId.of(entity.getSystem().getId()),
-            entity.getCode(),
-            entity.getDescription(),
-            SystemRoleStatus.valueOf(entity.getStatus())
-        );
+        return SystemRole.builder()
+            .id(SystemRoleId.of(entity.getId()))
+            .system_id(SystemId.of(entity.getSystem().getId()))
+            .code(entity.getCode())
+            .description(entity.getDescription())
+            .status(SystemRoleStatus.valueOf(entity.getStatus()))
+            .build();
     }
 
     public SystemRoleEntity toEntity(SystemRole role, ClientSystemEntity systemEntity) {

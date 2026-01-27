@@ -18,7 +18,6 @@ public class UserSystem {
     private static final String SYSTEM_ID_REQUIRED = "SystemId é obrigatório no vínculo UserSystem";
     private static final String STATUS_REQUIRED = "Status do vínculo não pode ser nulo";
     private static final String INACTIVE_ACCESS = "Usuário não possui acesso ativo ao sistema";
-    private static final String LINK_IS_NOT_BLOCK = "Vínculo não está bloqueado";
 
     private final UserSystemId id;
     private final UserId userId;
