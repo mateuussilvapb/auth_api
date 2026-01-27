@@ -40,7 +40,12 @@ class UserSystemTest {
      */
     @Test
     void createUserSystem() {
-        UserSystem userSystem = new UserSystem(id, userId, systemId, BindingStatus.ACTIVE);
+        UserSystem userSystem = UserSystem.builder()
+            .id(id)
+            .userId(userId)
+            .systemId(systemId)
+            .status(BindingStatus.ACTIVE)
+            .build();
 
         assertNotNull(userSystem);
         assertEquals(id, userSystem.getId());
@@ -55,7 +60,12 @@ class UserSystemTest {
     @Test
     void createUserSystemWithNullUser() {
         assertThrows(DomainException.class,
-                () -> new UserSystem(id, null, systemId, BindingStatus.ACTIVE));
+                () -> UserSystem.builder()
+                    .id(id)
+                    .userId(null)
+                    .systemId(systemId)
+                    .status(BindingStatus.ACTIVE)
+                    .build());
     }
 
     /**
@@ -64,7 +74,12 @@ class UserSystemTest {
     @Test
     void createUserSystemWithNullSystem() {
         assertThrows(DomainException.class,
-                () -> new UserSystem(id, userId, null, BindingStatus.ACTIVE));
+                () -> UserSystem.builder()
+                    .id(id)
+                    .userId(userId)
+                    .systemId(null)
+                    .status(BindingStatus.ACTIVE)
+                    .build());
     }
 
     /**
@@ -73,7 +88,12 @@ class UserSystemTest {
     @Test
     void createUserSystemWithNullStatus() {
         assertThrows(DomainException.class,
-                () -> new UserSystem(id, userId, systemId, null));
+                () -> UserSystem.builder()
+                    .id(id)
+                    .userId(userId)
+                    .systemId(systemId)
+                    .status(null)
+                    .build());
     }
 
     /**
@@ -82,7 +102,12 @@ class UserSystemTest {
     @Test
     void createUserSystemWithNullId() {
         assertThrows(DomainException.class,
-                () -> new UserSystem(null, userId, systemId, BindingStatus.ACTIVE));
+                () -> UserSystem.builder()
+                    .id(null)
+                    .userId(userId)
+                    .systemId(systemId)
+                    .status(BindingStatus.ACTIVE)
+                    .build());
     }
 
     /**
@@ -90,7 +115,12 @@ class UserSystemTest {
      */
     @Test
     void getUserSystemId() {
-        UserSystem userSystem = new UserSystem(id, userId, systemId, BindingStatus.ACTIVE);
+        UserSystem userSystem = UserSystem.builder()
+            .id(id)
+            .userId(userId)
+            .systemId(systemId)
+            .status(BindingStatus.ACTIVE)
+            .build();
         assertEquals(id, userSystem.getId());
     }
 
@@ -99,7 +129,12 @@ class UserSystemTest {
      */
     @Test
     void getUserSystemUser() {
-        UserSystem userSystem = new UserSystem(id, userId, systemId, BindingStatus.ACTIVE);
+        UserSystem userSystem = UserSystem.builder()
+            .id(id)
+            .userId(userId)
+            .systemId(systemId)
+            .status(BindingStatus.ACTIVE)
+            .build();
         assertEquals(userId, userSystem.getUserId());
     }
 
@@ -108,7 +143,12 @@ class UserSystemTest {
      */
     @Test
     void getUserSystemSystem() {
-        UserSystem userSystem = new UserSystem(id, userId, systemId, BindingStatus.ACTIVE);
+        UserSystem userSystem = UserSystem.builder()
+            .id(id)
+            .userId(userId)
+            .systemId(systemId)
+            .status(BindingStatus.ACTIVE)
+            .build();
         assertEquals(systemId, userSystem.getSystemId());
     }
 
@@ -117,7 +157,12 @@ class UserSystemTest {
      */
     @Test
     void getUserSystemStatus() {
-        UserSystem userSystem = new UserSystem(id, userId, systemId, BindingStatus.ACTIVE);
+        UserSystem userSystem = UserSystem.builder()
+            .id(id)
+            .userId(userId)
+            .systemId(systemId)
+            .status(BindingStatus.ACTIVE)
+            .build();
         assertEquals(BindingStatus.ACTIVE, userSystem.getStatus());
     }
 
@@ -128,7 +173,12 @@ class UserSystemTest {
      */
     @Test
     void activateUserSystem() {
-        UserSystem userSystem = new UserSystem(id, userId, systemId, BindingStatus.INACTIVE);
+        UserSystem userSystem = UserSystem.builder()
+            .id(id)
+            .userId(userId)
+            .systemId(systemId)
+            .status(BindingStatus.INACTIVE)
+            .build();
         userSystem.activate();
         assertEquals(BindingStatus.ACTIVE, userSystem.getStatus());
     }
@@ -138,7 +188,12 @@ class UserSystemTest {
      */
     @Test
     void deactivateUserSystem() {
-        UserSystem userSystem = new UserSystem(id, userId, systemId, BindingStatus.ACTIVE);
+        UserSystem userSystem = UserSystem.builder()
+            .id(id)
+            .userId(userId)
+            .systemId(systemId)
+            .status(BindingStatus.ACTIVE)
+            .build();
         userSystem.deactivate();
         assertEquals(BindingStatus.INACTIVE, userSystem.getStatus());
     }
@@ -148,50 +203,37 @@ class UserSystemTest {
      */
     @Test
     void blockUserSystem() {
-        UserSystem userSystem = new UserSystem(id, userId, systemId, BindingStatus.ACTIVE);
+        UserSystem userSystem = UserSystem.builder()
+            .id(id)
+            .userId(userId)
+            .systemId(systemId)
+            .status(BindingStatus.ACTIVE)
+            .build();
         userSystem.block();
         assertEquals(BindingStatus.BLOCKED, userSystem.getStatus());
     }
 
     @Test
     void unblockUserSystem() {
-        UserSystem userSystem = new UserSystem(id, userId, systemId, BindingStatus.BLOCKED);
+        UserSystem userSystem = UserSystem.builder()
+            .id(id)
+            .userId(userId)
+            .systemId(systemId)
+            .status(BindingStatus.BLOCKED)
+            .build();
         userSystem.unblock();
         assertEquals(BindingStatus.ACTIVE, userSystem.getStatus());
     }
     
     @Test
     void unblockNotBlockedUserSystem() {
-        UserSystem userSystem = new UserSystem(id, userId, systemId, BindingStatus.ACTIVE);
+        UserSystem userSystem = UserSystem.builder()
+            .id(id)
+            .userId(userId)
+            .systemId(systemId)
+            .status(BindingStatus.ACTIVE)
+            .build();
         assertThrows(DomainException.class, userSystem::unblock);
-    }
-        
-
-    /**
-     * Testa a ativação de um vínculo já ativo.
-     */
-    @Test
-    void activateAlreadyActiveUserSystem() {
-        UserSystem userSystem = new UserSystem(id, userId, systemId, BindingStatus.ACTIVE);
-        assertThrows(DomainException.class, userSystem::activate);
-    }
-
-    /**
-     * Testa a desativação de um vínculo já inativo.
-     */
-    @Test
-    void deactivateAlreadyInactiveUserSystem() {
-        UserSystem userSystem = new UserSystem(id, userId, systemId, BindingStatus.INACTIVE);
-        assertThrows(DomainException.class, userSystem::deactivate);
-    }
-
-    /**
-     * Testa a bloqueio de um vínculo já bloqueado.
-     */
-    @Test
-    void blockAlreadyBlockedUserSystem() {
-        UserSystem userSystem = new UserSystem(id, userId, systemId, BindingStatus.BLOCKED);
-        assertThrows(DomainException.class, userSystem::block);
     }
 
     // ==================== Validação de Acesso ====================
@@ -200,7 +242,12 @@ class UserSystemTest {
      */
     @Test
     void validateUserSystemAccess() {
-        UserSystem userSystem = new UserSystem(id, userId, systemId, BindingStatus.ACTIVE);
+        UserSystem userSystem = UserSystem.builder()
+            .id(id)
+            .userId(userId)
+            .systemId(systemId)
+            .status(BindingStatus.ACTIVE)
+            .build();
         userSystem.validateAccess();
     }
 
@@ -209,7 +256,12 @@ class UserSystemTest {
      */
     @Test
     void validateUserSystemAccessInactive() {
-        UserSystem userSystem = new UserSystem(id, userId, systemId, BindingStatus.INACTIVE);
+        UserSystem userSystem = UserSystem.builder()
+            .id(id)
+            .userId(userId)
+            .systemId(systemId)
+            .status(BindingStatus.INACTIVE)
+            .build();
         assertThrows(DomainException.class, userSystem::validateAccess);
     }
 
@@ -218,7 +270,12 @@ class UserSystemTest {
      */
     @Test
     void validateUserSystemAccessBlocked() {
-        UserSystem userSystem = new UserSystem(id, userId, systemId, BindingStatus.BLOCKED);
+        UserSystem userSystem = UserSystem.builder()
+            .id(id)
+            .userId(userId)
+            .systemId(systemId)
+            .status(BindingStatus.BLOCKED)
+            .build();
         assertThrows(DomainException.class, userSystem::validateAccess);
     }
 }

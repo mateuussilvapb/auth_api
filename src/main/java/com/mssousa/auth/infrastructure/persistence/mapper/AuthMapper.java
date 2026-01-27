@@ -151,12 +151,12 @@ public class AuthMapper {
 
     public UserSystem toDomain(UserSystemEntity entity) {
         if (entity == null) return null;
-        return new UserSystem(
-            UserSystemId.of(entity.getId()),
-            UserId.of(entity.getUser().getId()),
-            SystemId.of(entity.getSystem().getId()),
-            BindingStatus.valueOf(entity.getStatus())
-        );
+        return UserSystem.builder()
+            .id(UserSystemId.of(entity.getId()))
+            .userId(UserId.of(entity.getUser().getId()))
+            .systemId(SystemId.of(entity.getSystem().getId()))
+            .status(BindingStatus.valueOf(entity.getStatus()))
+            .build();
     }
 
     public UserSystemEntity toEntity(UserSystem userSystem, UserEntity user, ClientSystemEntity system) {

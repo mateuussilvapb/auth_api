@@ -12,6 +12,14 @@ import com.mssousa.auth.domain.model.user.UserId;
  * </p>
  */
 public class UserSystem {
+    // Mensagens de erro para validações
+    private static final String USER_SYSTEM_ID_REQUIRED = "UserSystemId é obrigatório no vínculo UserSystem";
+    private static final String USER_ID_REQUIRED = "UserId é obrigatório no vínculo UserSystem";
+    private static final String SYSTEM_ID_REQUIRED = "SystemId é obrigatório no vínculo UserSystem";
+    private static final String STATUS_REQUIRED = "Status do vínculo não pode ser nulo";
+    private static final String INACTIVE_ACCESS = "Usuário não possui acesso ativo ao sistema";
+    private static final String LINK_IS_NOT_BLOCK = "Vínculo não está bloqueado";
+
     private final UserSystemId id;
     private final UserId userId;
     private final SystemId systemId;
@@ -20,21 +28,15 @@ public class UserSystem {
     /**
      * Cria um novo vínculo usuário-sistema.
      *
-     * @param id identificador único do vínculo
-     * @param user usuário associado ao vínculo
-     * @param system sistema associado ao vínculo
-     * @param status status do vínculo
+     * @param builder builder do vínculo
      */
-    public UserSystem(UserSystemId id, UserId userId, SystemId systemId, BindingStatus status) {
-        validateId(id);
-        validateStatus(status);
-        validateUserId(userId);
-        validateSystemId(systemId);
+    private UserSystem(Builder builder) {
+        this.id = builder.id;
+        this.userId = builder.userId;
+        this.systemId = builder.systemId;
+        this.status = builder.status;
 
-        this.id = id;
-        this.userId = userId;
-        this.systemId = systemId;
-        this.status = status;
+        validate();
     }
 
     // ==================== Getters ====================
@@ -57,27 +59,18 @@ public class UserSystem {
 
     // ==================== Validações ====================
 
-    private void validateId(UserSystemId id) {
+    private void validate() {
         if (id == null) {
-            throw new DomainException("UserSystemId é obrigatório no vínculo UserSystem");
+            throw new DomainException(USER_SYSTEM_ID_REQUIRED);
         }
-    }
-
-    private void validateUserId(UserId userId) {
         if (userId == null) {
-            throw new DomainException("UserId é obrigatório no vínculo UserSystem");
+            throw new DomainException(USER_ID_REQUIRED);
         }
-    }
-
-    private void validateSystemId(SystemId systemId) {
         if (systemId == null) {
-            throw new DomainException("SystemId é obrigatório no vínculo UserSystem");
+            throw new DomainException(SYSTEM_ID_REQUIRED);
         }
-    }
-
-    private void validateStatus(BindingStatus status) {
         if (status == null) {
-            throw new DomainException("Status do vínculo não pode ser nulo");
+            throw new DomainException(STATUS_REQUIRED);
         }
     }
 
@@ -89,7 +82,7 @@ public class UserSystem {
      */
     public void validateAccess() {
         if (!isActive()) {
-            throw new DomainException("Usuário não possui acesso ativo ao sistema");
+            throw new DomainException(INACTIVE_ACCESS);
         }
     }
 
@@ -97,52 +90,36 @@ public class UserSystem {
     
     /**
      * Ativa o vínculo, permitindo acesso ao sistema vinculado.
-     * <p>
-     * Se o vínculo já estiver ativo, lança uma exceção.
-     * </p>
+     * Operação idempotente - pode ser chamada múltiplas vezes sem efeitos colaterais.
      */
     public void activate() {
-        if (this.status == BindingStatus.ACTIVE) {
-            throw new DomainException("Vínculo já está ativo");
-        }
         this.status = BindingStatus.ACTIVE;
     }
 
     /**
      * Desativa o vínculo, impedindo acesso ao sistema vinculado.
-     * <p>
-     * Se o vínculo já estiver inativo, lança uma exceção.
-     * </p>
+     * Operação idempotente - pode ser chamada múltiplas vezes sem efeitos colaterais.
      */
     public void deactivate() {
-        if (this.status == BindingStatus.INACTIVE) {
-            throw new DomainException("Vínculo já está inativo");
-        }
         this.status = BindingStatus.INACTIVE;
     }
 
     /**
      * Bloqueia o vínculo, impedindo acesso ao sistema vinculado.
-     * <p>
-     * Se o vínculo já estiver bloqueado, lança uma exceção.
-     * </p>
+     * Operação idempotente - pode ser chamada múltiplas vezes sem efeitos colaterais.
      */
     public void block() {
-        if (this.status == BindingStatus.BLOCKED) {
-            throw new DomainException("Vínculo já está bloqueado");
-        }
         this.status = BindingStatus.BLOCKED;
     }
 
     /**
      * Desbloqueia o vínculo, retornando-o para o status ATIVO.
-     * <p>
-     * Se o vínculo não estiver bloqueado, lança uma exceção.
-     * </p>
+     * 
+     * @throws DomainException se o vínculo não estiver bloqueado
      */
     public void unblock() {
         if (this.status != BindingStatus.BLOCKED) {
-            throw new DomainException("Vínculo não está bloqueado");
+            throw new DomainException(LINK_IS_NOT_BLOCK);
         }
         this.status = BindingStatus.ACTIVE;
     }
@@ -174,6 +151,56 @@ public class UserSystem {
      */
     public boolean isBlocked() {
         return this.status == BindingStatus.BLOCKED;
+    }
+
+    // ==================== Padrão Builder ====================
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+        private UserSystemId id;
+        private UserId userId;
+        private SystemId systemId;
+        private BindingStatus status;
+
+        public Builder id(UserSystemId id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder userId(UserId userId) {
+            this.userId = userId;
+            return this;
+        }
+
+        public Builder systemId(SystemId systemId) {
+            this.systemId = systemId;
+            return this;
+        }
+
+        public Builder status(BindingStatus status) {
+            this.status = status;
+            return this;
+        }
+
+        public UserSystem build() {
+            // Validações de campos obrigatórios
+            if (id == null) {
+                throw new DomainException(USER_SYSTEM_ID_REQUIRED);
+            }
+            if (userId == null) {
+                throw new DomainException(USER_ID_REQUIRED);
+            }
+            if (systemId == null) {
+                throw new DomainException(SYSTEM_ID_REQUIRED);
+            }
+            if (status == null) {
+                throw new DomainException(STATUS_REQUIRED);
+            }
+            return new UserSystem(this);
+        }
     }
 
 }

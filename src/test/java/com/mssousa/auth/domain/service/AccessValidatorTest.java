@@ -233,10 +233,11 @@ class AccessValidatorTest {
     }
 
     private UserSystem createActiveBinding(User user, ClientSystem system) {
-        return new UserSystem(
-                UserSystemId.of(1L),
-                user.getId(),
-                system.getId(),
-                BindingStatus.ACTIVE);
+        return UserSystem.builder()
+                .id(UserSystemId.of(1L))
+                .userId(user.getId())
+                .systemId(system.getId())
+                .status(BindingStatus.ACTIVE)
+                .build();
     }
 }
