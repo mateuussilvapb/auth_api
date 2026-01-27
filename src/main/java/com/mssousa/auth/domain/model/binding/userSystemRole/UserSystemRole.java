@@ -13,6 +13,12 @@ import com.mssousa.auth.domain.model.role.SystemRoleId;
  * </p>
  */
 public class UserSystemRole {
+    // Mensagens de erro para validações
+    private static final String USER_SYSTEM_ROLE_ID_NULL = "UserSystemRoleId é obrigatório no vínculo UserSystemRole";
+    private static final String USER_SYSTEM_ID_NULL = "UserSystemId é obrigatório no vínculo UserSystemRole";
+    private static final String SYSTEM_ROLE_ID_NULL = "SystemRoleId é obrigatório no vínculo UserSystemRole";
+    private static final String STATUS_NULL = "Status do vínculo UserSystemRole não pode ser nulo";
+    private static final String INACTIVE_STATUS = "Perfil não está ativo para este usuário no sistema";
 
     private final UserSystemRoleId id;
     private final UserSystemId userSystemId;
@@ -23,26 +29,15 @@ public class UserSystemRole {
     /**
      * Cria um novo vínculo usuário-perfil.
      * 
-     * @param id
-     * @param userSystem
-     * @param role
-     * @param status
+     * @param builder builder do vínculo usuário-perfil
      */
-    public UserSystemRole(
-            UserSystemRoleId id,
-            UserSystemId userSystemId,
-            SystemRoleId systemRoleId,
-            BindingStatus status
-    ) {
-        validateId(id);
-        validateUserSystemId(userSystemId);
-        validateRoleId(systemRoleId);
-        validateStatus(status);
+    private UserSystemRole(Builder builder) {
+        this.id = builder.id;
+        this.userSystemId = builder.userSystemId;
+        this.systemRoleId = builder.systemRoleId;
+        this.status = builder.status;
 
-        this.id = id;
-        this.userSystemId = userSystemId;
-        this.systemRoleId = systemRoleId;
-        this.status = status;
+        validate();
     }
 
     // ==================== Getters ====================
@@ -65,27 +60,21 @@ public class UserSystemRole {
 
     // ==================== Validações ====================
 
-    private void validateId(UserSystemRoleId id) {
+    private void validate() {
         if (id == null) {
-            throw new DomainException("UserSystemRoleId é obrigatório no vínculo UserSystemRole");
+            throw new DomainException(USER_SYSTEM_ROLE_ID_NULL);
         }
-    }
 
-    private void validateUserSystemId(UserSystemId userSystemId) {
         if (userSystemId == null) {
-            throw new DomainException("UserSystemId é obrigatório no vínculo UserSystemRole");
+            throw new DomainException(USER_SYSTEM_ID_NULL);
         }
-    }
 
-    private void validateRoleId(SystemRoleId systemRoleId) {
         if (systemRoleId == null) {
-            throw new DomainException("SystemRoleId é obrigatório no vínculo UserSystemRole");
+            throw new DomainException(SYSTEM_ROLE_ID_NULL);
         }
-    }
 
-    private void validateStatus(BindingStatus status) {
         if (status == null) {
-            throw new DomainException("Status do vínculo UserSystemRole não pode ser nulo");
+            throw new DomainException(STATUS_NULL);
         }
     }
 
@@ -97,7 +86,7 @@ public class UserSystemRole {
      */
     public void validateAccess() {
         if (!isActive()) {
-            throw new DomainException("Perfil não está ativo para este usuário no sistema");
+            throw new DomainException(INACTIVE_STATUS);
         }
     }
 
@@ -116,50 +105,83 @@ public class UserSystemRole {
 
     /**
      * Ativa o vínculo
-     * 
-     * @throws DomainException se o vínculo já estiver ativo
+     * Operação idempotente - pode ser chamada múltiplas vezes sem efeitos colaterais.
      */
     public void activate() {
-        if (this.status == BindingStatus.ACTIVE) {
-            throw new DomainException("Vínculo de perfil já está ativo");
-        }
         this.status = BindingStatus.ACTIVE;
     }
 
     /**
      * Desativa o vínculo
-     * 
-     * @throws DomainException se o vínculo já estiver inativo
+     * Operação idempotente - pode ser chamada múltiplas vezes sem efeitos colaterais.
      */
     public void deactivate() {
-        if (this.status == BindingStatus.INACTIVE) {
-            throw new DomainException("Vínculo de perfil já está inativo");
-        }
         this.status = BindingStatus.INACTIVE;
     }
 
     /**
      * Bloqueia o vínculo
-     * 
-     * @throws DomainException se o vínculo já estiver bloqueado
+     * Operação idempotente - pode ser chamada múltiplas vezes sem efeitos colaterais.
      */
     public void block() {
-        if (this.status == BindingStatus.BLOCKED) {
-            throw new DomainException("Vínculo de perfil já está bloqueado");
-        }
         this.status = BindingStatus.BLOCKED;
     }
 
     /**
      * Desbloqueia o vínculo
-     * 
-     * @throws DomainException se o vínculo já estiver desbloqueado
+     * Operação idempotente - pode ser chamada múltiplas vezes sem efeitos colaterais.
      */
     public void unblock() {
-        if (this.status != BindingStatus.BLOCKED) {
-            throw new DomainException("Vínculo de perfil não está bloqueado");
-        }
         this.status = BindingStatus.ACTIVE;
+    }
+
+    // ==================== Padrão Builder ====================
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+        private UserSystemRoleId id;
+        private UserSystemId userSystemId;
+        private SystemRoleId systemRoleId;
+        private BindingStatus status;
+
+        public Builder id(UserSystemRoleId id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder userSystemId(UserSystemId userSystemId) {
+            this.userSystemId = userSystemId;
+            return this;
+        }
+
+        public Builder systemRoleId(SystemRoleId systemRoleId) {
+            this.systemRoleId = systemRoleId;
+            return this;
+        }
+
+        public Builder status(BindingStatus status) {
+            this.status = status;
+            return this;
+        }
+
+        public UserSystemRole build() {
+            if (this.id == null) {
+                throw new DomainException(USER_SYSTEM_ROLE_ID_NULL);
+            }
+            if (this.userSystemId == null) {
+                throw new DomainException(USER_SYSTEM_ID_NULL);
+            }
+            if (this.systemRoleId == null) {
+                throw new DomainException(SYSTEM_ROLE_ID_NULL);
+            }
+            if (this.status == null) {
+                throw new DomainException(STATUS_NULL);
+            }
+            return new UserSystemRole(this);
+        }
     }
 
 }

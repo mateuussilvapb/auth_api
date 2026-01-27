@@ -174,12 +174,12 @@ public class AuthMapper {
 
     public UserSystemRole toDomain(UserSystemRoleEntity entity) {
         if (entity == null) return null;
-        return new UserSystemRole(
-            UserSystemRoleId.of(entity.getId()),
-            UserSystemId.of(entity.getUserSystem().getId()),
-            SystemRoleId.of(entity.getSystemRole().getId()),
-            BindingStatus.valueOf(entity.getStatus())
-        );
+        return UserSystemRole.builder()
+            .id(UserSystemRoleId.of(entity.getId()))
+            .userSystemId(UserSystemId.of(entity.getUserSystem().getId()))
+            .systemRoleId(SystemRoleId.of(entity.getSystemRole().getId()))
+            .status(BindingStatus.valueOf(entity.getStatus()))
+            .build();
     }
 
     public UserSystemRoleEntity toEntity(UserSystemRole userSystemRole, UserSystemEntity userSystem, SystemRoleEntity systemRole) {

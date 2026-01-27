@@ -33,7 +33,12 @@ class UserSystemRoleTest {
 
     @Test
     void createUserSystemRole() {
-        UserSystemRole userSystemRole = new UserSystemRole(id, userSystemId, systemRoleId, BindingStatus.ACTIVE);
+        UserSystemRole userSystemRole = UserSystemRole.builder()
+            .id(id)
+            .userSystemId(userSystemId)
+            .systemRoleId(systemRoleId)
+            .status(BindingStatus.ACTIVE)
+            .build();
 
         assertNotNull(userSystemRole);
         assertEquals(id, userSystemRole.getId());
@@ -45,79 +50,91 @@ class UserSystemRoleTest {
     @Test
     void createUserSystemRoleWithNullId() {
         assertThrows(DomainException.class,
-                () -> new UserSystemRole(null, userSystemId, systemRoleId, BindingStatus.ACTIVE));
+                () -> UserSystemRole.builder()
+                    .userSystemId(userSystemId)
+                    .systemRoleId(systemRoleId)
+                    .status(BindingStatus.ACTIVE)
+                    .build());
     }
 
     @Test
     void createUserSystemRoleWithNullUserSystem() {
         assertThrows(DomainException.class,
-                () -> new UserSystemRole(id, null, systemRoleId, BindingStatus.ACTIVE));
+                () -> UserSystemRole.builder()
+                    .id(id)
+                    .systemRoleId(systemRoleId)
+                    .status(BindingStatus.ACTIVE)
+                    .build());
     }
 
     @Test
     void createUserSystemRoleWithNullRole() {
         assertThrows(DomainException.class,
-                () -> new UserSystemRole(id, userSystemId, null, BindingStatus.ACTIVE));
+                () -> UserSystemRole.builder()
+                    .id(id)
+                    .userSystemId(userSystemId)
+                    .status(BindingStatus.ACTIVE)
+                    .build());
     }
 
     @Test
     void createUserSystemRoleWithNullStatus() {
         assertThrows(DomainException.class,
-                () -> new UserSystemRole(id, userSystemId, systemRoleId, null));
+                () -> UserSystemRole.builder()
+                    .id(id)
+                    .userSystemId(userSystemId)
+                    .systemRoleId(systemRoleId)
+                    .build());
     }
 
     // ==================== Gerenciamento de Status ====================
 
     @Test
     void activateUserSystemRole() {
-        UserSystemRole userSystemRole = new UserSystemRole(id, userSystemId, systemRoleId, BindingStatus.INACTIVE);
+        UserSystemRole userSystemRole = UserSystemRole.builder()
+            .id(id)
+            .userSystemId(userSystemId)
+            .systemRoleId(systemRoleId)
+            .status(BindingStatus.INACTIVE)
+            .build();
         userSystemRole.activate();
         assertEquals(BindingStatus.ACTIVE, userSystemRole.getStatus());
     }
 
     @Test
     void deactivateUserSystemRole() {
-        UserSystemRole userSystemRole = new UserSystemRole(id, userSystemId, systemRoleId, BindingStatus.ACTIVE);
+        UserSystemRole userSystemRole = UserSystemRole.builder()
+            .id(id)
+            .userSystemId(userSystemId)
+            .systemRoleId(systemRoleId)
+            .status(BindingStatus.ACTIVE)
+            .build();
         userSystemRole.deactivate();
         assertEquals(BindingStatus.INACTIVE, userSystemRole.getStatus());
     }
 
     @Test
     void blockUserSystemRole() {
-        UserSystemRole userSystemRole = new UserSystemRole(id, userSystemId, systemRoleId, BindingStatus.ACTIVE);
+        UserSystemRole userSystemRole = UserSystemRole.builder()
+            .id(id)
+            .userSystemId(userSystemId)
+            .systemRoleId(systemRoleId)
+            .status(BindingStatus.ACTIVE)
+            .build();
         userSystemRole.block();
         assertEquals(BindingStatus.BLOCKED, userSystemRole.getStatus());
     }
 
     @Test
     void unblockUserSystemRole() {
-        UserSystemRole userSystemRole = new UserSystemRole(id, userSystemId, systemRoleId, BindingStatus.BLOCKED);
+        UserSystemRole userSystemRole = UserSystemRole.builder()
+            .id(id)
+            .userSystemId(userSystemId)
+            .systemRoleId(systemRoleId)
+            .status(BindingStatus.BLOCKED)
+            .build();
         userSystemRole.unblock();
         assertEquals(BindingStatus.ACTIVE, userSystemRole.getStatus());
-    }
-
-    @Test
-    void activateAlreadyActive() {
-        UserSystemRole userSystemRole = new UserSystemRole(id, userSystemId, systemRoleId, BindingStatus.ACTIVE);
-        assertThrows(DomainException.class, userSystemRole::activate);
-    }
-
-    @Test
-    void deactivateAlreadyInactive() {
-        UserSystemRole userSystemRole = new UserSystemRole(id, userSystemId, systemRoleId, BindingStatus.INACTIVE);
-        assertThrows(DomainException.class, userSystemRole::deactivate);
-    }
-
-    @Test
-    void blockAlreadyBlocked() {
-        UserSystemRole userSystemRole = new UserSystemRole(id, userSystemId, systemRoleId, BindingStatus.BLOCKED);
-        assertThrows(DomainException.class, userSystemRole::block);
-    }
-
-    @Test
-    void unblockNotBlocked() {
-        UserSystemRole userSystemRole = new UserSystemRole(id, userSystemId, systemRoleId, BindingStatus.ACTIVE);
-        assertThrows(DomainException.class, userSystemRole::unblock);
     }
 
     // ==================== Validação de Acesso ====================
@@ -125,13 +142,23 @@ class UserSystemRoleTest {
     @Test
     void validateAccessSuccess() {
         // Tudo ativo (padrão do setUp)
-        UserSystemRole userSystemRole = new UserSystemRole(id, userSystemId, systemRoleId, BindingStatus.ACTIVE);
+        UserSystemRole userSystemRole = UserSystemRole.builder()
+            .id(id)
+            .userSystemId(userSystemId)
+            .systemRoleId(systemRoleId)
+            .status(BindingStatus.ACTIVE)
+            .build();
         assertDoesNotThrow(userSystemRole::validateAccess);
     }
 
     @Test
     void validateAccessInactiveBinding() {
-        UserSystemRole userSystemRole = new UserSystemRole(id, userSystemId, systemRoleId, BindingStatus.INACTIVE);
+        UserSystemRole userSystemRole = UserSystemRole.builder()
+            .id(id)
+            .userSystemId(userSystemId)
+            .systemRoleId(systemRoleId)
+            .status(BindingStatus.INACTIVE)
+            .build();
         DomainException ex = assertThrows(DomainException.class, userSystemRole::validateAccess);
         assertEquals("Perfil não está ativo para este usuário no sistema", ex.getMessage());
     }
