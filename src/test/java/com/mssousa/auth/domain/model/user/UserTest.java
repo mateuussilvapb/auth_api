@@ -55,91 +55,91 @@ class UserTest {
 
     @Test
     void testCreateUserWithNullId() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
-            () -> User.builder()
-                .id(null)
-                .username(username)
-                .email(email)
-                .password(password)
-                .master(false)
-                .status(UserStatus.ACTIVE)
-                .name(name)
-                .build());
+        DomainException exception = assertThrows(DomainException.class,
+                () -> User.builder()
+                        .id(null)
+                        .username(username)
+                        .email(email)
+                        .password(password)
+                        .master(false)
+                        .status(UserStatus.ACTIVE)
+                        .name(name)
+                        .build());
         assertEquals(User.DEFAULT_ERROR_ID, exception.getMessage());
     }
 
     @Test
     void testCreateUserWithNullUsername() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
-            () -> User.builder()
-                .id(userId)
-                .username(null)
-                .email(email)
-                .password(password)
-                .master(false)
-                .status(UserStatus.ACTIVE)
-                .name(name)
-                .build());
+        DomainException exception = assertThrows(DomainException.class,
+                () -> User.builder()
+                        .id(userId)
+                        .username(null)
+                        .email(email)
+                        .password(password)
+                        .master(false)
+                        .status(UserStatus.ACTIVE)
+                        .name(name)
+                        .build());
         assertEquals(Username.DEFAULT_ERROR_USERNAME, exception.getMessage());
     }
 
     @Test
     void testCreateUserWithNullEmail() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
-            () -> User.builder()
-                .id(userId)
-                .username(username)
-                .email(null)
-                .password(password)
-                .master(false)
-                .status(UserStatus.ACTIVE)
-                .name(name)
-                .build());
+        DomainException exception = assertThrows(DomainException.class,
+                () -> User.builder()
+                        .id(userId)
+                        .username(username)
+                        .email(null)
+                        .password(password)
+                        .master(false)
+                        .status(UserStatus.ACTIVE)
+                        .name(name)
+                        .build());
         assertEquals(Email.DEFAULT_ERROR_EMAIL, exception.getMessage());
     }
 
     @Test
     void testCreateUserWithNullPassword() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
-            () -> User.builder()
-                .id(userId)
-                .username(username)
-                .email(email)
-                .password(null)
-                .master(false)
-                .status(UserStatus.ACTIVE)
-                .name(name)
-                .build());
+        DomainException exception = assertThrows(DomainException.class,
+                () -> User.builder()
+                        .id(userId)
+                        .username(username)
+                        .email(email)
+                        .password(null)
+                        .master(false)
+                        .status(UserStatus.ACTIVE)
+                        .name(name)
+                        .build());
         assertEquals(Password.DEFAULT_ERROR_PASSWORD, exception.getMessage());
     }
 
     @Test
     void testCreateUserWithNullName() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
-            () -> User.builder()
-                .id(userId)
-                .username(username)
-                .email(email)
-                .password(password)
-                .master(false)
-                .status(UserStatus.ACTIVE)
-                .name(null)
-                .build());
+        DomainException exception = assertThrows(DomainException.class,
+                () -> User.builder()
+                        .id(userId)
+                        .username(username)
+                        .email(email)
+                        .password(password)
+                        .master(false)
+                        .status(UserStatus.ACTIVE)
+                        .name(null)
+                        .build());
         assertEquals(User.DEFAULT_ERROR_NAME, exception.getMessage());
     }
 
     @Test
     void testCreateUserWithBlankName() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
-            () -> User.builder()
-                .id(userId)
-                .username(username)
-                .email(email)
-                .password(password)
-                .master(false)
-                .status(UserStatus.ACTIVE)
-                .name("  ")
-                .build());
+        DomainException exception = assertThrows(DomainException.class,
+                () -> User.builder()
+                        .id(userId)
+                        .username(username)
+                        .email(email)
+                        .password(password)
+                        .master(false)
+                        .status(UserStatus.ACTIVE)
+                        .name("  ")
+                        .build());
         assertEquals(User.DEFAULT_ERROR_NAME, exception.getMessage());
     }
 
@@ -200,7 +200,6 @@ class UserTest {
         assertEquals(email, user.getEmail());
     }
 
-
     @Test
     void testGetName() {
         User user = User.builder()
@@ -250,8 +249,8 @@ class UserTest {
                 .name(name)
                 .build();
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
-            () -> user.updateName(null));
+        DomainException exception = assertThrows(DomainException.class,
+                () -> user.updateName(null));
         assertEquals(User.DEFAULT_ERROR_NAME, exception.getMessage());
     }
 
@@ -267,8 +266,8 @@ class UserTest {
                 .name(name)
                 .build();
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
-            () -> user.updateName(""));
+        DomainException exception = assertThrows(DomainException.class,
+                () -> user.updateName(""));
         assertEquals(User.DEFAULT_ERROR_NAME, exception.getMessage());
     }
 
@@ -284,8 +283,8 @@ class UserTest {
                 .name(name)
                 .build();
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
-            () -> user.updateEmail(null));
+        DomainException exception = assertThrows(DomainException.class,
+                () -> user.updateEmail(null));
         assertEquals(Email.DEFAULT_ERROR_EMAIL, exception.getMessage());
     }
 
@@ -301,8 +300,8 @@ class UserTest {
                 .name(name)
                 .build();
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
-            () -> user.updateEmail(Email.of("")));
+        DomainException exception = assertThrows(DomainException.class,
+                () -> user.updateEmail(Email.of("")));
         assertEquals(Email.DEFAULT_ERROR_EMAIL, exception.getMessage());
     }
 
@@ -319,9 +318,9 @@ class UserTest {
                 .status(UserStatus.BLOCKED)
                 .name(name)
                 .build();
-        
+
         user.activate();
-        
+
         assertTrue(user.isActive());
         assertEquals(UserStatus.ACTIVE, user.getStatus());
     }
@@ -337,9 +336,9 @@ class UserTest {
                 .status(UserStatus.ACTIVE)
                 .name(name)
                 .build();
-        
+
         user.activate(); // Não deve lançar exceção
-        
+
         assertTrue(user.isActive());
     }
 
@@ -354,9 +353,9 @@ class UserTest {
                 .status(UserStatus.ACTIVE)
                 .name(name)
                 .build();
-        
+
         user.block();
-        
+
         assertTrue(user.isBlocked());
         assertEquals(UserStatus.BLOCKED, user.getStatus());
     }
@@ -372,9 +371,9 @@ class UserTest {
                 .status(UserStatus.BLOCKED)
                 .name(name)
                 .build();
-        
+
         user.unblock();
-        
+
         assertTrue(user.isActive());
         assertFalse(user.isBlocked());
     }
@@ -390,9 +389,9 @@ class UserTest {
                 .status(UserStatus.ACTIVE)
                 .name(name)
                 .build();
-        
+
         user.disable();
-        
+
         assertTrue(user.isDisabled());
         assertEquals(UserStatus.DISABLED, user.getStatus());
     }
@@ -417,7 +416,7 @@ class UserTest {
                 .status(UserStatus.BLOCKED)
                 .name(name)
                 .build();
-        
+
         assertTrue(activeUser.isActive());
         assertFalse(blockedUser.isActive());
     }
@@ -442,7 +441,7 @@ class UserTest {
                 .status(UserStatus.ACTIVE)
                 .name(name)
                 .build();
-        
+
         assertTrue(blockedUser.isBlocked());
         assertFalse(activeUser.isBlocked());
     }
@@ -467,7 +466,7 @@ class UserTest {
                 .status(UserStatus.ACTIVE)
                 .name(name)
                 .build();
-        
+
         assertTrue(disabledUser.isDisabled());
         assertFalse(activeUser.isDisabled());
     }
@@ -483,19 +482,19 @@ class UserTest {
                 .status(UserStatus.ACTIVE)
                 .name(name)
                 .build();
-        
+
         // ACTIVE -> BLOCKED
         user.block();
         assertTrue(user.isBlocked());
-        
+
         // BLOCKED -> ACTIVE
         user.unblock();
         assertTrue(user.isActive());
-        
+
         // ACTIVE -> DISABLED
         user.disable();
         assertTrue(user.isDisabled());
-        
+
         // DISABLED -> ACTIVE
         user.activate();
         assertTrue(user.isActive());
@@ -515,9 +514,9 @@ class UserTest {
                 .name(name)
                 .build();
         Password newPassword = Password.fromPlainText("newPassword456");
-        
+
         user.changePassword(newPassword);
-        
+
         assertEquals(newPassword, user.getPassword());
         assertTrue(user.verifyPassword("newPassword456"));
     }
@@ -533,9 +532,9 @@ class UserTest {
                 .status(UserStatus.ACTIVE)
                 .name(name)
                 .build();
-        
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
-            () -> user.changePassword(null));
+
+        DomainException exception = assertThrows(DomainException.class,
+                () -> user.changePassword(null));
         assertEquals(Password.DEFAULT_ERROR_PASSWORD, exception.getMessage());
     }
 
@@ -550,7 +549,7 @@ class UserTest {
                 .status(UserStatus.ACTIVE)
                 .name(name)
                 .build();
-        
+
         assertTrue(user.verifyPassword("password123"));
     }
 
@@ -565,7 +564,7 @@ class UserTest {
                 .status(UserStatus.ACTIVE)
                 .name(name)
                 .build();
-        
+
         assertFalse(user.verifyPassword("wrongPassword"));
     }
 
@@ -580,7 +579,7 @@ class UserTest {
                 .status(UserStatus.ACTIVE)
                 .name(name)
                 .build();
-        
+
         assertFalse(user.verifyPassword(null));
     }
 
@@ -598,9 +597,9 @@ class UserTest {
                 .name(name)
                 .build();
         assertFalse(user.isMaster());
-        
+
         user.promoteToMaster();
-        
+
         assertTrue(user.isMaster());
     }
 
@@ -616,9 +615,9 @@ class UserTest {
                 .name(name)
                 .build();
         assertTrue(user.isMaster());
-        
+
         user.demoteFromMaster();
-        
+
         assertFalse(user.isMaster());
     }
 
@@ -633,7 +632,7 @@ class UserTest {
                 .status(UserStatus.BLOCKED)
                 .name(name)
                 .build();
-        
+
         assertTrue(master.canLogin());
     }
 
@@ -657,7 +656,7 @@ class UserTest {
                 .status(UserStatus.ACTIVE)
                 .name(name)
                 .build();
-        
+
         assertFalse(blockedUser.canLogin());
         assertTrue(activeUser.canLogin());
     }
@@ -675,7 +674,7 @@ class UserTest {
                 .status(UserStatus.ACTIVE)
                 .name(name)
                 .build();
-        
+
         assertTrue(user.canLogin());
     }
 
@@ -690,7 +689,7 @@ class UserTest {
                 .status(UserStatus.BLOCKED)
                 .name(name)
                 .build();
-        
+
         assertFalse(user.canLogin());
     }
 
@@ -705,7 +704,7 @@ class UserTest {
                 .status(UserStatus.DISABLED)
                 .name(name)
                 .build();
-        
+
         assertFalse(user.canLogin());
     }
 
@@ -738,7 +737,7 @@ class UserTest {
                 .status(UserStatus.ACTIVE)
                 .name(name)
                 .build();
-        
+
         assertTrue(masterBlocked.canLogin());
         assertTrue(masterDisabled.canLogin());
         assertTrue(masterActive.canLogin());
@@ -757,7 +756,7 @@ class UserTest {
                 .status(UserStatus.ACTIVE)
                 .name(name)
                 .build();
-        
+
         assertTrue(user.canLogin());
     }
 
@@ -772,7 +771,7 @@ class UserTest {
                 .status(UserStatus.BLOCKED)
                 .name(name)
                 .build();
-        
+
         assertFalse(user.canLogin());
     }
 
@@ -787,7 +786,7 @@ class UserTest {
                 .status(UserStatus.DISABLED)
                 .name(name)
                 .build();
-        
+
         assertFalse(user.canLogin());
     }
 
@@ -811,7 +810,7 @@ class UserTest {
                 .status(UserStatus.DISABLED)
                 .name(name)
                 .build();
-        
+
         assertTrue(masterBlocked.canLogin());
         assertTrue(masterDisabled.canLogin());
     }
@@ -831,21 +830,21 @@ class UserTest {
                 .name(name)
                 .build();
         assertTrue(user.canLogin());
-        
+
         // Bloquear por violação
         user.block();
         assertFalse(user.canLogin());
         assertTrue(user.isBlocked());
-        
+
         // Desbloquear após análise
         user.unblock();
         assertTrue(user.canLogin());
         assertTrue(user.isActive());
-        
+
         // Promover para master
         user.promoteToMaster();
         assertTrue(user.isMaster());
-        
+
         // Master pode acessar mesmo se bloqueado
         user.block();
         assertTrue(user.canLogin());
@@ -862,15 +861,15 @@ class UserTest {
                 .status(UserStatus.ACTIVE)
                 .name(name)
                 .build();
-        
+
         // Verificar senha inicial
         assertTrue(user.verifyPassword("password123"));
         assertFalse(user.verifyPassword("wrongPassword"));
-        
+
         // Trocar senha
         Password newPassword = Password.fromPlainText("newSecurePass999");
         user.changePassword(newPassword);
-        
+
         // Verificar nova senha
         assertTrue(user.verifyPassword("newSecurePass999"));
         assertFalse(user.verifyPassword("password123"));
@@ -890,7 +889,7 @@ class UserTest {
                 .status(null)
                 .name(name)
                 .build();
-        
+
         assertEquals(UserStatus.ACTIVE, user.getStatus());
         assertTrue(user.isActive());
     }
@@ -906,7 +905,7 @@ class UserTest {
                 .name(name)
                 // Sem definir .status()
                 .build();
-        
+
         assertEquals(UserStatus.ACTIVE, user.getStatus());
     }
 
@@ -921,7 +920,7 @@ class UserTest {
                 .name(name)
                 // Sem definir .master()
                 .build();
-        
+
         assertFalse(user.isMaster());
     }
 
@@ -939,9 +938,9 @@ class UserTest {
                 .status(UserStatus.ACTIVE)
                 .name(name)
                 .build();
-        
-        DomainException exception = assertThrows(DomainException.class, 
-            () -> activeUser.unblock());
+
+        DomainException exception = assertThrows(DomainException.class,
+                () -> activeUser.unblock());
         assertEquals(User.ERROR_USER_NOT_BLOCKED, exception.getMessage());
     }
 
@@ -957,9 +956,9 @@ class UserTest {
                 .status(UserStatus.DISABLED)
                 .name(name)
                 .build();
-        
-        DomainException exception = assertThrows(DomainException.class, 
-            () -> disabledUser.unblock());
+
+        DomainException exception = assertThrows(DomainException.class,
+                () -> disabledUser.unblock());
         assertEquals(User.ERROR_USER_NOT_BLOCKED, exception.getMessage());
     }
 
@@ -974,9 +973,9 @@ class UserTest {
                 .email(email)
                 .password(password)
                 .name(name)
-                .status(null)  // Explicitamente null
+                .status(null) // Explicitamente null
                 .build();
-        
+
         assertEquals(UserStatus.ACTIVE, user.getStatus());
         assertFalse(user.isBlocked());
         assertFalse(user.isDisabled());

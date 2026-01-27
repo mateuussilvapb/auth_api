@@ -45,19 +45,19 @@ public class User {
 
     private void validate() {
         if (id == null) {
-            throw new IllegalArgumentException(DEFAULT_ERROR_ID);
+            throw new DomainException(DEFAULT_ERROR_ID);
         }
         if (username == null) {
-            throw new IllegalArgumentException(Username.DEFAULT_ERROR_USERNAME);
+            throw new DomainException(Username.DEFAULT_ERROR_USERNAME);
         }
         if (email == null) {
-            throw new IllegalArgumentException(Email.DEFAULT_ERROR_EMAIL);
+            throw new DomainException(Email.DEFAULT_ERROR_EMAIL);
         }
         if (password == null) {
-            throw new IllegalArgumentException(Password.DEFAULT_ERROR_PASSWORD);
+            throw new DomainException(Password.DEFAULT_ERROR_PASSWORD);
         }
         if (name == null || name.isBlank()) {
-            throw new IllegalArgumentException(DEFAULT_ERROR_NAME);
+            throw new DomainException(DEFAULT_ERROR_NAME);
         }
         // Status é garantido pelo Builder (sempre != null)
     }
@@ -165,11 +165,11 @@ public class User {
      * Atualiza a senha do usuário.
      *
      * @param newPassword nova senha (já em formato hash)
-     * @throws IllegalArgumentException se a nova senha for nula
+     * @throws DomainException se a nova senha for nula
      */
     public void changePassword(Password newPassword) {
         if (newPassword == null) {
-            throw new IllegalArgumentException(Password.DEFAULT_ERROR_PASSWORD);
+            throw new DomainException(Password.DEFAULT_ERROR_PASSWORD);
         }
         this.password = newPassword;
     }
@@ -226,11 +226,11 @@ public class User {
      * Atualiza o nome do usuário.
      *
      * @param name novo nome
-     * @throws IllegalArgumentException se o nome for nulo ou vazio
+     * @throws DomainException se o nome for nulo ou vazio
      */
     public void updateName(String name) {
         if (name == null || name.isBlank()) {
-            throw new IllegalArgumentException(DEFAULT_ERROR_NAME);
+            throw new DomainException(DEFAULT_ERROR_NAME);
         }
         this.name = name;
     }
@@ -239,11 +239,11 @@ public class User {
      * Atualiza o email do usuário.
      *
      * @param email novo email
-     * @throws IllegalArgumentException se o email for nulo
+     * @throws DomainException se o email for nulo
      */
     public void updateEmail(Email email) {
         if (email == null) {
-            throw new IllegalArgumentException(Email.DEFAULT_ERROR_EMAIL);
+            throw new DomainException(Email.DEFAULT_ERROR_EMAIL);
         }
         this.email = email;
     }
@@ -305,19 +305,19 @@ public class User {
         public User build() {
             // Validação de campos obrigatórios
             if (id == null) {
-                throw new IllegalArgumentException(User.DEFAULT_ERROR_ID);
+                throw new DomainException(User.DEFAULT_ERROR_ID);
             }
             if (username == null) {
-                throw new IllegalArgumentException(Username.DEFAULT_ERROR_USERNAME);
+                throw new DomainException(Username.DEFAULT_ERROR_USERNAME);
             }
             if (email == null) {
-                throw new IllegalArgumentException(Email.DEFAULT_ERROR_EMAIL);
+                throw new DomainException(Email.DEFAULT_ERROR_EMAIL);
             }
             if (password == null) {
-                throw new IllegalArgumentException(Password.DEFAULT_ERROR_PASSWORD);
+                throw new DomainException(Password.DEFAULT_ERROR_PASSWORD);
             }
             if (name == null || name.isBlank()) {
-                throw new IllegalArgumentException(User.DEFAULT_ERROR_NAME);
+                throw new DomainException(User.DEFAULT_ERROR_NAME);
             }
             
             return new User(this);

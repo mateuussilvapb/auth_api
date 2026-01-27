@@ -31,7 +31,7 @@ public final class Email {
 
     private void validate(String value) {
         if (value == null || value.isBlank()) {
-            throw new IllegalArgumentException(DEFAULT_ERROR_EMAIL);
+            throw new DomainException(DEFAULT_ERROR_EMAIL);
         }
 
         if (!EMAIL_PATTERN.matcher(value).matches()) {
