@@ -125,18 +125,6 @@ class UserSystemRoleTest {
         assertEquals(BindingStatus.BLOCKED, userSystemRole.getStatus());
     }
 
-    @Test
-    void unblockUserSystemRole() {
-        UserSystemRole userSystemRole = UserSystemRole.builder()
-            .id(id)
-            .userSystemId(userSystemId)
-            .systemRoleId(systemRoleId)
-            .status(BindingStatus.BLOCKED)
-            .build();
-        userSystemRole.unblock();
-        assertEquals(BindingStatus.ACTIVE, userSystemRole.getStatus());
-    }
-
     // ==================== Validação de Acesso ====================
 
     @Test

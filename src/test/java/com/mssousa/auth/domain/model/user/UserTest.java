@@ -361,24 +361,6 @@ class UserTest {
     }
 
     @Test
-    void testUnblockUser() {
-        User user = User.builder()
-                .id(userId)
-                .username(username)
-                .email(email)
-                .password(password)
-                .master(false)
-                .status(UserStatus.BLOCKED)
-                .name(name)
-                .build();
-
-        user.unblock();
-
-        assertTrue(user.isActive());
-        assertFalse(user.isBlocked());
-    }
-
-    @Test
     void testDisableUser() {
         User user = User.builder()
                 .id(userId)
@@ -487,11 +469,7 @@ class UserTest {
         user.block();
         assertTrue(user.isBlocked());
 
-        // BLOCKED -> ACTIVE
-        user.unblock();
-        assertTrue(user.isActive());
-
-        // ACTIVE -> DISABLED
+        // BLOCKED -> DISABLED
         user.disable();
         assertTrue(user.isDisabled());
 
@@ -836,11 +814,6 @@ class UserTest {
         assertFalse(user.canLogin());
         assertTrue(user.isBlocked());
 
-        // Desbloquear após análise
-        user.unblock();
-        assertTrue(user.canLogin());
-        assertTrue(user.isActive());
-
         // Promover para master
         user.promoteToMaster();
         assertTrue(user.isMaster());
@@ -922,44 +895,6 @@ class UserTest {
                 .build();
 
         assertFalse(user.isMaster());
-    }
-
-    // ==================== Testes de Exceções de Status ====================
-
-    @Test
-    @DisplayName("Desbloquear usuário não bloqueado deve lançar DomainException")
-    void testUnblockNonBlockedUserThrowsException() {
-        User activeUser = User.builder()
-                .id(userId)
-                .username(username)
-                .email(email)
-                .password(password)
-                .master(false)
-                .status(UserStatus.ACTIVE)
-                .name(name)
-                .build();
-
-        DomainException exception = assertThrows(DomainException.class,
-                () -> activeUser.unblock());
-        assertEquals(User.ERROR_USER_NOT_BLOCKED, exception.getMessage());
-    }
-
-    @Test
-    @DisplayName("Desbloquear usuário desabilitado deve lançar DomainException")
-    void testUnblockDisabledUserThrowsException() {
-        User disabledUser = User.builder()
-                .id(userId)
-                .username(username)
-                .email(email)
-                .password(password)
-                .master(false)
-                .status(UserStatus.DISABLED)
-                .name(name)
-                .build();
-
-        DomainException exception = assertThrows(DomainException.class,
-                () -> disabledUser.unblock());
-        assertEquals(User.ERROR_USER_NOT_BLOCKED, exception.getMessage());
     }
 
     // ==================== Testes de Validação de Status null ====================

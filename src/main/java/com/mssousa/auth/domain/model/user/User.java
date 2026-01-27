@@ -112,18 +112,6 @@ public class User {
     }
 
     /**
-     * Desbloqueia o usuário, restaurando status ativo.
-     *
-     * @throws DomainException se o usuário não estiver bloqueado
-     */
-    public void unblock() {
-        if (this.status != UserStatus.BLOCKED) {
-            throw new DomainException(ERROR_USER_NOT_BLOCKED);
-        }
-        this.status = UserStatus.ACTIVE;
-    }
-
-    /**
      * Desabilita o usuário temporariamente.
      * Diferente de bloqueio, usado para suspensões temporárias.
      * Operação idempotente.

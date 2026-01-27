@@ -213,29 +213,6 @@ class UserSystemTest {
         assertEquals(BindingStatus.BLOCKED, userSystem.getStatus());
     }
 
-    @Test
-    void unblockUserSystem() {
-        UserSystem userSystem = UserSystem.builder()
-            .id(id)
-            .userId(userId)
-            .systemId(systemId)
-            .status(BindingStatus.BLOCKED)
-            .build();
-        userSystem.unblock();
-        assertEquals(BindingStatus.ACTIVE, userSystem.getStatus());
-    }
-    
-    @Test
-    void unblockNotBlockedUserSystem() {
-        UserSystem userSystem = UserSystem.builder()
-            .id(id)
-            .userId(userId)
-            .systemId(systemId)
-            .status(BindingStatus.ACTIVE)
-            .build();
-        assertThrows(DomainException.class, userSystem::unblock);
-    }
-
     // ==================== Validação de Acesso ====================
     /**
      * Testa a validação de acesso ao sistema com um vínculo ativo.

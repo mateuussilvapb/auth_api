@@ -127,14 +127,6 @@ public class UserSystemRole {
         this.status = BindingStatus.BLOCKED;
     }
 
-    /**
-     * Desbloqueia o vínculo
-     * Operação idempotente - pode ser chamada múltiplas vezes sem efeitos colaterais.
-     */
-    public void unblock() {
-        this.status = BindingStatus.ACTIVE;
-    }
-
     // ==================== Padrão Builder ====================
 
     public static Builder builder() {

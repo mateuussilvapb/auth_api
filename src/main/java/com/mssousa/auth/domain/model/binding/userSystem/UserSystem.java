@@ -112,17 +112,6 @@ public class UserSystem {
         this.status = BindingStatus.BLOCKED;
     }
 
-    /**
-     * Desbloqueia o vínculo, retornando-o para o status ATIVO.
-     * 
-     * @throws DomainException se o vínculo não estiver bloqueado
-     */
-    public void unblock() {
-        if (this.status != BindingStatus.BLOCKED) {
-            throw new DomainException(LINK_IS_NOT_BLOCK);
-        }
-        this.status = BindingStatus.ACTIVE;
-    }
 
     // ==================== Métodos Auxiliares ====================
 
