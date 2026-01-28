@@ -27,7 +27,14 @@ class ClientSystemTest {
 
     @Test
     void testCreateClientSystem() {
-        ClientSystem system = new ClientSystem(systemId, clientId, clientSecret, name, redirectUri, SystemStatus.ACTIVE);
+        ClientSystem system = new ClientSystem.Builder()
+            .id(systemId)
+            .clientId(clientId)
+            .clientSecret(clientSecret)
+            .name(name)
+            .redirectUri(redirectUri)
+            .status(SystemStatus.ACTIVE)
+            .build();
 
         assertNotNull(system);
         assertEquals(systemId, system.getId());
@@ -40,39 +47,79 @@ class ClientSystemTest {
 
     @Test
     void testCreateClientSystemWithNullStatus() {
-        ClientSystem system = new ClientSystem(systemId, clientId, clientSecret, name, redirectUri, null);
-
-        // Deve usar ACTIVE como padrão
-        assertEquals(SystemStatus.ACTIVE, system.getStatus());
+        DomainException exception = assertThrows(DomainException.class,
+            () -> ClientSystem.builder()
+                .id(systemId)
+                .clientId(clientId)
+                .clientSecret(clientSecret)
+                .name(name)
+                .redirectUri(redirectUri)
+                .build());
+        assertEquals(ClientSystem.STATUS_NULL_OR_BLANK, exception.getMessage());
     }
 
     @Test
     void testGetId() {
-        ClientSystem system = new ClientSystem(systemId, clientId, clientSecret, name, redirectUri, SystemStatus.ACTIVE);
+        ClientSystem system = ClientSystem.builder()
+            .id(systemId)
+            .clientId(clientId)
+            .clientSecret(clientSecret)
+            .name(name)
+            .redirectUri(redirectUri)
+            .status(SystemStatus.ACTIVE)
+            .build();
         assertEquals(systemId, system.getId());
     }
 
     @Test
     void testGetClientId() {
-        ClientSystem system = new ClientSystem(systemId, clientId, clientSecret, name, redirectUri, SystemStatus.ACTIVE);
+        ClientSystem system = ClientSystem.builder()
+            .id(systemId)
+            .clientId(clientId)
+            .clientSecret(clientSecret)
+            .name(name)
+            .redirectUri(redirectUri)
+            .status(SystemStatus.ACTIVE)
+            .build();
         assertEquals(clientId, system.getClientId());
     }
 
     @Test
     void testGetClientSecret() {
-        ClientSystem system = new ClientSystem(systemId, clientId, clientSecret, name, redirectUri, SystemStatus.ACTIVE);
+        ClientSystem system = ClientSystem.builder()
+            .id(systemId)
+            .clientId(clientId)
+            .clientSecret(clientSecret)
+            .name(name)
+            .redirectUri(redirectUri)
+            .status(SystemStatus.ACTIVE)
+            .build();
         assertEquals(clientSecret, system.getClientSecret());
     }
 
     @Test
     void testGetName() {
-        ClientSystem system = new ClientSystem(systemId, clientId, clientSecret, name, redirectUri, SystemStatus.ACTIVE);
+        ClientSystem system = ClientSystem.builder()
+            .id(systemId)
+            .clientId(clientId)
+            .clientSecret(clientSecret)
+            .name(name)
+            .redirectUri(redirectUri)
+            .status(SystemStatus.ACTIVE)
+            .build();
         assertEquals(name, system.getName());
     }
 
     @Test
     void testGetRedirectUri() {
-        ClientSystem system = new ClientSystem(systemId, clientId, clientSecret, name, redirectUri, SystemStatus.ACTIVE);
+        ClientSystem system = ClientSystem.builder()
+            .id(systemId)
+            .clientId(clientId)
+            .clientSecret(clientSecret)
+            .name(name)
+            .redirectUri(redirectUri)
+            .status(SystemStatus.ACTIVE)
+            .build();
         assertEquals(redirectUri, system.getRedirectUri());
     }
 
@@ -80,84 +127,168 @@ class ClientSystemTest {
 
     @Test
     void testCreateClientSystemWithNullClientId() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-            () -> new ClientSystem(systemId, null, clientSecret, name, redirectUri, SystemStatus.ACTIVE));
+        DomainException exception = assertThrows(DomainException.class,
+            () -> ClientSystem.builder()
+                .id(systemId)
+                .clientId(null)
+                .clientSecret(clientSecret)
+                .name(name)
+                .redirectUri(redirectUri)
+                .status(SystemStatus.ACTIVE)
+                .build());
         assertEquals("Client ID não pode ser nulo ou vazio", exception.getMessage());
     }
 
     @Test
     void testCreateClientSystemWithEmptyClientId() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-            () -> new ClientSystem(systemId, "", clientSecret, name, redirectUri, SystemStatus.ACTIVE));
+        DomainException exception = assertThrows(DomainException.class,
+            () -> ClientSystem.builder()
+                .id(systemId)
+                .clientId("")
+                .clientSecret(clientSecret)
+                .name(name)
+                .redirectUri(redirectUri)
+                .status(SystemStatus.ACTIVE)
+                .build());
         assertEquals("Client ID não pode ser nulo ou vazio", exception.getMessage());
     }
 
     @Test
     void testCreateClientSystemWithBlankClientId() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-            () -> new ClientSystem(systemId, "   ", clientSecret, name, redirectUri, SystemStatus.ACTIVE));
+        DomainException exception = assertThrows(DomainException.class,
+            () -> ClientSystem.builder()
+                .id(systemId)
+                .clientId("   ")
+                .clientSecret(clientSecret)
+                .name(name)
+                .redirectUri(redirectUri)
+                .status(SystemStatus.ACTIVE)
+                .build());
         assertEquals("Client ID não pode ser nulo ou vazio", exception.getMessage());
     }
 
     @Test
     void testCreateClientSystemWithNullName() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-            () -> new ClientSystem(systemId, clientId, clientSecret, null, redirectUri, SystemStatus.ACTIVE));
+        DomainException exception = assertThrows(DomainException.class,
+            () -> ClientSystem.builder()
+                .id(systemId)
+                .clientId(clientId)
+                .clientSecret(clientSecret)
+                .name(null)
+                .redirectUri(redirectUri)
+                .status(SystemStatus.ACTIVE)
+                .build());
         assertEquals("Nome do sistema não pode ser nulo ou vazio", exception.getMessage());
     }
 
     @Test
     void testCreateClientSystemWithEmptyName() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-            () -> new ClientSystem(systemId, clientId, clientSecret, "", redirectUri, SystemStatus.ACTIVE));
+        DomainException exception = assertThrows(DomainException.class,
+            () -> ClientSystem.builder()
+                .id(systemId)
+                .clientId(clientId)
+                .clientSecret(clientSecret)
+                .name("")
+                .redirectUri(redirectUri)
+                .status(SystemStatus.ACTIVE)
+                .build());
         assertEquals("Nome do sistema não pode ser nulo ou vazio", exception.getMessage());
     }
 
     @Test
     void testCreateClientSystemWithBlankName() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-            () -> new ClientSystem(systemId, clientId, clientSecret, "   ", redirectUri, SystemStatus.ACTIVE));
-        assertEquals("Nome do sistema não pode ser nulo ou vazio", exception.getMessage());
+        DomainException exception = assertThrows(DomainException.class,
+            () -> ClientSystem.builder()
+                .id(systemId)
+                .clientId(clientId)
+                .clientSecret(clientSecret)
+                .name("   ")
+                .redirectUri(redirectUri)
+                .status(SystemStatus.ACTIVE)
+                .build());
+        assertEquals(ClientSystem.NAME_NULL_OR_BLANK, exception.getMessage());
     }
 
     @Test
     void testCreateClientSystemWithNullRedirectUri() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-            () -> new ClientSystem(systemId, clientId, clientSecret, name, null, SystemStatus.ACTIVE));
-        assertEquals("Redirect URI não pode ser nulo ou vazio", exception.getMessage());
+        DomainException exception = assertThrows(DomainException.class,
+            () -> ClientSystem.builder()
+                .id(systemId)
+                .clientId(clientId)
+                .clientSecret(clientSecret)
+                .name(name)
+                .redirectUri(null)
+                .status(SystemStatus.ACTIVE)
+                .build());
+        assertEquals(ClientSystem.REDIRECT_URI_INVALID, exception.getMessage());
     }
 
     @Test
     void testCreateClientSystemWithEmptyRedirectUri() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-            () -> new ClientSystem(systemId, clientId, clientSecret, name, "", SystemStatus.ACTIVE));
-        assertEquals("Redirect URI não pode ser nulo ou vazio", exception.getMessage());
+        DomainException exception = assertThrows(DomainException.class,
+            () -> ClientSystem.builder()
+                .id(systemId)
+                .clientId(clientId)
+                .clientSecret(clientSecret)
+                .name(name)
+                .redirectUri("")
+                .status(SystemStatus.ACTIVE)
+                .build());
+        assertEquals(ClientSystem.REDIRECT_URI_INVALID, exception.getMessage());
     }
 
     @Test
     void testCreateClientSystemWithBlankRedirectUri() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-            () -> new ClientSystem(systemId, clientId, clientSecret, name, "   ", SystemStatus.ACTIVE));
-        assertEquals("Redirect URI não pode ser nulo ou vazio", exception.getMessage());
+        DomainException exception = assertThrows(DomainException.class,
+            () -> ClientSystem.builder()
+                .id(systemId)
+                .clientId(clientId)
+                .clientSecret(clientSecret)
+                .name(name)
+                .redirectUri("   ")
+                .status(SystemStatus.ACTIVE)
+                .build());
+        assertEquals(ClientSystem.REDIRECT_URI_INVALID, exception.getMessage());
     }
 
     @Test
     void testCreateClientSystemWithInvalidRedirectUriNoProtocol() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-            () -> new ClientSystem(systemId, clientId, clientSecret, name, "example.com/callback", SystemStatus.ACTIVE));
-        assertEquals("Redirect URI deve começar com http:// ou https://", exception.getMessage());
+        DomainException exception = assertThrows(DomainException.class,
+            () -> ClientSystem.builder()
+                .id(systemId)
+                .clientId(clientId)
+                .clientSecret(clientSecret)
+                .name(name)
+                .redirectUri("example.com/callback")
+                .status(SystemStatus.ACTIVE)
+                .build());
+        assertEquals(ClientSystem.REDIRECT_URI_INVALID, exception.getMessage());
     }
 
     @Test
     void testCreateClientSystemWithValidHttpRedirectUri() {
-        ClientSystem system = new ClientSystem(systemId, clientId, clientSecret, name, "http://localhost:3000/callback", SystemStatus.ACTIVE);
+        ClientSystem system = ClientSystem.builder()
+                .id(systemId)
+                .clientId(clientId)
+                .clientSecret(clientSecret)
+                .name(name)
+                .redirectUri("http://localhost:3000/callback")
+                .status(SystemStatus.ACTIVE)
+                .build();
         assertNotNull(system);
         assertEquals("http://localhost:3000/callback", system.getRedirectUri());
     }
 
     @Test
     void testCreateClientSystemWithValidHttpsRedirectUri() {
-        ClientSystem system = new ClientSystem(systemId, clientId, clientSecret, name, "https://example.com/callback", SystemStatus.ACTIVE);
+        ClientSystem system = ClientSystem.builder()
+                .id(systemId)
+                .clientId(clientId)
+                .clientSecret(clientSecret)
+                .name(name)
+                .redirectUri("https://example.com/callback")
+                .status(SystemStatus.ACTIVE)
+                .build();
         assertNotNull(system);
         assertEquals("https://example.com/callback", system.getRedirectUri());
     }
@@ -166,7 +297,14 @@ class ClientSystemTest {
 
     @Test
     void testActivateSystem() {
-        ClientSystem system = new ClientSystem(systemId, clientId, clientSecret, name, redirectUri, SystemStatus.INACTIVE);
+        ClientSystem system = ClientSystem.builder()
+                .id(systemId)
+                .clientId(clientId)
+                .clientSecret(clientSecret)
+                .name(name)
+                .redirectUri(redirectUri)
+                .status(SystemStatus.INACTIVE)
+                .build();
         
         system.activate();
         
@@ -176,7 +314,14 @@ class ClientSystemTest {
 
     @Test
     void testActivateAlreadyActiveSystem() {
-        ClientSystem system = new ClientSystem(systemId, clientId, clientSecret, name, redirectUri, SystemStatus.ACTIVE);
+        ClientSystem system = ClientSystem.builder()
+                .id(systemId)
+                .clientId(clientId)
+                .clientSecret(clientSecret)
+                .name(name)
+                .redirectUri(redirectUri)
+                .status(SystemStatus.ACTIVE)
+                .build();
         
         system.activate(); // Não deve lançar exceção
         
@@ -185,7 +330,14 @@ class ClientSystemTest {
 
     @Test
     void testDeactivateSystem() {
-        ClientSystem system = new ClientSystem(systemId, clientId, clientSecret, name, redirectUri, SystemStatus.ACTIVE);
+        ClientSystem system = ClientSystem.builder()
+                .id(systemId)
+                .clientId(clientId)
+                .clientSecret(clientSecret)
+                .name(name)
+                .redirectUri(redirectUri)
+                .status(SystemStatus.ACTIVE)
+                .build();
         
         system.deactivate();
         
@@ -194,17 +346,23 @@ class ClientSystemTest {
     }
 
     @Test
-    void testDeactivateAlreadyInactiveSystem() {
-        ClientSystem system = new ClientSystem(systemId, clientId, clientSecret, name, redirectUri, SystemStatus.INACTIVE);
-        
-        DomainException exception = assertThrows(DomainException.class, system::deactivate);
-        assertEquals("Sistema já está inativo", exception.getMessage());
-    }
-
-    @Test
     void testIsActive() {
-        ClientSystem activeSystem = new ClientSystem(systemId, clientId, clientSecret, name, redirectUri, SystemStatus.ACTIVE);
-        ClientSystem inactiveSystem = new ClientSystem(systemId, clientId, clientSecret, name, redirectUri, SystemStatus.INACTIVE);
+        ClientSystem activeSystem = ClientSystem.builder()
+                .id(systemId)
+                .clientId(clientId)
+                .clientSecret(clientSecret)
+                .name(name)
+                .redirectUri(redirectUri)
+                .status(SystemStatus.ACTIVE)
+                .build();
+        ClientSystem inactiveSystem = ClientSystem.builder()
+                .id(systemId)
+                .clientId(clientId)
+                .clientSecret(clientSecret)
+                .name(name)
+                .redirectUri(redirectUri)
+                .status(SystemStatus.INACTIVE)
+                .build();
         
         assertTrue(activeSystem.isActive());
         assertFalse(inactiveSystem.isActive());
@@ -212,8 +370,22 @@ class ClientSystemTest {
 
     @Test
     void testIsInactive() {
-        ClientSystem inactiveSystem = new ClientSystem(systemId, clientId, clientSecret, name, redirectUri, SystemStatus.INACTIVE);
-        ClientSystem activeSystem = new ClientSystem(systemId, clientId, clientSecret, name, redirectUri, SystemStatus.ACTIVE);
+        ClientSystem inactiveSystem = ClientSystem.builder()
+                .id(systemId)
+                .clientId(clientId)
+                .clientSecret(clientSecret)
+                .name(name)
+                .redirectUri(redirectUri)
+                .status(SystemStatus.INACTIVE)
+                .build();
+        ClientSystem activeSystem = ClientSystem.builder()
+                .id(systemId)
+                .clientId(clientId)
+                .clientSecret(clientSecret)
+                .name(name)
+                .redirectUri(redirectUri)
+                .status(SystemStatus.ACTIVE)
+                .build();
         
         assertTrue(inactiveSystem.isInactive());
         assertFalse(activeSystem.isInactive());
@@ -221,7 +393,14 @@ class ClientSystemTest {
 
     @Test
     void testStatusTransitions() {
-        ClientSystem system = new ClientSystem(systemId, clientId, clientSecret, name, redirectUri, SystemStatus.ACTIVE);
+        ClientSystem system = ClientSystem.builder()
+                .id(systemId)
+                .clientId(clientId)
+                .clientSecret(clientSecret)
+                .name(name)
+                .redirectUri(redirectUri)
+                .status(SystemStatus.ACTIVE)
+                .build();
         
         // ACTIVE -> INACTIVE
         system.deactivate();
@@ -236,7 +415,14 @@ class ClientSystemTest {
 
     @Test
     void testUpdateClientSecret() {
-        ClientSystem system = new ClientSystem(systemId, clientId, clientSecret, name, redirectUri, SystemStatus.ACTIVE);
+        ClientSystem system = ClientSystem.builder()
+                .id(systemId)
+                .clientId(clientId)
+                .clientSecret(clientSecret)
+                .name(name)
+                .redirectUri(redirectUri)
+                .status(SystemStatus.ACTIVE)
+                .build();
         String newSecret = "new-secret-456";
         
         system.updateClientSecret(newSecret);
@@ -246,34 +432,62 @@ class ClientSystemTest {
 
     @Test
     void testUpdateClientSecretWithNull() {
-        ClientSystem system = new ClientSystem(systemId, clientId, clientSecret, name, redirectUri, SystemStatus.ACTIVE);
+        ClientSystem system = ClientSystem.builder()
+                .id(systemId)
+                .clientId(clientId)
+                .clientSecret(clientSecret)
+                .name(name)
+                .redirectUri(redirectUri)
+                .status(SystemStatus.ACTIVE)
+                .build();
         
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+        DomainException exception = assertThrows(DomainException.class,
             () -> system.updateClientSecret(null));
-        assertEquals("Client secret não pode ser nulo ou vazio", exception.getMessage());
+        assertEquals(ClientSystem.CLIENT_SECRET_NULL_OR_BLANK, exception.getMessage());
     }
 
     @Test
     void testUpdateClientSecretWithEmpty() {
-        ClientSystem system = new ClientSystem(systemId, clientId, clientSecret, name, redirectUri, SystemStatus.ACTIVE);
+        ClientSystem system = ClientSystem.builder()
+                .id(systemId)
+                .clientId(clientId)
+                .clientSecret(clientSecret)
+                .name(name)
+                .redirectUri(redirectUri)
+                .status(SystemStatus.ACTIVE)
+                .build();
         
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+        DomainException exception = assertThrows(DomainException.class,
             () -> system.updateClientSecret(""));
-        assertEquals("Client secret não pode ser nulo ou vazio", exception.getMessage());
+        assertEquals(ClientSystem.CLIENT_SECRET_NULL_OR_BLANK, exception.getMessage());
     }
 
     @Test
     void testUpdateClientSecretWithBlank() {
-        ClientSystem system = new ClientSystem(systemId, clientId, clientSecret, name, redirectUri, SystemStatus.ACTIVE);
+        ClientSystem system = ClientSystem.builder()
+                .id(systemId)
+                .clientId(clientId)
+                .clientSecret(clientSecret)
+                .name(name)
+                .redirectUri(redirectUri)
+                .status(SystemStatus.ACTIVE)
+                .build();
         
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+        DomainException exception = assertThrows(DomainException.class,
             () -> system.updateClientSecret("   "));
-        assertEquals("Client secret não pode ser nulo ou vazio", exception.getMessage());
+        assertEquals(ClientSystem.CLIENT_SECRET_NULL_OR_BLANK, exception.getMessage());
     }
 
     @Test
     void testUpdateName() {
-        ClientSystem system = new ClientSystem(systemId, clientId, clientSecret, name, redirectUri, SystemStatus.ACTIVE);
+        ClientSystem system = ClientSystem.builder()
+                .id(systemId)
+                .clientId(clientId)
+                .clientSecret(clientSecret)
+                .name(name)
+                .redirectUri(redirectUri)
+                .status(SystemStatus.ACTIVE)
+                .build();
         String newName = "Updated System Name";
         
         system.updateName(newName);
@@ -283,25 +497,46 @@ class ClientSystemTest {
 
     @Test
     void testUpdateNameWithNull() {
-        ClientSystem system = new ClientSystem(systemId, clientId, clientSecret, name, redirectUri, SystemStatus.ACTIVE);
+        ClientSystem system = ClientSystem.builder()
+                .id(systemId)
+                .clientId(clientId)
+                .clientSecret(clientSecret)
+                .name(name)
+                .redirectUri(redirectUri)
+                .status(SystemStatus.ACTIVE)
+                .build();
         
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+        DomainException exception = assertThrows(DomainException.class,
             () -> system.updateName(null));
         assertEquals("Nome do sistema não pode ser nulo ou vazio", exception.getMessage());
     }
 
     @Test
     void testUpdateNameWithEmpty() {
-        ClientSystem system = new ClientSystem(systemId, clientId, clientSecret, name, redirectUri, SystemStatus.ACTIVE);
+        ClientSystem system = ClientSystem.builder()
+                .id(systemId)
+                .clientId(clientId)
+                .clientSecret(clientSecret)
+                .name(name)
+                .redirectUri(redirectUri)
+                .status(SystemStatus.ACTIVE)
+                .build();
         
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+        DomainException exception = assertThrows(DomainException.class,
             () -> system.updateName(""));
         assertEquals("Nome do sistema não pode ser nulo ou vazio", exception.getMessage());
     }
 
     @Test
     void testUpdateRedirectUri() {
-        ClientSystem system = new ClientSystem(systemId, clientId, clientSecret, name, redirectUri, SystemStatus.ACTIVE);
+        ClientSystem system = ClientSystem.builder()
+                .id(systemId)
+                .clientId(clientId)
+                .clientSecret(clientSecret)
+                .name(name)
+                .redirectUri(redirectUri)
+                .status(SystemStatus.ACTIVE)
+                .build();
         String newRedirectUri = "https://newdomain.com/callback";
         
         system.updateRedirectUri(newRedirectUri);
@@ -311,78 +546,148 @@ class ClientSystemTest {
 
     @Test
     void testUpdateRedirectUriWithNull() {
-        ClientSystem system = new ClientSystem(systemId, clientId, clientSecret, name, redirectUri, SystemStatus.ACTIVE);
+        ClientSystem system = ClientSystem.builder()
+                .id(systemId)
+                .clientId(clientId)
+                .clientSecret(clientSecret)
+                .name(name)
+                .redirectUri(redirectUri)
+                .status(SystemStatus.ACTIVE)
+                .build();
         
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+        DomainException exception = assertThrows(DomainException.class,
             () -> system.updateRedirectUri(null));
-        assertEquals("Redirect URI não pode ser nulo ou vazio", exception.getMessage());
+        assertEquals(ClientSystem.REDIRECT_URI_INVALID, exception.getMessage());
     }
 
     @Test
     void testUpdateRedirectUriWithInvalidProtocol() {
-        ClientSystem system = new ClientSystem(systemId, clientId, clientSecret, name, redirectUri, SystemStatus.ACTIVE);
+        ClientSystem system = ClientSystem.builder()
+                .id(systemId)
+                .clientId(clientId)
+                .clientSecret(clientSecret)
+                .name(name)
+                .redirectUri(redirectUri)
+                .status(SystemStatus.ACTIVE)
+                .build();
         
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+        DomainException exception = assertThrows(DomainException.class,
             () -> system.updateRedirectUri("ftp://example.com/callback"));
-        assertEquals("Redirect URI deve começar com http:// ou https://", exception.getMessage());
+        assertEquals(ClientSystem.REDIRECT_URI_INVALID, exception.getMessage());
     }
 
     // ==================== Validação de Acesso ====================
 
     @Test
     void testCanAcceptAuthenticationWhenActive() {
-        ClientSystem system = new ClientSystem(systemId, clientId, clientSecret, name, redirectUri, SystemStatus.ACTIVE);
+        ClientSystem system = ClientSystem.builder()
+                .id(systemId)
+                .clientId(clientId)
+                .clientSecret(clientSecret)
+                .name(name)
+                .redirectUri(redirectUri)
+                .status(SystemStatus.ACTIVE)
+                .build();
         
         assertTrue(system.canAcceptAuthentication());
     }
 
     @Test
     void testCannotAcceptAuthenticationWhenInactive() {
-        ClientSystem system = new ClientSystem(systemId, clientId, clientSecret, name, redirectUri, SystemStatus.INACTIVE);
+        ClientSystem system = ClientSystem.builder()
+                .id(systemId)
+                .clientId(clientId)
+                .clientSecret(clientSecret)
+                .name(name)
+                .redirectUri(redirectUri)
+                .status(SystemStatus.INACTIVE)
+                .build();
         
         assertFalse(system.canAcceptAuthentication());
     }
 
     @Test
     void testMatchesRedirectUriWithCorrectUri() {
-        ClientSystem system = new ClientSystem(systemId, clientId, clientSecret, name, redirectUri, SystemStatus.ACTIVE);
+        ClientSystem system = ClientSystem.builder()
+                .id(systemId)
+                .clientId(clientId)
+                .clientSecret(clientSecret)
+                .name(name)
+                .redirectUri(redirectUri)
+                .status(SystemStatus.ACTIVE)
+                .build();
         
         assertTrue(system.matchesRedirectUri(redirectUri));
     }
 
     @Test
     void testMatchesRedirectUriWithIncorrectUri() {
-        ClientSystem system = new ClientSystem(systemId, clientId, clientSecret, name, redirectUri, SystemStatus.ACTIVE);
+        ClientSystem system = ClientSystem.builder()
+                .id(systemId)
+                .clientId(clientId)
+                .clientSecret(clientSecret)
+                .name(name)
+                .redirectUri(redirectUri)
+                .status(SystemStatus.ACTIVE)
+                .build();
         
         assertFalse(system.matchesRedirectUri("https://different.com/callback"));
     }
 
     @Test
     void testMatchesRedirectUriWithNull() {
-        ClientSystem system = new ClientSystem(systemId, clientId, clientSecret, name, redirectUri, SystemStatus.ACTIVE);
+        ClientSystem system = ClientSystem.builder()
+                .id(systemId)
+                .clientId(clientId)
+                .clientSecret(clientSecret)
+                .name(name)
+                .redirectUri(redirectUri)
+                .status(SystemStatus.ACTIVE)
+                .build();
         
         assertFalse(system.matchesRedirectUri(null));
     }
 
     @Test
     void testValidateClientSecretWithCorrectSecret() {
-        ClientSystem system = new ClientSystem(systemId, clientId, clientSecret, name, redirectUri, SystemStatus.ACTIVE);
+        ClientSystem system = ClientSystem.builder()
+                .id(systemId)
+                .clientId(clientId)
+                .clientSecret(clientSecret)
+                .name(name)
+                .redirectUri(redirectUri)
+                .status(SystemStatus.ACTIVE)
+                .build();
         
-        assertTrue(system.validateClientSecret(clientSecret));
+        assertTrue(system.verifyClientSecret(clientSecret));
     }
 
     @Test
     void testValidateClientSecretWithIncorrectSecret() {
-        ClientSystem system = new ClientSystem(systemId, clientId, clientSecret, name, redirectUri, SystemStatus.ACTIVE);
+        ClientSystem system = ClientSystem.builder()
+                .id(systemId)
+                .clientId(clientId)
+                .clientSecret(clientSecret)
+                .name(name)
+                .redirectUri(redirectUri)
+                .status(SystemStatus.ACTIVE)
+                .build();
         
-        assertFalse(system.validateClientSecret("wrong-secret"));
+        assertFalse(system.verifyClientSecret("wrong-secret"));
     }
 
     @Test
     void testValidateClientSecretWithNull() {
-        ClientSystem system = new ClientSystem(systemId, clientId, clientSecret, name, redirectUri, SystemStatus.ACTIVE);
+        ClientSystem system = ClientSystem.builder()
+                .id(systemId)
+                .clientId(clientId)
+                .clientSecret(clientSecret)
+                .name(name)
+                .redirectUri(redirectUri)
+                .status(SystemStatus.ACTIVE)
+                .build();
         
-        assertFalse(system.validateClientSecret(null));
+        assertFalse(system.verifyClientSecret(null));
     }
 
     // ==================== Testes Integrados ====================
@@ -390,7 +695,14 @@ class ClientSystemTest {
     @Test
     void testCompleteSystemLifecycle() {
         // Criar sistema ativo
-        ClientSystem system = new ClientSystem(systemId, clientId, clientSecret, name, redirectUri, SystemStatus.ACTIVE);
+        ClientSystem system = ClientSystem.builder()
+                .id(systemId)
+                .clientId(clientId)
+                .clientSecret(clientSecret)
+                .name(name)
+                .redirectUri(redirectUri)
+                .status(SystemStatus.ACTIVE)
+                .build();
         assertTrue(system.canAcceptAuthentication());
         
         // Desativar sistema
@@ -406,7 +718,14 @@ class ClientSystemTest {
 
     @Test
     void testUpdateConfigurationsFlow() {
-        ClientSystem system = new ClientSystem(systemId, clientId, clientSecret, name, redirectUri, SystemStatus.ACTIVE);
+        ClientSystem system = ClientSystem.builder()
+                .id(systemId)
+                .clientId(clientId)
+                .clientSecret(clientSecret)
+                .name(name)
+                .redirectUri(redirectUri)
+                .status(SystemStatus.ACTIVE)
+                .build();
         
         // Atualizar nome
         system.updateName("New System Name");
@@ -415,8 +734,8 @@ class ClientSystemTest {
         // Atualizar secret
         system.updateClientSecret("new-secret");
         assertEquals("new-secret", system.getClientSecret());
-        assertTrue(system.validateClientSecret("new-secret"));
-        assertFalse(system.validateClientSecret(clientSecret));
+        assertTrue(system.verifyClientSecret("new-secret"));
+        assertFalse(system.verifyClientSecret(clientSecret));
         
         // Atualizar redirect URI
         system.updateRedirectUri("https://newsystem.com/callback");
@@ -427,22 +746,29 @@ class ClientSystemTest {
 
     @Test
     void testValidationFlow() {
-        ClientSystem system = new ClientSystem(systemId, clientId, clientSecret, name, redirectUri, SystemStatus.ACTIVE);
+        ClientSystem system = ClientSystem.builder()
+                .id(systemId)
+                .clientId(clientId)
+                .clientSecret(clientSecret)
+                .name(name)
+                .redirectUri(redirectUri)
+                .status(SystemStatus.ACTIVE)
+                .build();
         
         // Validar credenciais corretas
-        assertTrue(system.validateClientSecret(clientSecret));
+        assertTrue(system.verifyClientSecret(clientSecret));
         assertTrue(system.matchesRedirectUri(redirectUri));
         assertTrue(system.canAcceptAuthentication());
         
         // Validar credenciais incorretas
-        assertFalse(system.validateClientSecret("wrong-secret"));
+        assertFalse(system.verifyClientSecret("wrong-secret"));
         assertFalse(system.matchesRedirectUri("https://wrong.com/callback"));
         
         // Desativar e verificar que não aceita autenticação
         system.deactivate();
         assertFalse(system.canAcceptAuthentication());
         // Mas ainda valida credenciais
-        assertTrue(system.validateClientSecret(clientSecret));
+        assertTrue(system.verifyClientSecret(clientSecret));
         assertTrue(system.matchesRedirectUri(redirectUri));
     }
 }

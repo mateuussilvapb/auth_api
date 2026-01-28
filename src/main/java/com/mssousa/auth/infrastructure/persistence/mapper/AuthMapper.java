@@ -99,14 +99,14 @@ public class AuthMapper {
 
     public ClientSystem toDomain(ClientSystemEntity entity) {
         if (entity == null) return null;
-        return new ClientSystem(
-            SystemId.of(entity.getId()),
-            entity.getClientId(),
-            entity.getClientSecret(),
-            entity.getName(),
-            entity.getRedirectUri(),
-            SystemStatus.valueOf(entity.getStatus())
-        );
+        return ClientSystem.builder()
+            .id(SystemId.of(entity.getId()))
+            .clientId(entity.getClientId())
+            .clientSecret(entity.getClientSecret())
+            .name(entity.getName())
+            .redirectUri(entity.getRedirectUri())
+            .status(SystemStatus.valueOf(entity.getStatus()))
+            .build();
     }
 
     public ClientSystemEntity toEntity(ClientSystem system) {
