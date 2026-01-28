@@ -223,13 +223,14 @@ class AccessValidatorTest {
     }
 
     private ClientSystem createActiveSystem() {
-        return new ClientSystem(
-                SystemId.of(100L),
-                "test-client-id",
-                "test-secret-123",
-                "Test System",
-                "https://example.com/callback",
-                SystemStatus.ACTIVE);
+        return ClientSystem.builder()
+                .id(SystemId.of(100L))
+                .clientId("test-client-id")
+                .clientSecret("test-secret-123")
+                .name("Test System")
+                .redirectUri("https://example.com/callback")
+                .status(SystemStatus.ACTIVE)
+                .build();
     }
 
     private UserSystem createActiveBinding(User user, ClientSystem system) {
