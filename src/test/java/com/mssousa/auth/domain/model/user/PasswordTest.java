@@ -42,28 +42,28 @@ class PasswordTest {
     void testInvalidPasswordNull() {
         DomainException exception = assertThrows(DomainException.class, 
             () -> Password.fromPlainText(null));
-        assertEquals("Senha não pode ser nula ou vazia", exception.getMessage());
+        assertEquals(Password.DEFAULT_ERROR_PASSWORD, exception.getMessage());
     }
 
     @Test
     void testInvalidPasswordEmpty() {
         DomainException exception = assertThrows(DomainException.class, 
             () -> Password.fromPlainText(""));
-        assertEquals("Senha não pode ser nula ou vazia", exception.getMessage());
+        assertEquals(Password.DEFAULT_ERROR_PASSWORD, exception.getMessage());
     }
 
     @Test
     void testInvalidPasswordBlank() {
         DomainException exception = assertThrows(DomainException.class, 
             () -> Password.fromPlainText("   "));
-        assertEquals("Senha não pode ser nula ou vazia", exception.getMessage());
+        assertEquals(Password.DEFAULT_ERROR_PASSWORD, exception.getMessage());
     }
 
     @Test
     void testInvalidPasswordTooShort() {
         DomainException exception = assertThrows(DomainException.class, 
             () -> Password.fromPlainText("short"));
-        assertEquals("Senha deve ter pelo menos 8 caracteres", exception.getMessage());
+        assertEquals(Password.DEFAULT_ERROR_PASSWORD_MIN_LENGTH, exception.getMessage());
     }
 
     @Test
@@ -83,14 +83,14 @@ class PasswordTest {
     void testPasswordFromHashInvalidNull() {
         DomainException exception = assertThrows(DomainException.class, 
             () -> Password.fromHash(null));
-        assertEquals("Senha hash não pode ser nula ou vazia", exception.getMessage());
+        assertEquals(Password.DEFAULT_ERROR_PASSWORD, exception.getMessage());
     }
 
     @Test
     void testPasswordFromHashInvalidEmpty() {
         DomainException exception = assertThrows(DomainException.class, 
             () -> Password.fromHash(""));
-        assertEquals("Senha hash não pode ser nula ou vazia", exception.getMessage());
+        assertEquals(Password.DEFAULT_ERROR_PASSWORD, exception.getMessage());
     }
 
     @Test
