@@ -11,7 +11,7 @@ import java.util.Objects;
  */
 public final class Password {
 
-    public static final String DEFAULT_ERROR_PASSWORD = "Senha não pode ser nula";
+    public static final String DEFAULT_ERROR_PASSWORD = "Senha não pode ser nula ou vazia";
     public static final String DEFAULT_ERROR_PASSWORD_MIN_LENGTH = "Senha deve ter pelo menos 8 caracteres";
 
     private static final int MIN_LENGTH = 8;
