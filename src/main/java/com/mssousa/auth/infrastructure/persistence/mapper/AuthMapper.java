@@ -224,13 +224,13 @@ public class AuthMapper {
 
     public PasswordResetToken toDomain(PasswordResetTokenEntity entity) {
         if (entity == null) return null;
-        return new PasswordResetToken(
-            PasswordResetTokenId.of(entity.getId()),
-            new ResetTokenValue(entity.getToken()),
-            UserId.of(entity.getUser().getId()),
-            entity.getExpiresAt(),
-            entity.isUsed()
-        );
+        return PasswordResetToken.builder()
+            .id(PasswordResetTokenId.of(entity.getId()))
+            .value(new ResetTokenValue(entity.getToken()))
+            .userId(UserId.of(entity.getUser().getId()))
+            .expiresAt(entity.getExpiresAt())
+            .used(entity.isUsed())
+            .build();
     }
 
     public PasswordResetTokenEntity toEntity(PasswordResetToken token, UserEntity user) {

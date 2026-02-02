@@ -51,7 +51,13 @@ class PasswordResetTokenTest {
     @Test
     @DisplayName("Reconstituição deve restaurar objeto corretamente")
     void reconstituteToken() {
-        PasswordResetToken token = new PasswordResetToken(id, value, userId, futureExpiration, true);
+        PasswordResetToken token = PasswordResetToken.builder()
+            .id(id)
+            .value(value)
+            .userId(userId)
+            .expiresAt(futureExpiration)
+            .used(true)
+            .build();
 
         assertNotNull(token);
         assertEquals(id, token.getId());
@@ -62,14 +68,16 @@ class PasswordResetTokenTest {
     @Test
     @DisplayName("create deve lançar exceção se data de expiração for nula")
     void create_ShouldThrowException_WhenExpiresAtIsNull() {
-        assertThrows(DomainException.class, () -> PasswordResetToken.create(id, userId, null));
+        DomainException exception = assertThrows(DomainException.class, () -> PasswordResetToken.create(id, userId, null));
+        assertEquals(PasswordResetToken.ERROR_EXPIRES_AT_REQUIRED, exception.getMessage());
     }
 
     @Test
     @DisplayName("create deve lançar exceção se data de expiração for no passado")
     void create_ShouldThrowException_WhenExpiresAtIsInPast() {
         Instant past = Instant.now().minus(1, ChronoUnit.HOURS);
-        assertThrows(DomainException.class, () -> PasswordResetToken.create(id, userId, past));
+        DomainException exception = assertThrows(DomainException.class, () -> PasswordResetToken.create(id, userId, past));
+        assertEquals(PasswordResetToken.ERROR_EXPIRATION_MUST_BE_FUTURE, exception.getMessage());
     }
 
     // ==================== Validação de Invariantes (Contrutor) ====================
@@ -77,36 +85,71 @@ class PasswordResetTokenTest {
     @Test
     @DisplayName("Construtor deve falhar se ID for nulo")
     void constructor_ShouldThrowException_WhenIdIsNull() {
-        assertThrows(DomainException.class, () -> 
-            new PasswordResetToken(null, value, userId, futureExpiration, false));
+        DomainException exception = assertThrows(DomainException.class, () -> 
+            PasswordResetToken.builder()
+                .id(null)
+                .value(value)
+                .userId(userId)
+                .expiresAt(futureExpiration)
+                .used(false)
+                .build());
+        assertEquals(PasswordResetToken.ERROR_ID_REQUIRED, exception.getMessage());
     }
 
     @Test
     @DisplayName("Construtor deve falhar se Value for nulo")
     void constructor_ShouldThrowException_WhenValueIsNull() {
-        assertThrows(DomainException.class, () -> 
-            new PasswordResetToken(id, null, userId, futureExpiration, false));
+        DomainException exception = assertThrows(DomainException.class, () -> 
+            PasswordResetToken.builder()
+                .id(id)
+                .value(null)
+                .userId(userId)
+                .expiresAt(futureExpiration)
+                .used(false)
+                .build());
+        assertEquals(PasswordResetToken.ERROR_VALUE_REQUIRED, exception.getMessage());
     }
 
     @Test
     @DisplayName("Construtor deve falhar se UserId for nulo")
     void constructor_ShouldThrowException_WhenUserIdIsNull() {
-        assertThrows(DomainException.class, () -> 
-            new PasswordResetToken(id, value, null, futureExpiration, false));
+        DomainException exception = assertThrows(DomainException.class, () -> 
+            PasswordResetToken.builder()
+                .id(id)
+                .value(value)
+                .userId(null)
+                .expiresAt(futureExpiration)
+                .used(false)
+                .build());
+        assertEquals(PasswordResetToken.ERROR_USER_ID_REQUIRED, exception.getMessage());
     }
 
     @Test
     @DisplayName("Construtor deve falhar se ExpiresAt for nulo")
     void constructor_ShouldThrowException_WhenExpiresAtIsNull() {
-        assertThrows(DomainException.class, () -> 
-            new PasswordResetToken(id, value, userId, null, false));
+        DomainException exception = assertThrows(DomainException.class, () -> 
+            PasswordResetToken.builder()
+                .id(id)
+                .value(value)
+                .userId(userId)
+                .expiresAt(null)
+                .used(false)
+                .build());
+        assertEquals(PasswordResetToken.ERROR_EXPIRES_AT_REQUIRED, exception.getMessage());
     }
 
     @Test
     @DisplayName("Construtor deve falhar se Used for nulo")
     void constructor_ShouldThrowException_WhenUsedIsNull() {
-        assertThrows(DomainException.class, () -> 
-            new PasswordResetToken(id, value, userId, futureExpiration, null));
+        DomainException exception = assertThrows(DomainException.class, () -> 
+            PasswordResetToken.builder()
+                .id(id)
+                .value(value)
+                .userId(userId)
+                .expiresAt(futureExpiration)
+                .used(null)
+                .build());
+        assertEquals(PasswordResetToken.ERROR_USED_STATUS_REQUIRED, exception.getMessage());
     }
 
     // ==================== Regras de Negócio e Validações ====================
@@ -123,10 +166,17 @@ class PasswordResetTokenTest {
     void validateUsable_ShouldThrowException_WhenExpired() {
         Instant past = Instant.now().minus(1, ChronoUnit.MINUTES);
         // Bypass factory to create expired token
-        PasswordResetToken token = new PasswordResetToken(id, value, userId, past, false);
+        PasswordResetToken token = PasswordResetToken.builder()
+            .id(id)
+            .value(value)
+            .userId(userId)
+            .expiresAt(past)
+            .used(false)
+            .build();
 
         assertTrue(token.isExpired());
-        assertThrows(DomainException.class, token::validateUsable);
+        DomainException exception = assertThrows(DomainException.class, token::validateUsable);
+        assertEquals(PasswordResetToken.ERROR_EXPIRED_TOKEN, exception.getMessage());
     }
 
     @Test
@@ -146,6 +196,7 @@ class PasswordResetTokenTest {
 
         token.markAsUsed(); // First time
 
-        assertThrows(DomainException.class, token::markAsUsed); // Second time
+        DomainException exception = assertThrows(DomainException.class, token::markAsUsed); // Second time
+        assertEquals(PasswordResetToken.ERROR_TOKEN_ALREADY_USED, exception.getMessage());
     }
 }

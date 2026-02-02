@@ -15,6 +15,15 @@ import com.mssousa.auth.domain.model.user.UserId;
  * </p>
  */
 public class PasswordResetToken {
+    public static final String ERROR_ID_REQUIRED = "ID é obrigatório para PasswordResetToken";
+    public static final String ERROR_VALUE_REQUIRED = "Value é obrigatório para PasswordResetToken";
+    public static final String ERROR_USER_ID_REQUIRED = "UserId é obrigatório para PasswordResetToken";
+    public static final String ERROR_EXPIRES_AT_REQUIRED = "Data de expiração é obrigatória";
+    public static final String ERROR_USED_STATUS_REQUIRED = "Status 'used' não pode ser nulo";
+    public static final String ERROR_EXPIRED_TOKEN = "PasswordResetToken expirado";
+    public static final String ERROR_TOKEN_ALREADY_USED = "PasswordResetToken já foi utilizado";
+    public static final String ERROR_EXPIRATION_MUST_BE_FUTURE = "Data de expiração inválida para novos PasswordResetToken. Deve ser futura.";
+
     private final PasswordResetTokenId id;
     private final ResetTokenValue value;
     private final UserId userId;
@@ -22,17 +31,16 @@ public class PasswordResetToken {
     private Boolean used;
 
     /**
-     * Construtor de Reconstituição (Persistence/Frameworks).
-     * Não gera novos códigos e não valida regras de tempo (expiração), 
-     * permitindo carregar estados passados do banco.
+     * Construtor privado para garantir uso via Builder.
+     * 
+     * @param builder Builder do PasswordResetToken
      */
-    public PasswordResetToken(PasswordResetTokenId id, ResetTokenValue value, UserId userId, Instant expiresAt,
-            Boolean used) {
-        this.id = id;
-        this.value = value;
-        this.userId = userId;
-        this.expiresAt = expiresAt;
-        this.used = used;
+    private PasswordResetToken(Builder builder) {
+        this.id = builder.id;
+        this.value = builder.value;
+        this.userId = builder.userId;
+        this.expiresAt = builder.expiresAt;
+        this.used = builder.used;
 
         validateInvariants();
     }
@@ -46,17 +54,20 @@ public class PasswordResetToken {
             UserId userId,
             Instant expiresAt
     ) {
-        if (expiresAt == null || expiresAt.isBefore(Instant.now())) {
-            throw new DomainException("Data de expiração inválida para novos PasswordResetToken");
+        if (expiresAt == null) {
+            throw new DomainException(ERROR_EXPIRES_AT_REQUIRED);
+        }
+        if (expiresAt.isBefore(Instant.now())) {
+            throw new DomainException(ERROR_EXPIRATION_MUST_BE_FUTURE);
         }
 
-        return new PasswordResetToken(
-            id,
-            new ResetTokenValue(UUID.randomUUID().toString()),
-            userId,
-            expiresAt,
-            false
-        );
+        return new Builder()
+            .id(id)
+            .value(new ResetTokenValue(UUID.randomUUID().toString()))
+            .userId(userId)
+            .expiresAt(expiresAt)
+            .used(false)
+            .build();
     }
 
     // ==================== Validações ====================
@@ -66,19 +77,19 @@ public class PasswordResetToken {
      */
     private void validateInvariants() {
         if (id == null) {
-            throw new DomainException("ID é obrigatório para PasswordResetToken");
+            throw new DomainException(ERROR_ID_REQUIRED);
         }
         if (value == null) {
-            throw new DomainException("Value é obrigatório para PasswordResetToken");
+            throw new DomainException(ERROR_VALUE_REQUIRED);
         }
         if (userId == null) {
-            throw new DomainException("UserId é obrigatório para PasswordResetToken");
+            throw new DomainException(ERROR_USER_ID_REQUIRED);
         }
         if (expiresAt == null) {
-            throw new DomainException("Data de expiração é obrigatória");
+            throw new DomainException(ERROR_EXPIRES_AT_REQUIRED);
         }
         if (used == null) {
-            throw new DomainException("Status 'used' não pode ser nulo"); 
+            throw new DomainException(ERROR_USED_STATUS_REQUIRED);
         }
     }
 
@@ -87,10 +98,10 @@ public class PasswordResetToken {
      */
     public void validateUsable() {
         if (isExpired()) {
-            throw new DomainException("PasswordResetToken expirado");
+            throw new DomainException(ERROR_EXPIRED_TOKEN);
         }
         if (isUsed()) {
-            throw new DomainException("PasswordResetToken já foi utilizado");
+            throw new DomainException(ERROR_TOKEN_ALREADY_USED);
         }
     }
 
@@ -133,5 +144,62 @@ public class PasswordResetToken {
 
     public Boolean getUsed() {
         return used;
+    }
+
+    // ==================== Builder ====================
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+        private PasswordResetTokenId id;
+        private ResetTokenValue value;
+        private UserId userId;
+        private Instant expiresAt;
+        private Boolean used;
+
+        public Builder id(PasswordResetTokenId id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder value(ResetTokenValue value) {
+            this.value = value;
+            return this;
+        }
+
+        public Builder userId(UserId userId) {
+            this.userId = userId;
+            return this;
+        }
+
+        public Builder expiresAt(Instant expiresAt) {
+            this.expiresAt = expiresAt;
+            return this;
+        }
+
+        public Builder used(Boolean used) {
+            this.used = used;
+            return this;
+        }
+
+        public PasswordResetToken build() {
+            if (id == null) {
+                throw new DomainException(ERROR_ID_REQUIRED);
+            }
+            if (value == null) {
+                throw new DomainException(ERROR_VALUE_REQUIRED);
+            }
+            if (userId == null) {
+                throw new DomainException(ERROR_USER_ID_REQUIRED);
+            }
+            if (expiresAt == null) {
+                throw new DomainException(ERROR_EXPIRES_AT_REQUIRED);
+            }
+            if (used == null) {
+                throw new DomainException(ERROR_USED_STATUS_REQUIRED);
+            }
+            return new PasswordResetToken(this);
+        }
     }
 }
