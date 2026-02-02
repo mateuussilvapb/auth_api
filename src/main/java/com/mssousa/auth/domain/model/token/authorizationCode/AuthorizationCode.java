@@ -16,6 +16,17 @@ import com.mssousa.auth.domain.model.user.User;
  * </p>
  */
 public class AuthorizationCode {
+    // Mensagens de erro para validações
+    public static final String ID_NULL = "Authorization Code ID não pode ser nulo";
+    public static final String CODE_NULL_OR_BLANK = "Authorization Code code não pode ser nulo ou vazio";
+    public static final String USER_NULL = "User não pode ser nulo";
+    public static final String SYSTEM_ID_NULL = "System ID não pode ser nulo";
+    public static final String EXPIRES_AT_NULL = "Expires At não pode ser nulo";
+    public static final String EXPIRES_AT_PAST = "Expires At não pode ser no passado";
+    public static final String AUTHORIZATION_CODE_EXPIRED = "Authorization Code expirado";
+    public static final String AUTHORIZATION_CODE_ALREADY_USED = "Authorization Code já foi utilizado";
+    public static final String USED_NULL = "Used não pode ser nulo";
+
     private final AuthorizationCodeId id;
     private final String code;
     private final User user;
@@ -28,21 +39,16 @@ public class AuthorizationCode {
      * Construtor de Reconstituição (Persistence/Frameworks).
      * Não gera novos códigos e não valida regras de tempo (expiração), 
      * permitindo carregar estados passados do banco.
+     * 
+     * @param builder Builder com os dados do AuthorizationCode
      */
-    public AuthorizationCode(
-            AuthorizationCodeId id,
-            String code,
-            User user,
-            SystemId systemId,
-            Instant expiresAt,
-            Boolean used
-    ) {
-        this.id = id;
-        this.code = code;
-        this.user = user;
-        this.systemId = systemId;
-        this.expiresAt = expiresAt;
-        this.used = used;
+    private AuthorizationCode(Builder builder) {
+        this.id = builder.id;
+        this.code = builder.code;
+        this.user = builder.user;
+        this.systemId = builder.systemId;
+        this.expiresAt = builder.expiresAt;
+        this.used = builder.used;
         
         validateInvariants();
     }
@@ -57,18 +63,21 @@ public class AuthorizationCode {
             SystemId systemId,
             Instant expiresAt
     ) {
-        if (expiresAt == null || expiresAt.isBefore(Instant.now())) {
-            throw new DomainException("Data de expiração inválida para novos AuthorizationCode");
+        if (expiresAt == null) {
+            throw new DomainException(EXPIRES_AT_NULL);
+        }
+        if (expiresAt.isBefore(Instant.now())) {
+            throw new DomainException(EXPIRES_AT_PAST);
         }
 
-        return new AuthorizationCode(
-            id,
-            UUID.randomUUID().toString(),
-            user,
-            systemId,
-            expiresAt,
-            false
-        );
+        return AuthorizationCode.builder()
+                .id(id)
+                .code(UUID.randomUUID().toString())
+                .user(user)
+                .systemId(systemId)
+                .expiresAt(expiresAt)
+                .used(false)
+                .build();
     }
 
     // ==================== Validações ====================
@@ -78,19 +87,22 @@ public class AuthorizationCode {
      */
     private void validateInvariants() {
         if (id == null) {
-            throw new DomainException("ID é obrigatório para AuthorizationCode");
+            throw new DomainException(ID_NULL);
         }
         if (user == null) {
-            throw new DomainException("Usuário é obrigatório para AuthorizationCode");
+            throw new DomainException(USER_NULL);
         }
         if (systemId == null) {
-            throw new DomainException("O ID do sistema é obrigatório para AuthorizationCode");
+            throw new DomainException(SYSTEM_ID_NULL);
         }
         if (code == null || code.trim().isEmpty()) {
-             throw new DomainException("Code é obrigatório");
+             throw new DomainException(CODE_NULL_OR_BLANK);
         }
         if (expiresAt == null) { // Valida apenas presença, não se está no passado
-            throw new DomainException("Data de expiração é obrigatória");
+            throw new DomainException(EXPIRES_AT_NULL);
+        }
+        if (used == null) {
+            throw new DomainException(USED_NULL);
         }
     }
 
@@ -99,10 +111,10 @@ public class AuthorizationCode {
      */
     public void validateUsable() {
         if (isExpired()) {
-            throw new DomainException("AuthorizationCode expirado");
+            throw new DomainException(AUTHORIZATION_CODE_EXPIRED);
         }
         if (isUsed()) {
-            throw new DomainException("AuthorizationCode já foi utilizado");
+            throw new DomainException(AUTHORIZATION_CODE_ALREADY_USED);
         }
     }
 
@@ -152,5 +164,73 @@ public class AuthorizationCode {
 
     public boolean getUsed() {
         return used;
+    }
+
+    
+    // ==================== Padrão Builder ====================
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+        private AuthorizationCodeId id;
+        private String code;
+        private User user;
+        private SystemId systemId;
+        private Instant expiresAt;
+        private Boolean used;
+
+        public Builder id(AuthorizationCodeId id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder code(String code) {
+            this.code = code;
+            return this;
+        }
+
+        public Builder user(User user) {
+            this.user = user;
+            return this;
+        }
+
+        public Builder systemId(SystemId systemId) {
+            this.systemId = systemId;
+            return this;
+        }
+
+        public Builder expiresAt(Instant expiresAt) {
+            this.expiresAt = expiresAt;
+            return this;
+        }
+
+        public Builder used(Boolean used) {
+            this.used = used;
+            return this;
+        }
+
+        public AuthorizationCode build() {
+            if (id == null) {
+                throw new DomainException(ID_NULL);
+            }
+            if (code == null || code.trim().isEmpty()) {
+                throw new DomainException(CODE_NULL_OR_BLANK);
+            }
+            if (user == null) {
+                throw new DomainException(USER_NULL);
+            }
+            if (systemId == null) {
+                throw new DomainException(SYSTEM_ID_NULL);
+            }
+            if (expiresAt == null) {
+                throw new DomainException(EXPIRES_AT_NULL);
+            }
+            if (used == null) {
+                throw new DomainException(USED_NULL);
+            }
+            return new AuthorizationCode(this);
+        }
     }
 }

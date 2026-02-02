@@ -197,14 +197,14 @@ public class AuthMapper {
 
     public AuthorizationCode toDomain(AuthorizationCodeEntity entity) {
         if (entity == null) return null;
-        return new AuthorizationCode(
-            AuthorizationCodeId.of(entity.getId()),
-            entity.getCode(),
-            toDomain(entity.getUser()), // Reutiliza o mapper de User
-            SystemId.of(entity.getSystem().getId()),
-            entity.getExpiresAt(),
-            entity.isUsed()
-        );
+        return AuthorizationCode.builder()
+            .id(AuthorizationCodeId.of(entity.getId()))
+            .code(entity.getCode())
+            .user(toDomain(entity.getUser()))
+            .systemId(SystemId.of(entity.getSystem().getId()))
+            .expiresAt(entity.getExpiresAt())
+            .used(entity.isUsed())
+            .build();
     }
 
     public AuthorizationCodeEntity toEntity(AuthorizationCode authCode, UserEntity user, ClientSystemEntity system) {
