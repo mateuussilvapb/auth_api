@@ -5,6 +5,7 @@ import org.springframework.security.oauth2.server.authorization.token.JwtEncodin
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 
 import com.mssousa.auth.application.service.authentication.model.AuthenticatedUser;
+import com.mssousa.auth.application.service.client.ClientValidationService;
 import com.mssousa.auth.infrastructure.security.oauth2.CustomAuthenticationToken;
 
 /**
@@ -25,6 +26,12 @@ import com.mssousa.auth.infrastructure.security.oauth2.CustomAuthenticationToken
 public class JwtTokenCustomizer
         implements OAuth2TokenCustomizer<JwtEncodingContext> {
 
+    private final ClientValidationService clientValidationService;
+
+    public JwtTokenCustomizer(ClientValidationService clientValidationService) {
+        this.clientValidationService = clientValidationService;
+    }
+
     @Override
     public void customize(JwtEncodingContext context) {
 
@@ -38,13 +45,21 @@ public class JwtTokenCustomizer
             return;
         }
 
-        AuthenticatedUser user = (AuthenticatedUser) customToken.getPrincipal();
+        String clientId = context.getRegisteredClient().getClientId();
+
+        clientValidationService.validateActiveClient(clientId);
+
+        AuthenticatedUser user =
+                (AuthenticatedUser) customToken.getPrincipal();
 
         context.getClaims()
                 .subject(user.userId().value().toString())
                 .claim("username", user.username())
                 .claim("email", user.email())
                 .claim("name", user.name())
-                .claim("is_master", user.master());
+                .claim("is_master", user.master())
+                .claim("client_id", clientId);
     }
 }
+
+
