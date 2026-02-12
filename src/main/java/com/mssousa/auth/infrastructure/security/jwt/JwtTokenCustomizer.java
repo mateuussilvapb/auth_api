@@ -5,8 +5,11 @@ import org.springframework.security.oauth2.server.authorization.token.JwtEncodin
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 
 import com.mssousa.auth.application.service.authentication.model.AuthenticatedUser;
+import com.mssousa.auth.application.service.authorization.UserAuthorizationService;
 import com.mssousa.auth.application.service.client.ClientValidationService;
 import com.mssousa.auth.infrastructure.security.oauth2.CustomAuthenticationToken;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * Customizador de tokens JWT para access tokens gerados pelo Spring Authorization Server.
@@ -23,14 +26,12 @@ import com.mssousa.auth.infrastructure.security.oauth2.CustomAuthenticationToken
  * - Recebe o JwtEncodingContext contendo o Authentication e o builder de claims
  * - Só atua quando o token é do tipo access_token E o principal é um CustomAuthenticationToken
  */
+@RequiredArgsConstructor
 public class JwtTokenCustomizer
         implements OAuth2TokenCustomizer<JwtEncodingContext> {
 
     private final ClientValidationService clientValidationService;
-
-    public JwtTokenCustomizer(ClientValidationService clientValidationService) {
-        this.clientValidationService = clientValidationService;
-    }
+    private final UserAuthorizationService userAuthorizationService;
 
     @Override
     public void customize(JwtEncodingContext context) {
@@ -45,21 +46,32 @@ public class JwtTokenCustomizer
             return;
         }
 
-        String clientId = context.getRegisteredClient().getClientId();
-
-        clientValidationService.validateActiveClient(clientId);
-
         AuthenticatedUser user =
                 (AuthenticatedUser) customToken.getPrincipal();
 
+        String clientId = context.getRegisteredClient().getClientId();
+
+        // Valida se client está ativo
+        var client =
+                clientValidationService.validateActiveClient(clientId);
+
+        // Autoriza usuário no sistema
+        var authorizedUser =
+                userAuthorizationService.authorize(
+                        user.userId(),
+                        client.getId(),
+                        user.master()
+                );
+
+        // Adiciona claims ao token
         context.getClaims()
-                .subject(user.userId().value().toString())
-                .claim("username", user.username())
-                .claim("email", user.email())
-                .claim("name", user.name())
-                .claim("is_master", user.master())
-                .claim("client_id", clientId);
+            .subject(user.userId().value().toString())
+            .claim("client_id", client.getClientId())
+            .claim("username", user.username())
+            .claim("email", user.email())
+            .claim("name", user.name())
+            .claim("is_master", user.master())
+            .claim("roles", authorizedUser.roles());
     }
 }
-
 

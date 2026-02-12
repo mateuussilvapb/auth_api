@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
@@ -48,6 +49,17 @@ public class SystemRoleRepositoryImpl implements SystemRoleRepository {
                 .collect(Collectors.toList());
     }
 
+    @Override 
+    public List<SystemRole> findAllById(Set<SystemRoleId> ids) {
+        List<Long> idsValues = ids.stream()
+                .map(SystemRoleId::value)
+                .collect(Collectors.toList());
+
+        return jpaRepository.findAllById(idsValues).stream()
+                .map(mapper::toDomain)
+                .collect(Collectors.toList());
+    }
+
     @Override
     public Optional<SystemRole> findBySystemIdAndCode(SystemId systemId, String code) {
         return jpaRepository.findBySystemIdAndCode(systemId.value(), code)
@@ -58,4 +70,5 @@ public class SystemRoleRepositoryImpl implements SystemRoleRepository {
     public void deleteById(SystemRoleId id) {
         jpaRepository.deleteById(id.value());
     }
+
 }
